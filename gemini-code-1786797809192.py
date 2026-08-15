@@ -25,7 +25,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS styling with Fixed Text Contrast & Dark Cyberpunk Theme
+# Custom CSS styling with Mobile Screenshot Match Card & Dark Cyberpunk Theme
 st.markdown("""
 <style>
     /* Dark Theme Base */
@@ -63,40 +63,130 @@ st.markdown("""
         box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4) !important;
     }
 
-    /* Scoreboard Banner */
-    .scoreboard-box {
-        background: linear-gradient(135deg, #131b2e 0%, #0d111a 100%);
+    /* ==========================================
+       SQUARE MOBILE SCREENSHOT MATCH CARD
+       ========================================== */
+    .match-card-container {
+        max-width: 480px;
+        margin: 0 auto 20px auto;
+        background: linear-gradient(145deg, #0d1322 0%, #151d30 100%);
         border: 2px solid #3b82f6;
         border-radius: 18px;
-        padding: 24px;
-        text-align: center;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        margin-bottom: 24px;
+        padding: 16px;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7);
+        color: #ffffff;
+        box-sizing: border-box;
     }
     
-    .team-name {
-        font-size: 1.6rem;
+    .match-card-header {
+        text-align: center;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #38bdf8;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+    }
+    
+    .match-teams-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .team-box-side {
+        width: 38%;
+        text-align: center;
+    }
+    
+    .team-box-title {
+        font-size: 1.15rem;
         font-weight: 800;
         color: #f8fafc;
-        letter-spacing: 0.5px;
+        line-height: 1.2;
+        word-wrap: break-word;
     }
     
-    .score-text {
-        font-size: 3rem;
+    .score-center-box {
+        width: 24%;
+        text-align: center;
+        font-size: 2.1rem;
         font-weight: 900;
         color: #60a5fa;
-        text-shadow: 0 0 20px rgba(96, 165, 250, 0.5);
+        background: rgba(56, 189, 248, 0.12);
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        border-radius: 10px;
+        padding: 2px 0;
+        text-shadow: 0 0 12px rgba(96, 165, 250, 0.6);
     }
     
-    .map-badge {
-        display: inline-block;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 0.85rem;
-        margin: 4px;
+    .maps-chips-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px;
+        margin: 10px 0;
+    }
+    
+    .map-chip-item {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 6px;
+        padding: 3px 8px;
+        font-size: 0.72rem;
+        color: #cbd5e1;
+    }
+    
+    .stats-split-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 10px;
+        padding-top: 8px;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .mini-team-heading {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #93c5fd;
+        text-align: center;
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .mini-stats-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.7rem;
+    }
+    
+    .mini-stats-table th {
+        color: #64748b;
+        font-weight: 600;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 2px;
+        text-align: center;
+    }
+    
+    .mini-stats-table td {
+        padding: 3px 1px;
+        text-align: center;
         color: #e2e8f0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .mini-stats-table td.player-col {
+        text-align: left;
+        font-weight: 600;
+        max-width: 65px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     /* Cards / Expanders Contrast Fix */
@@ -110,12 +200,6 @@ st.markdown("""
     div[data-testid="stExpander"] summary {
         color: #38bdf8 !important;
         font-weight: 600;
-    }
-
-    @media (max-width: 768px) {
-        .team-name { font-size: 1.2rem; }
-        .score-text { font-size: 2.2rem; }
-        .scoreboard-box { padding: 14px; }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -396,7 +480,7 @@ with tab_match:
                     total_rounds += r_played
                     if s_a > s_b: maps_won_a += 1
                     else: maps_won_b += 1
-                    map_results.append((f"Карта {idx+1}: {m_name}", s_a, s_b))
+                    map_results.append((f"{m_name}", s_a, s_b))
 
                     for p, st_data in st_a.items():
                         if p not in total_stats[team_a]:
@@ -410,36 +494,105 @@ with tab_match:
                         for k, v in st_data.items():
                             total_stats[team_b][p][k] = total_stats[team_b][p].get(k, 0) + v
 
-                # Modern Scoreboard
-                badges_html = "".join([f'<span class="map-badge">{m}: <b>{sa}-{sb}</b></span>' for m, sa, sb in map_results])
+                # HTML генерация чипов карт
+                map_chips_html = "".join([f'<span class="map-chip-item">{m}: <b>{sa}-{sb}</b></span>' for m, sa, sb in map_results])
+
+                # HTML генерация мини-таблиц статистики для идеального мобильного скрина
+                def build_mini_rows(t_name):
+                    rows_html = ""
+                    sorted_players = sorted(
+                        total_stats[t_name].items(), 
+                        key=lambda x: round(0.40 + ((x[1].get('K', 0)/max(1, x[1].get('D', 0))) * 0.35) + ((int(x[1].get('damage', 0)/max(1, total_rounds))) / 130.0) * 0.35, 2), 
+                        reverse=True
+                    )
+                    for p_name, st_data in sorted_players:
+                        k = st_data.get("K", 0)
+                        d = st_data.get("D", 0)
+                        kd = round(k / max(1, d), 2)
+                        adr = int(st_data.get("damage", 0) / max(1, total_rounds))
+                        rating = round(0.40 + (kd * 0.35) + (adr / 130.0) * 0.35, 2)
+                        rows_html += f"""
+                        <tr>
+                            <td class="player-col">{p_name}</td>
+                            <td>{k}/{d}</td>
+                            <td><b>{rating}</b></td>
+                        </tr>
+                        """
+                    return rows_html
+
+                rows_team_a = build_mini_rows(team_a)
+                rows_team_b = build_mini_rows(team_b)
+
+                # Идеальная квадратная карточка для скриншота (Square Screenshot Card)
                 st.markdown(f"""
-                <div class="scoreboard-box">
-                    <div style="display: flex; justify-content: space-around; align-items: center; flex-wrap: wrap;">
-                        <div class="team-name">{team_a}</div>
-                        <div class="score-text">{maps_won_a} : {maps_won_b}</div>
-                        <div class="team-name">{team_b}</div>
+                <div class="match-card-container">
+                    <div class="match-card-header">⚔️ Standoff 2 Esports Match</div>
+                    <div class="match-teams-row">
+                        <div class="team-box-side">
+                            <div class="team-box-title">{team_a}</div>
+                        </div>
+                        <div class="score-center-box">{maps_won_a} : {maps_won_b}</div>
+                        <div class="team-box-side">
+                            <div class="team-box-title">{team_b}</div>
+                        </div>
                     </div>
-                    <div style="margin-top: 15px;">{badges_html}</div>
+                    <div class="maps-chips-wrapper">
+                        {map_chips_html}
+                    </div>
+                    <div class="stats-split-grid">
+                        <div>
+                            <div class="mini-team-heading">{team_a}</div>
+                            <table class="mini-stats-table">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:left;">Игрок</th>
+                                        <th>K/D</th>
+                                        <th>RTG</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {rows_team_a}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <div class="mini-team-heading">{team_b}</div>
+                            <table class="mini-stats-table">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align:left;">Игрок</th>
+                                        <th>K/D</th>
+                                        <th>RTG</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {rows_team_b}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
                 """, unsafe_allow_html=True)
 
-                col_ta, col_tb = st.columns(2)
-                for idx, (t_name, col_t) in enumerate([(team_a, col_ta), (team_b, col_tb)]):
-                    with col_t:
-                        st.markdown(f"#### 📊 {t_name}")
-                        rows = []
-                        for p_name, st_data in total_stats[t_name].items():
-                            kd = round(st_data.get("K", 0) / max(1, st_data.get("D", 0)), 2)
-                            adr = int(st_data.get("damage", 0) / max(1, total_rounds))
-                            rating = round(0.40 + (kd * 0.35) + (adr / 130.0) * 0.35, 2)
-                            rows.append({
-                                "Игрок": p_name,
-                                "K/A/D": f"{st_data.get('K', 0)}/{st_data.get('A', 0)}/{st_data.get('D', 0)}",
-                                "K/D": kd,
-                                "ADR": adr,
-                                "Рейтинг": rating
-                            })
-                        st.dataframe(rows, use_container_width=True)
+                # Полная развернутая таблица ниже для подробного анализа
+                with st.expander("🔍 Детальная статистика по всем показателям (ADR, Ассисты, Урон)"):
+                    col_ta, col_tb = st.columns(2)
+                    for idx, (t_name, col_t) in enumerate([(team_a, col_ta), (team_b, col_tb)]):
+                        with col_t:
+                            st.markdown(f"#### 📊 {t_name}")
+                            rows = []
+                            for p_name, st_data in total_stats[t_name].items():
+                                kd = round(st_data.get("K", 0) / max(1, st_data.get("D", 0)), 2)
+                                adr = int(st_data.get("damage", 0) / max(1, total_rounds))
+                                rating = round(0.40 + (kd * 0.35) + (adr / 130.0) * 0.35, 2)
+                                rows.append({
+                                    "Игрок": p_name,
+                                    "K/A/D": f"{st_data.get('K', 0)}/{st_data.get('A', 0)}/{st_data.get('D', 0)}",
+                                    "K/D": kd,
+                                    "ADR": adr,
+                                    "Рейтинг": rating
+                                })
+                            st.dataframe(rows, use_container_width=True)
 
 # ==================== ИГРОКИ ====================
 with tab_players:
