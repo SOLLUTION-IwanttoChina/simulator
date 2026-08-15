@@ -126,7 +126,7 @@ st.markdown("""
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 4px;
+        gap: 6px;
         margin: 10px 0;
     }
     
@@ -142,7 +142,7 @@ st.markdown("""
     .stats-split-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 8px;
+        gap: 12px;
         margin-top: 10px;
         padding-top: 8px;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -153,7 +153,7 @@ st.markdown("""
         font-weight: 700;
         color: #93c5fd;
         text-align: center;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -162,19 +162,19 @@ st.markdown("""
     .mini-stats-table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 0.7rem;
+        font-size: 0.72rem;
     }
     
     .mini-stats-table th {
         color: #64748b;
         font-weight: 600;
         border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        padding-bottom: 2px;
+        padding-bottom: 4px;
         text-align: center;
     }
     
     .mini-stats-table td {
-        padding: 3px 1px;
+        padding: 4px 2px;
         text-align: center;
         color: #e2e8f0;
         border-bottom: 1px solid rgba(255, 255, 255, 0.04);
@@ -494,10 +494,10 @@ with tab_match:
                         for k, v in st_data.items():
                             total_stats[team_b][p][k] = total_stats[team_b][p].get(k, 0) + v
 
-                # HTML генерация чипов карт
+                # HTML чипов карт
                 map_chips_html = "".join([f'<span class="map-chip-item">{m}: <b>{sa}-{sb}</b></span>' for m, sa, sb in map_results])
 
-                # HTML генерация мини-таблиц статистики для идеального мобильного скрина
+                # HTML генерация строк таблиц без лишних пробелов/отступов
                 def build_mini_rows(t_name):
                     rows_html = ""
                     sorted_players = sorted(
@@ -511,70 +511,43 @@ with tab_match:
                         kd = round(k / max(1, d), 2)
                         adr = int(st_data.get("damage", 0) / max(1, total_rounds))
                         rating = round(0.40 + (kd * 0.35) + (adr / 130.0) * 0.35, 2)
-                        rows_html += f"""
-                        <tr>
-                            <td class="player-col">{p_name}</td>
-                            <td>{k}/{d}</td>
-                            <td><b>{rating}</b></td>
-                        </tr>
-                        """
+                        rows_html += f'<tr><td class="player-col">{p_name}</td><td>{k}/{d}</td><td><b>{rating}</b></td></tr>'
                     return rows_html
 
                 rows_team_a = build_mini_rows(team_a)
                 rows_team_b = build_mini_rows(team_b)
 
-                # Идеальная квадратная карточка для скриншота (Square Screenshot Card)
-                st.markdown(f"""
-                <div class="match-card-container">
-                    <div class="match-card-header">⚔️ Standoff 2 Esports Match</div>
-                    <div class="match-teams-row">
-                        <div class="team-box-side">
-                            <div class="team-box-title">{team_a}</div>
-                        </div>
-                        <div class="score-center-box">{maps_won_a} : {maps_won_b}</div>
-                        <div class="team-box-side">
-                            <div class="team-box-title">{team_b}</div>
-                        </div>
-                    </div>
-                    <div class="maps-chips-wrapper">
-                        {map_chips_html}
-                    </div>
-                    <div class="stats-split-grid">
-                        <div>
-                            <div class="mini-team-heading">{team_a}</div>
-                            <table class="mini-stats-table">
-                                <thead>
-                                    <tr>
-                                        <th style="text-align:left;">Игрок</th>
-                                        <th>K/D</th>
-                                        <th>RTG</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {rows_team_a}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div>
-                            <div class="mini-team-heading">{team_b}</div>
-                            <table class="mini-stats-table">
-                                <thead>
-                                    <tr>
-                                        <th style="text-align:left;">Игрок</th>
-                                        <th>K/D</th>
-                                        <th>RTG</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {rows_team_b}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
+                # Главный HTML блок итоговой карточки
+                match_card_html = f"""
+<div class="match-card-container">
+<div class="match-card-header">⚔️ STANDOFF 2 MATCH RESULT</div>
+<div class="match-teams-row">
+<div class="team-box-side"><div class="team-box-title">{team_a}</div></div>
+<div class="score-center-box">{maps_won_a} : {maps_won_b}</div>
+<div class="team-box-side"><div class="team-box-title">{team_b}</div></div>
+</div>
+<div class="maps-chips-wrapper">{map_chips_html}</div>
+<div class="stats-split-grid">
+<div>
+<div class="mini-team-heading">{team_a}</div>
+<table class="mini-stats-table">
+<thead><tr><th style="text-align:left;">Игрок</th><th>K/D</th><th>RTG</th></tr></thead>
+<tbody>{rows_team_a}</tbody>
+</table>
+</div>
+<div>
+<div class="mini-team-heading">{team_b}</div>
+<table class="mini-stats-table">
+<thead><tr><th style="text-align:left;">Игрок</th><th>K/D</th><th>RTG</th></tr></thead>
+<tbody>{rows_team_b}</tbody>
+</table>
+</div>
+</div>
+</div>
+"""
+                st.markdown(match_card_html, unsafe_allow_html=True)
 
-                # Полная развернутая таблица ниже для подробного анализа
+                # Полная подробная статистика в спойлере
                 with st.expander("🔍 Детальная статистика по всем показателям (ADR, Ассисты, Урон)"):
                     col_ta, col_tb = st.columns(2)
                     for idx, (t_name, col_t) in enumerate([(team_a, col_ta), (team_b, col_tb)]):
@@ -644,7 +617,7 @@ with tab_players:
         p_list = [{"Игрок": k, "Рейтинг": v.get("base_rating", 75)} for k, v in db["players"].items()]
         st.dataframe(p_list, use_container_width=True, height=520)
 
-# ==================== КОМАНДЫ / КЛАНЫ ====================
+# ==================== КОМANDЫ / КЛАНЫ ====================
 with tab_teams:
     st.subheader("Управление Командами и Кланами")
     t_col1, t_col2 = st.columns([1, 1])
