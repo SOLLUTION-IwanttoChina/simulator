@@ -71,7 +71,8 @@ db = load_db()
 class NeonButton(tk.Canvas):
     def __init__(self, parent, text, command=None, width=180, height=40, 
                  neon_color=COLOR_NEON_CYAN, bg_color=COLOR_CARD_INNER, fg_color=COLOR_TEXT, **kwargs):
-        super().__init__(parent, width=width, height=height, bg=COLOR_BG, highlightthickness=0, bd=0, **kwargs)
+        parent_bg = parent.cget("bg") if hasattr(parent, "cget") else COLOR_CARD
+        super().__init__(parent, width=width, height=height, bg=parent_bg, highlightthickness=0, bd=0, **kwargs)
         self.command = command
         self.text = text
         self.width = width
@@ -94,10 +95,10 @@ class NeonButton(tk.Canvas):
         text_col = "#FFFFFF" if self.is_hovered else self.fg_color
 
         if self.is_hovered:
-            self.create_rectangle(1, 1, self.width-1, self.height-1, outline=self.neon_color, width=3)
+            self.create_rectangle(1, 1, self.width-1, self.height-1, outline=self.neon_color, width=2)
             self.create_rectangle(3, 3, self.width-3, self.height-3, fill=fill_col, outline="")
         else:
-            self.create_rectangle(2, 2, self.width-2, self.height-2, fill=fill_col, outline=border_col, width=1)
+            self.create_rectangle(1, 1, self.width-1, self.height-1, fill=fill_col, outline=border_col, width=1)
 
         self.create_text(self.width / 2, self.height / 2, text=self.text, fill=text_col, font=("Segoe UI", 9, "bold"))
 
@@ -125,13 +126,13 @@ class SakuraCanvas(tk.Canvas):
 
     def _create_petals(self):
         self.petals = []
-        for _ in range(55):
+        for _ in range(45):
             self.petals.append({
                 "x": random.randint(0, 1400),
                 "y": random.randint(-100, 900),
-                "size": random.uniform(4, 9),
-                "speed_y": random.uniform(1.0, 2.8),
-                "speed_x": random.uniform(-0.8, 0.8),
+                "size": random.uniform(3, 7),
+                "speed_y": random.uniform(1.0, 2.5),
+                "speed_x": random.uniform(-0.6, 0.6),
                 "phase": random.uniform(0, math.pi * 2),
                 "color": random.choice(["#FF1493", "#FF69B4", "#FFB6C1", "#FF007F", "#E86F88"])
             })
@@ -144,7 +145,7 @@ class SakuraCanvas(tk.Canvas):
         w = self.winfo_width()
         if w < 100: return
 
-        sway = math.sin(self.wind_angle) * 15
+        sway = math.sin(self.wind_angle) * 10
         pts = [w + 20, -10, w - 220 + sway, 90, w - 450 + sway*1.4, 180]
         self.create_line(pts, fill="#1F181B", width=12, capstyle="round", smooth=True, tags="tree")
         self.create_line(pts, fill="#3D292D", width=6, capstyle="round", smooth=True, tags="tree")
@@ -163,14 +164,13 @@ class SakuraCanvas(tk.Canvas):
                 rad = math.radians(angle)
                 px = fx + math.cos(rad) * 10
                 py = fy + math.sin(rad) * 10
-                self.create_oval(px-6, py-6, px+6, py+6, fill="#FF69B4", outline="", tags="tree")
-            self.create_oval(fx-4, fy-4, fx+4, fy+4, fill="#F5C027", outline="", tags="tree")
+                self.create_oval(px-5, py-5, px+5, py+5, fill="#FF69B4", outline="", tags="tree")
+            self.create_oval(fx-3, fy-3, fx+3, fy+3, fill="#F5C027", outline="", tags="tree")
 
     def animate(self):
-        self.wind_angle += 0.05
-        sway_offset = math.sin(self.wind_angle) * 2.0
+        self.wind_angle += 0.03
+        sway_offset = math.sin(self.wind_angle) * 1.5
 
-        self.draw_sakura_tree()
         self.delete("petal")
 
         h = self.winfo_height() or 900
@@ -178,8 +178,8 @@ class SakuraCanvas(tk.Canvas):
 
         for p in self.petals:
             p["y"] += p["speed_y"]
-            p["phase"] += 0.04
-            p["x"] += p["speed_x"] + math.sin(p["phase"]) * 1.5 + sway_offset * 0.4
+            p["phase"] += 0.03
+            p["x"] += p["speed_x"] + math.sin(p["phase"]) * 1.2 + sway_offset * 0.3
 
             if p["y"] > h + 20:
                 p["y"] = random.randint(-50, -10)
@@ -191,7 +191,7 @@ class SakuraCanvas(tk.Canvas):
                 fill=p["color"], outline="", tags="petal"
             )
 
-        self.after(35, self.animate)
+        self.after(40, self.animate)
 
 # --- Окно ХАРАКТЕРИСТИКИ КОМАНДЫ ---
 class TeamStatsWindow(tk.Toplevel):
@@ -284,16 +284,13 @@ class TeamStatsWindow(tk.Toplevel):
             p_data = db["players"].get(p_name, {})
             base_r = p_data.get("base_rating", 75)
 
+            # Детерминированный расчет без вмешательства в random.seed()
             r_seed = sum(ord(c) for c in p_name)
-            random.seed(r_seed)
-            
-            kd = round(0.85 + (base_r / 100.0) * 0.4 + random.uniform(-0.05, 0.08), 2)
-            adr = int(70 + (base_r / 100.0) * 35 + random.randint(-5, 10))
-            kast = int(65 + (base_r / 100.0) * 15 + random.randint(-3, 5))
-            imp = round(0.80 + (base_r / 100.0) * 0.4 + random.uniform(-0.05, 0.08), 2)
-            perf_rating = round(0.50 + (kd * 0.3) + (adr/150.0)*0.3, 2)
-            
-            random.seed()
+            kd = round(0.85 + (base_r / 100.0) * 0.4 + ((r_seed % 13) - 6) * 0.01, 2)
+            adr = int(70 + (base_r / 100.0) * 35 + ((r_seed % 15) - 7))
+            kast = int(65 + (base_r / 100.0) * 15 + ((r_seed % 9) - 4))
+            imp = round(0.80 + (base_r / 100.0) * 0.4 + ((r_seed % 11) - 5) * 0.01, 2)
+            perf_rating = round(0.50 + (kd * 0.3) + (adr / 150.0) * 0.3, 2)
 
             row = tk.Frame(table_frame, bg="#131722")
             row.pack(fill="x", pady=2)
@@ -322,8 +319,14 @@ class MapSelectorWindow(tk.Toplevel):
         self.create_ui()
 
     def create_ui(self):
-        header = tk.Label(self, text="ВЫБОР ЛОКАЦИИ", font=("Impact", 22), bg=COLOR_BG, fg=COLOR_NEON_CYAN)
-        header.pack(pady=20)
+        top_bar = tk.Frame(self, bg=COLOR_BG)
+        top_bar.pack(fill="x", padx=20, pady=15)
+
+        header = tk.Label(top_bar, text="ВЫБОР ЛОКАЦИИ", font=("Impact", 22), bg=COLOR_BG, fg=COLOR_NEON_CYAN)
+        header.pack(side="left")
+
+        btn_auto = NeonButton(top_bar, text="🎲 Автовыбор", width=140, height=34, neon_color=COLOR_GOLD, command=lambda: self.select_map(None))
+        btn_auto.pack(side="right")
 
         canvas = tk.Canvas(self, bg=COLOR_BG, highlightthickness=0)
         scrollbar = ttk.Scrollbar(self, orient="vertical", command=canvas.yview)
@@ -521,7 +524,7 @@ class StandoffApp(tk.Tk):
         self.bg_canvas = SakuraCanvas(self)
         self.bg_canvas.place(x=0, y=0, relwidth=1, relheight=1)
 
-        self.main_container = tk.Frame(self, bg="")
+        self.main_container = tk.Frame(self, bg=COLOR_BG)
         self.main_container.pack(fill="both", expand=True, padx=30, pady=20)
 
         self.create_header()
@@ -614,6 +617,9 @@ class StandoffApp(tk.Tk):
 
     # --- ИМПОРТИРОВАНИЕ КОМАНД С МНОЖЕСТВЕННЫМИ РОЛЯМИ И БЕЗ SAKURA ---
     def load_preset_teams(self):
+        if not messagebox.askyesno("Подтверждение", "Загрузка базовых команд перезапишет текущие данные команд и игроков.\nПродолжить?"):
+            return
+
         db["players"].clear()
         db["coaches"].clear()
         db["teams"].clear()
@@ -777,7 +783,10 @@ class StandoffApp(tk.Tk):
     def open_map_selector(self):
         def on_map_chosen(map_name):
             self.manual_map = map_name
-            self.selected_map_label.config(text=f"Карта: {map_name}")
+            if map_name:
+                self.selected_map_label.config(text=f"Карта: {map_name}")
+            else:
+                self.selected_map_label.config(text="Карта: Авто")
             
         MapSelectorWindow(self, on_map_chosen)
 
@@ -862,7 +871,7 @@ class StandoffApp(tk.Tk):
                 rating = round(0.40 + (kd * 0.35) + (adr / 130.0) * 0.35 + (kast_pct / 200.0), 2)
                 
                 role_str = "Игрок"
-                t_roster = db["teams"][t_name].get("roster", {})
+                t_roster = db["teams"].get(t_name, {}).get("roster", {})
                 if isinstance(t_roster, dict):
                     for k, v in t_roster.items():
                         if isinstance(v, dict) and v.get("player") == p_name:
