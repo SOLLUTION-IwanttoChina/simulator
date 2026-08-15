@@ -25,27 +25,42 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS styling for modern Esports Theme & Mobile Responsiveness
+# Custom CSS styling with Fixed Text Contrast & Dark Cyberpunk Theme
 st.markdown("""
 <style>
     /* Dark Theme Base */
     .stApp {
         background-color: #0b0e14;
-        color: #e2e8f0;
+        color: #f1f5f9;
         font-family: 'Inter', system-ui, -apple-system, sans-serif;
     }
     
-    /* Global Button Polish */
+    /* Global Input & Select Contrast Fixes */
+    div[data-baseweb="select"] > div,
+    div[data-baseweb="input"] > div,
+    input, select, textarea {
+        background-color: #161f30 !important;
+        color: #ffffff !important;
+        border-color: #2b3952 !important;
+    }
+    
+    /* Dropdown text readability */
+    div[data-baseweb="popover"] div, div[data-baseweb="menu"] * {
+        background-color: #161f30 !important;
+        color: #ffffff !important;
+    }
+
+    /* Buttons */
     .stButton > button {
         border-radius: 10px !important;
         font-weight: 700 !important;
         transition: all 0.2s ease-in-out !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
     }
     
     .stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3) !important;
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4) !important;
     }
 
     /* Scoreboard Banner */
@@ -75,23 +90,28 @@ st.markdown("""
     
     .map-badge {
         display: inline-block;
-        background: rgba(255, 255, 255, 0.07);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         padding: 6px 14px;
         border-radius: 20px;
         font-size: 0.85rem;
         margin: 4px;
-        color: #cbd5e1;
+        color: #e2e8f0;
     }
 
-    /* Responsive Expander Card */
-    .st-emotion-cache-1h993vh, div[data-testid="stExpander"] {
+    /* Cards / Expanders Contrast Fix */
+    div[data-testid="stExpander"] {
         background: #131822 !important;
         border: 1px solid #222c3d !important;
         border-radius: 12px !important;
+        color: #ffffff !important;
+    }
+    
+    div[data-testid="stExpander"] summary {
+        color: #38bdf8 !important;
+        font-weight: 600;
     }
 
-    /* Custom Mobile Padding */
     @media (max-width: 768px) {
         .team-name { font-size: 1.2rem; }
         .score-text { font-size: 2.2rem; }
@@ -328,11 +348,11 @@ class MatchEngine:
 header_col1, header_col2 = st.columns([3, 1])
 with header_col1:
     st.title("🎮 STANDOFF 2 — ESPORTS HUB")
-    st.caption("Профессиональный симулятор матчей и менеджер киберспортивных команд")
+    st.caption("Профессиональный менеджер команд, игроков и симулятор матчей")
 with header_col2:
     if st.button("🔄 Импортировать пресеты", type="primary", use_container_width=True):
         load_preset_teams()
-        st.success("Базовые команды и игроки успешно обновлены!")
+        st.success("Базовые команды и игроки загружены!")
         st.rerun()
 
 st.markdown("---")
@@ -340,7 +360,7 @@ st.markdown("---")
 tab_match, tab_players, tab_teams, tab_coaches = st.tabs([
     "⚔️ Матч-Центр", 
     "👤 Игроки", 
-    "🛡️ Команды", 
+    "🛡️ Команды / Кланы", 
     "📋 Тренеры"
 ])
 
@@ -390,7 +410,7 @@ with tab_match:
                         for k, v in st_data.items():
                             total_stats[team_b][p][k] = total_stats[team_b][p].get(k, 0) + v
 
-                # Display Modern Scoreboard
+                # Modern Scoreboard
                 badges_html = "".join([f'<span class="map-badge">{m}: <b>{sa}-{sb}</b></span>' for m, sa, sb in map_results])
                 st.markdown(f"""
                 <div class="scoreboard-box">
@@ -423,58 +443,109 @@ with tab_match:
 
 # ==================== ИГРОКИ ====================
 with tab_players:
-    st.subheader("Управление Базой Игроков")
+    st.subheader("Управление и Редактирование Игроков")
     p_col1, p_col2 = st.columns([1, 1])
 
     with p_col1:
-        st.markdown("##### ✏️ Добавить / Изменить игрока")
-        p_name = st.text_input("Никнейм игрока", placeholder="Например: Reason")
-        p_rating = st.number_input("Базовый skill-рейтинг", min_value=1, max_value=100, value=85)
+        st.markdown("##### ✏️ Редактор характеристик игрока")
+        
+        player_options = ["➕ Создать нового"] + list(db["players"].keys())
+        selected_player = st.selectbox("Выберите игрока для изменения:", player_options)
 
-        st.markdown("**Эффективность по ролям:**")
+        if selected_player != "➕ Создать нового":
+            p_data = db["players"][selected_player]
+            default_name = selected_player
+            default_rating = p_data.get("base_rating", 85)
+            default_roles = p_data.get("roles", {})
+        else:
+            default_name = ""
+            default_rating = 85
+            default_roles = {}
+
+        p_name = st.text_input("Никнейм игрока", value=default_name, placeholder="Например: Reason")
+        p_rating = st.number_input("Базовый skill-рейтинг (1-100)", min_value=1, max_value=100, value=default_rating)
+
+        st.markdown("**Эффективность и навыки по ролям:**")
         p_roles = {}
         role_cols = st.columns(2)
         for idx, role in enumerate(ROLES):
+            cur_proficiency = default_roles.get(role, "Хорошо")
+            cur_index = PROFICIENCIES.index(cur_proficiency) if cur_proficiency in PROFICIENCIES else 2
             with role_cols[idx % 2]:
-                p_roles[role] = st.selectbox(role, PROFICIENCIES, index=2, key=f"role_{role}")
+                p_roles[role] = st.selectbox(f"Роль: {role}", PROFICIENCIES, index=cur_index, key=f"p_edit_role_{role}")
 
-        if st.button("💾 Сохранить игрока", use_container_width=True):
+        if st.button("💾 Сохранить изменения игрока", use_container_width=True):
             if p_name:
                 db["players"][p_name] = {"base_rating": p_rating, "roles": p_roles}
                 save_db(db)
-                st.success(f"Игрок '{p_name}' успешно сохранен!")
+                st.success(f"Характеристики игрока '{p_name}' успешно обновлены!")
                 st.rerun()
 
     with p_col2:
         st.markdown("##### 📜 Зарегистрированные Киберспортсмены")
         p_list = [{"Игрок": k, "Рейтинг": v.get("base_rating", 75)} for k, v in db["players"].items()]
-        st.dataframe(p_list, use_container_width=True, height=450)
+        st.dataframe(p_list, use_container_width=True, height=520)
 
-# ==================== КОМАНДЫ ====================
+# ==================== КОМАНДЫ / КЛАНЫ ====================
 with tab_teams:
-    st.subheader("Управление Командами и Составами")
+    st.subheader("Управление Командами и Кланами")
     t_col1, t_col2 = st.columns([1, 1])
 
     with t_col1:
-        st.markdown("##### 🛡️ Создание / Настройка команды")
-        t_name = st.text_input("Название команды", placeholder="Например: Virtus Pro")
-        t_chem = st.slider("Уровень сыгранности (%)", 0, 100, 50)
-        t_coach = st.selectbox("Главный тренер", ["Нет"] + list(db["coaches"].keys()))
-        
-        map_c1, map_c2 = st.columns(2)
-        with map_c1: t_best = st.selectbox("Лучшая карта", MAPS, index=0)
-        with map_c2: t_worst = st.selectbox("Худшая карта", MAPS, index=1)
+        st.markdown("##### 🛡️ Редактор характеристик клана")
 
-        st.markdown("**Состав (5 Слотов):**")
+        team_options = ["➕ Создать новую"] + list(db["teams"].keys())
+        selected_team = st.selectbox("Выберите клан / команду для редактирования:", team_options)
+
+        if selected_team != "➕ Создать новую":
+            t_data = db["teams"][selected_team]
+            default_t_name = selected_team
+            default_chem = t_data.get("chemistry", 50)
+            default_coach = t_data.get("coach", "Нет")
+            default_best = t_data.get("best_map", MAPS[0])
+            default_worst = t_data.get("worst_map", MAPS[1])
+            default_roster = t_data.get("roster", {})
+        else:
+            default_t_name = ""
+            default_chem = 50
+            default_coach = "Нет"
+            default_best = MAPS[0]
+            default_worst = MAPS[1]
+            default_roster = {}
+
+        t_name = st.text_input("Название команды", value=default_t_name, placeholder="Например: Virtus Pro")
+        t_chem = st.slider("Сыгранность состава (%)", 0, 100, default_chem)
+        
+        coaches_list = ["Нет"] + list(db["coaches"].keys())
+        coach_idx = coaches_list.index(default_coach) if default_coach in coaches_list else 0
+        t_coach = st.selectbox("Главный тренер", coaches_list, index=coach_idx)
+
+        best_idx = MAPS.index(default_best) if default_best in MAPS else 0
+        worst_idx = MAPS.index(default_worst) if default_worst in MAPS else 1
+
+        map_c1, map_c2 = st.columns(2)
+        with map_c1: t_best = st.selectbox("Лучшая карта", MAPS, index=best_idx)
+        with map_c2: t_worst = st.selectbox("Худшая карта", MAPS, index=worst_idx)
+
+        st.markdown("**Состав (5 Слотов & Роли):**")
         all_p = ["Нет"] + list(db["players"].keys())
         roster_data = {}
+        
         for i in range(1, 6):
+            slot_key = f"Slot_{i}"
+            slot_info = default_roster.get(slot_key, {})
+            cur_player = slot_info.get("player", "Нет") if isinstance(slot_info, dict) else "Нет"
+            cur_role = slot_info.get("role", "Рифлер") if isinstance(slot_info, dict) else "Рифлер"
+
+            p_idx = all_p.index(cur_player) if cur_player in all_p else 0
+            r_idx = ROLES.index(cur_role) if cur_role in ROLES else 0
+
             c1, c2 = st.columns(2)
-            with c1: p_sel = st.selectbox(f"Слот {i}", all_p, key=f"t_slot_{i}")
-            with c2: r_sel = st.selectbox(f"Роль {i}", ROLES, key=f"t_role_{i}")
+            with c1: p_sel = st.selectbox(f"Слот {i} (Игрок)", all_p, index=p_idx, key=f"t_edit_slot_{i}")
+            with c2: r_sel = st.selectbox(f"Роль {i}", ROLES, index=r_idx, key=f"t_edit_role_{i}")
             roster_data[f"Slot_{i}"] = {"player": p_sel, "role": r_sel}
 
-        if st.button("💾 Сохранить команду", use_container_width=True):
+        if st.button("💾 Сохранить изменения клана", use_container_width=True):
             if t_name:
                 db["teams"][t_name] = {
                     "chemistry": t_chem, "coach": t_coach,
@@ -482,11 +553,11 @@ with tab_teams:
                     "roster": roster_data
                 }
                 save_db(db)
-                st.success(f"Команда '{t_name}' сохранена!")
+                st.success(f"Команда / Клан '{t_name}' сохранен!")
                 st.rerun()
 
     with t_col2:
-        st.markdown("##### 📋 Активные Команды")
+        st.markdown("##### 📋 Активные Команды и Составы")
         for tm, data in db["teams"].items():
             with st.expander(f"🛡️ {tm}"):
                 st.write(f"**Тренер:** {data.get('coach', 'Нет')} | **Сыгранность:** {data.get('chemistry', 0)}%")
@@ -503,9 +574,20 @@ with tab_coaches:
     c_col1, c_col2 = st.columns([1, 1])
 
     with c_col1:
-        st.markdown("##### 👔 Зарегистрировать тренера")
-        c_name = st.text_input("Имя / Никнейм тренера", placeholder="Например: dstr")
-        c_rating = st.number_input("Рейтинг тренерского штаба (0-100)", min_value=0, max_value=100, value=80)
+        st.markdown("##### 👔 Зарегистрировать / Изменить тренера")
+        
+        coach_options = ["➕ Новый тренер"] + list(db["coaches"].keys())
+        selected_c = st.selectbox("Выберите тренера:", coach_options)
+
+        if selected_c != "➕ Новый тренер":
+            def_c_name = selected_c
+            def_c_rating = db["coaches"][selected_c].get("rating", 80)
+        else:
+            def_c_name = ""
+            def_c_rating = 80
+
+        c_name = st.text_input("Имя / Никнейм тренера", value=def_c_name, placeholder="Например: dstr")
+        c_rating = st.number_input("Рейтинг тренерского штаба (0-100)", min_value=0, max_value=100, value=def_c_rating)
         
         if st.button("💾 Сохранить тренера", use_container_width=True):
             if c_name:
