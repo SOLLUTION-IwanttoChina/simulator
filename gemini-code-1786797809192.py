@@ -450,7 +450,7 @@ with tab_players:
         st.markdown("##### ✏️ Редактор характеристик игрока")
         
         player_options = ["➕ Создать нового"] + list(db["players"].keys())
-        selected_player = st.selectbox("Выберите игрока для изменения:", player_options)
+        selected_player = st.selectbox("Выберите игрока для изменения:", player_options, key="player_select_box")
 
         if selected_player != "➕ Создать нового":
             p_data = db["players"][selected_player]
@@ -462,8 +462,8 @@ with tab_players:
             default_rating = 85
             default_roles = {}
 
-        p_name = st.text_input("Никнейм игрока", value=default_name, placeholder="Например: Reason")
-        p_rating = st.number_input("Базовый skill-рейтинг (1-100)", min_value=1, max_value=100, value=default_rating)
+        p_name = st.text_input("Никнейм игрока", value=default_name, placeholder="Например: Reason", key=f"p_name_{selected_player}")
+        p_rating = st.number_input("Базовый skill-рейтинг (1-100)", min_value=1, max_value=100, value=default_rating, key=f"p_rating_{selected_player}")
 
         st.markdown("**Эффективность и навыки по ролям:**")
         p_roles = {}
@@ -472,7 +472,12 @@ with tab_players:
             cur_proficiency = default_roles.get(role, "Хорошо")
             cur_index = PROFICIENCIES.index(cur_proficiency) if cur_proficiency in PROFICIENCIES else 2
             with role_cols[idx % 2]:
-                p_roles[role] = st.selectbox(f"Роль: {role}", PROFICIENCIES, index=cur_index, key=f"p_edit_role_{role}")
+                p_roles[role] = st.selectbox(
+                    f"Роль: {role}", 
+                    PROFICIENCIES, 
+                    index=cur_index, 
+                    key=f"p_edit_role_{selected_player}_{role}"
+                )
 
         if st.button("💾 Сохранить изменения игрока", use_container_width=True):
             if p_name:
@@ -495,7 +500,7 @@ with tab_teams:
         st.markdown("##### 🛡️ Редактор характеристик клана")
 
         team_options = ["➕ Создать новую"] + list(db["teams"].keys())
-        selected_team = st.selectbox("Выберите клан / команду для редактирования:", team_options)
+        selected_team = st.selectbox("Выберите клан / команду для редактирования:", team_options, key="team_select_box")
 
         if selected_team != "➕ Создать новую":
             t_data = db["teams"][selected_team]
@@ -513,19 +518,19 @@ with tab_teams:
             default_worst = MAPS[1]
             default_roster = {}
 
-        t_name = st.text_input("Название команды", value=default_t_name, placeholder="Например: Virtus Pro")
-        t_chem = st.slider("Сыгранность состава (%)", 0, 100, default_chem)
+        t_name = st.text_input("Название команды", value=default_t_name, placeholder="Например: Virtus Pro", key=f"t_name_{selected_team}")
+        t_chem = st.slider("Сыгранность состава (%)", 0, 100, default_chem, key=f"t_chem_{selected_team}")
         
         coaches_list = ["Нет"] + list(db["coaches"].keys())
         coach_idx = coaches_list.index(default_coach) if default_coach in coaches_list else 0
-        t_coach = st.selectbox("Главный тренер", coaches_list, index=coach_idx)
+        t_coach = st.selectbox("Главный тренер", coaches_list, index=coach_idx, key=f"t_coach_{selected_team}")
 
         best_idx = MAPS.index(default_best) if default_best in MAPS else 0
         worst_idx = MAPS.index(default_worst) if default_worst in MAPS else 1
 
         map_c1, map_c2 = st.columns(2)
-        with map_c1: t_best = st.selectbox("Лучшая карта", MAPS, index=best_idx)
-        with map_c2: t_worst = st.selectbox("Худшая карта", MAPS, index=worst_idx)
+        with map_c1: t_best = st.selectbox("Лучшая карта", MAPS, index=best_idx, key=f"t_best_{selected_team}")
+        with map_c2: t_worst = st.selectbox("Худшая карта", MAPS, index=worst_idx, key=f"t_worst_{selected_team}")
 
         st.markdown("**Состав (5 Слотов & Роли):**")
         all_p = ["Нет"] + list(db["players"].keys())
@@ -541,8 +546,20 @@ with tab_teams:
             r_idx = ROLES.index(cur_role) if cur_role in ROLES else 0
 
             c1, c2 = st.columns(2)
-            with c1: p_sel = st.selectbox(f"Слот {i} (Игрок)", all_p, index=p_idx, key=f"t_edit_slot_{i}")
-            with c2: r_sel = st.selectbox(f"Роль {i}", ROLES, index=r_idx, key=f"t_edit_role_{i}")
+            with c1: 
+                p_sel = st.selectbox(
+                    f"Слот {i} (Игрок)", 
+                    all_p, 
+                    index=p_idx, 
+                    key=f"t_edit_slot_{selected_team}_{i}"
+                )
+            with c2: 
+                r_sel = st.selectbox(
+                    f"Роль {i}", 
+                    ROLES, 
+                    index=r_idx, 
+                    key=f"t_edit_role_{selected_team}_{i}"
+                )
             roster_data[f"Slot_{i}"] = {"player": p_sel, "role": r_sel}
 
         if st.button("💾 Сохранить изменения клана", use_container_width=True):
@@ -577,7 +594,7 @@ with tab_coaches:
         st.markdown("##### 👔 Зарегистрировать / Изменить тренера")
         
         coach_options = ["➕ Новый тренер"] + list(db["coaches"].keys())
-        selected_c = st.selectbox("Выберите тренера:", coach_options)
+        selected_c = st.selectbox("Выберите тренера:", coach_options, key="coach_select_box")
 
         if selected_c != "➕ Новый тренер":
             def_c_name = selected_c
@@ -586,8 +603,8 @@ with tab_coaches:
             def_c_name = ""
             def_c_rating = 80
 
-        c_name = st.text_input("Имя / Никнейм тренера", value=def_c_name, placeholder="Например: dstr")
-        c_rating = st.number_input("Рейтинг тренерского штаба (0-100)", min_value=0, max_value=100, value=def_c_rating)
+        c_name = st.text_input("Имя / Никнейм тренера", value=def_c_name, placeholder="Например: dstr", key=f"c_name_{selected_c}")
+        c_rating = st.number_input("Рейтинг тренерского штаба (0-100)", min_value=0, max_value=100, value=def_c_rating, key=f"c_rating_{selected_c}")
         
         if st.button("💾 Сохранить тренера", use_container_width=True):
             if c_name:
