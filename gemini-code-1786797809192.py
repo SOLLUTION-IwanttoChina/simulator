@@ -1,9 +1,17 @@
 import json
-import os
 import random
+import requests
 import streamlit as st
 
-DB_FILE = "database.json"
+# Настройка подключения к облаку через Streamlit Secrets
+API_KEY = st.secrets["JSONBIN_KEY"]
+BIN_ID = st.secrets["BIN_ID"]
+
+URL = f"https://api.jsonbin.io/v3/b/{BIN_ID}"
+HEADERS = {
+    "X-Master-Key": API_KEY,
+    "Content-Type": "application/json"
+}
 
 DEFAULT_DB = {
     "players": {},
@@ -205,24 +213,24 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 def load_db():
-    if not os.path.exists(DB_FILE):
-        save_db(DEFAULT_DB)
-        return DEFAULT_DB
     try:
-        with open(DB_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
+        response = requests.get(f"{URL}/latest", headers=HEADERS)
+        if response.status_code == 200:
+            data = response.json()["record"]
             if "match_history" not in data:
                 data["match_history"] = []
             return data
+        return DEFAULT_DB
     except Exception:
         return DEFAULT_DB
 
 def save_db(data):
     try:
-        with open(DB_FILE, "w", encoding="utf-8") as f:
-            json.dump(data, f, ensure_ascii=False, indent=4)
+        response = requests.put(URL, json=data, headers=HEADERS)
+        if response.status_code != 200:
+            st.error("Ошибка сохранения в облачную базу данных!")
     except Exception as e:
-        st.error(f"Ошибка сохранения базы данных: {e}")
+        st.error(f"Сбой сети при сохранении: {e}")
 
 if "db" not in st.session_state:
     st.session_state.db = load_db()
@@ -617,7 +625,7 @@ with tab_players:
         p_list = [{"Игрок": k, "Рейтинг": v.get("base_rating", 75)} for k, v in db["players"].items()]
         st.dataframe(p_list, use_container_width=True, height=520)
 
-# ==================== КОМANDЫ / КЛАНЫ ====================
+# ==================== КОМАНДЫ / КЛАНЫ ====================
 with tab_teams:
     st.subheader("Управление Командами и Кланами")
     t_col1, t_col2 = st.columns([1, 1])
