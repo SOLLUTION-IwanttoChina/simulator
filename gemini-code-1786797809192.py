@@ -1,17 +1,15 @@
 import json
 import random
-import requests
 import streamlit as st
+from upstash_redis import Redis
 
-# Настройка подключения к облаку через Streamlit Secrets
-API_KEY = st.secrets["JSONBIN_KEY"]
-BIN_ID = st.secrets["BIN_ID"]
+# Подключение к Upstash Redis через Streamlit Secrets
+redis = Redis(
+    url=st.secrets["UPSTASH_REDIS_REST_URL"],
+    token=st.secrets["UPSTASH_REDIS_REST_TOKEN"]
+)
 
-URL = f"https://api.jsonbin.io/v3/b/{BIN_ID}"
-HEADERS = {
-    "X-Master-Key": API_KEY,
-    "Content-Type": "application/json"
-}
+DB_KEY = "simulator_standoff_db"
 
 DEFAULT_DB = {
     "players": {},
@@ -214,21 +212,20 @@ st.markdown("""
 
 def load_db():
     try:
-        response = requests.get(f"{URL}/latest", headers=HEADERS)
-        if response.status_code == 200:
-            data = response.json()["record"]
+        raw_data = redis.get(DB_KEY)
+        if raw_data:
+            data = json.loads(raw_data) if isinstance(raw_data, str) else raw_data
             if "match_history" not in data:
                 data["match_history"] = []
             return data
         return DEFAULT_DB
-    except Exception:
+    except Exception as e:
+        st.error(f"Ошибка загрузки из Upstash: {e}")
         return DEFAULT_DB
 
 def save_db(data):
     try:
-        response = requests.put(URL, json=data, headers=HEADERS)
-        if response.status_code != 200:
-            st.error("Ошибка сохранения в облачную базу данных!")
+        redis.set(DB_KEY, json.dumps(data, ensure_ascii=False))
     except Exception as e:
         st.error(f"Сбой сети при сохранении: {e}")
 
