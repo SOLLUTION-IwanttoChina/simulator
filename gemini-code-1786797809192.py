@@ -308,7 +308,7 @@ if st.session_state.theme == "light":
             border: 2px solid #ddd6fe;
             border-radius: 14px;
             padding: 18px 20px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             box-shadow: 0 8px 24px rgba(124, 58, 237, 0.12);
         }}
 
@@ -637,7 +637,7 @@ else:
             border: 2px solid #2a2e3d;
             border-radius: 14px;
             padding: 18px 20px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }}
 
@@ -797,12 +797,10 @@ def load_db():
             if "match_history" not in data:
                 data["match_history"] = []
             
-            # Авто-инициализация, если база полностью пустая
             if not data.get("teams") and not data.get("players"):
                 load_preset_teams(data)
             return data
 
-        # Если записи вообще еще нет в Redis
         new_db = DEFAULT_DB.copy()
         load_preset_teams(new_db)
         return new_db
@@ -1129,7 +1127,7 @@ with tab_teams:
                 st.rerun()
 
     with t_col2:
-        st.markdown("##### 📸 Паспорта Команд (для скриншотов)")
+        st.markdown("##### 📸 Паспорта Команд")
         
         for tm, data in db["teams"].items():
             roster = data.get("roster", {})
@@ -1146,12 +1144,12 @@ with tab_teams:
                     player_ratings.append(p_rating)
 
                 p_rating_display = f"{p_rating} OVR" if p_rating > 0 else "—"
-                roster_html += f'''
-                <div class="roster-slot-card">
-                    <div><b>{p_name}</b></div>
-                    <div><span class="role-badge">{p_role}</span> <span style="font-weight:700; margin-left:6px; opacity:0.8;">{p_rating_display}</span></div>
-                </div>
-                '''
+                roster_html += (
+                    f'<div class="roster-slot-card">'
+                    f'<div><b>{p_name}</b></div>'
+                    f'<div><span class="role-badge">{p_role}</span> <span style="font-weight:700; margin-left:6px; opacity:0.8;">{p_rating_display}</span></div>'
+                    f'</div>'
+                )
 
             # Расчет OVR команды
             avg_p_rating = sum(player_ratings) / max(1, len(player_ratings)) if player_ratings else 0
@@ -1160,29 +1158,23 @@ with tab_teams:
 
             tier_tag = "TIER 1" if team_ovr >= 88 else ("TIER 2" if team_ovr >= 75 else "TIER 3")
 
-            team_card_html = f'''
-            <div class="team-card-box">
-                <div class="team-card-header">
-                    <div class="team-card-title">
-                        🛡️ {tm}
-                        <span class="role-badge" style="background:rgba(234,179,8,0.15); color:#eab308; border-color:rgba(234,179,8,0.3);">{tier_tag}</span>
-                    </div>
-                    <div class="team-ovr-badge">
-                        <small style="font-size:0.55rem; display:block; text-transform:uppercase; letter-spacing:0.5px;">OVR</small>
-                        {team_ovr}
-                    </div>
-                </div>
-                <div class="team-stats-grid">
-                    <div class="team-stat-item">👔 Тренер: <b>{data.get("coach", "Нет")}</b></div>
-                    <div class="team-stat-item">🧩 Сыгранность: <b>{data.get("chemistry", 0)}%</b></div>
-                    <div class="team-stat-item">🟢 Пик: <b>{data.get("best_map", "Sandstone")}</b></div>
-                </div>
-                <div class="roster-grid">
-                    {roster_html}
-                </div>
-            </div>
-            '''
-            st.markdown(team_card_html, unsafe_allow_html=True)
+            team_card_html = (
+                f'<div class="team-card-box">'
+                f'<div class="team-card-header">'
+                f'<div class="team-card-title">🛡️ {tm} <span class="role-badge" style="background:rgba(234,179,8,0.15); color:#eab308; border-color:rgba(234,179,8,0.3);">{tier_tag}</span></div>'
+                f'<div class="team-ovr-badge"><small style="font-size:0.55rem; display:block; text-transform:uppercase; letter-spacing:0.5px;">OVR</small>{team_ovr}</div>'
+                f'</div>'
+                f'<div class="team-stats-grid">'
+                f'<div class="team-stat-item">👔 Тренер: <b>{data.get("coach", "Нет")}</b></div>'
+                f'<div class="team-stat-item">🧩 Сыгранность: <b>{data.get("chemistry", 0)}%</b></div>'
+                f'<div class="team-stat-item">🟢 Пик: <b>{data.get("best_map", "Sandstone")}</b></div>'
+                f'</div>'
+                f'<div class="roster-grid">{roster_html}</div>'
+                f'</div>'
+            )
+
+            with st.expander(f"🛡️ Паспорт команды: {tm}", expanded=False):
+                st.markdown(team_card_html, unsafe_allow_html=True)
 
 # ==================== ТРЕНЕРЫ ====================
 with tab_coaches:
