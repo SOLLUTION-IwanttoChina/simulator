@@ -35,14 +35,12 @@ st.set_page_config(
 if "theme" not in st.session_state:
     st.session_state.theme = "dark"
 
-# Ссылка на картинку котика (автоматически подгружается)
 CAT_IMG_URL = "https://i.ibb.co/Ld35P0v/cat-hat.png"
 
 # ==========================================
-# ДИНАМИЧЕСКИЕ СТИЛИ (2 РЕЖИМА)
+# ДИНАМИЧЕСКИЕ СТИЛИ
 # ==========================================
 if st.session_state.theme == "light":
-    # 🪻 1. ФИОЛЕТОВАЯ САКУРА / ЯПОНСКИЙ НЕОН (СВЕТЛЫЙ)
     st.markdown(f"""
     <style>
         .stApp {{
@@ -85,7 +83,6 @@ if st.session_state.theme == "light":
             box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4) !important;
         }}
 
-        /* Кнопка-котик в правом верхнем углу */
         .cat-corner-wrapper {{
             position: fixed;
             top: 15px;
@@ -112,7 +109,6 @@ if st.session_state.theme == "light":
             box-shadow: 0 0 28px rgba(168, 85, 247, 0.8) !important;
         }}
 
-        /* Карточка матча с эффектом свечения от нас */
         .jp-match-card {{
             background-color: #ffffff;
             border: 1px solid #e9d5ff;
@@ -309,7 +305,6 @@ if st.session_state.theme == "light":
     """, unsafe_allow_html=True)
 
 else:
-    # 🖤 2. ТЁМНЫЙ КИБЕРСПОРТИВНЫЙ РЕЖИМ
     st.markdown(f"""
     <style>
         .stApp {{
@@ -340,7 +335,6 @@ else:
             transition: all 0.2s ease-in-out !important;
         }}
 
-        /* Кнопка-котик в правом верхнем углу */
         .cat-corner-wrapper {{
             position: fixed;
             top: 15px;
@@ -571,34 +565,16 @@ if st.button("🐱", key="cat_toggle_btn", help="Нажмите на котик�
     st.rerun()
 st.markdown('</div>', unsafe_allow_html=True)
 
-def load_db():
-    try:
-        raw_data = redis.get(DB_KEY)
-        if raw_data:
-            data = json.loads(raw_data) if isinstance(raw_data, str) else raw_data
-            if "match_history" not in data:
-                data["match_history"] = []
-            return data
-        return DEFAULT_DB
-    except Exception as e:
-        st.error(f"Ошибка загрузки из Upstash: {e}")
-        return DEFAULT_DB
-
 def save_db(data):
     try:
         redis.set(DB_KEY, json.dumps(data, ensure_ascii=False))
     except Exception as e:
         st.error(f"Сбой сети при сохранении: {e}")
 
-if "db" not in st.session_state:
-    st.session_state.db = load_db()
-
-db = st.session_state.db
-
-def load_preset_teams():
-    db["players"].clear()
-    db["coaches"].clear()
-    db["teams"].clear()
+def load_preset_teams(db_data):
+    db_data["players"].clear()
+    db_data["coaches"].clear()
+    db_data["teams"].clear()
 
     preset_coaches = {
         "Kuba": 99, "inverness": 99, "dstr": 99, "postanova": 98,
@@ -606,7 +582,7 @@ def load_preset_teams():
     }
 
     for c_name, c_rating in preset_coaches.items():
-        db["coaches"][c_name] = {"rating": c_rating}
+        db_data["coaches"][c_name] = {"rating": c_rating}
 
     preset_teams = {
         "Virtus Pro": {
@@ -625,16 +601,42 @@ def load_preset_teams():
         roster_dict = {}
         for idx, (p_name, p_role) in enumerate(data["roster"], 1):
             role_skills = {role: ("Прекрасно" if role == p_role else random.choice(["Отлично", "Хорошо"])) for role in ROLES}
-            db["players"][p_name] = {"base_rating": data["ratings"][p_name], "roles": role_skills}
+            db_data["players"][p_name] = {"base_rating": data["ratings"][p_name], "roles": role_skills}
             roster_dict[f"Slot_{idx}"] = {"player": p_name, "role": p_role}
 
-        db["teams"][t_name] = {
+        db_data["teams"][t_name] = {
             "chemistry": 90, "coach": "Kuba",
             "best_map": data["best"], "worst_map": data["worst"],
             "roster": roster_dict
         }
 
-    save_db(db)
+    save_db(db_data)
+
+def load_db():
+    try:
+        raw_data = redis.get(DB_KEY)
+        if raw_data:
+            data = json.loads(raw_data) if isinstance(raw_data, str) else raw_data
+            if "match_history" not in data:
+                data["match_history"] = []
+            
+            # Авто-инициализация, если база полностью пустая
+            if not data.get("teams") and not data.get("players"):
+                load_preset_teams(data)
+            return data
+
+        # Если записи вообще еще нет в Redis
+        new_db = DEFAULT_DB.copy()
+        load_preset_teams(new_db)
+        return new_db
+    except Exception as e:
+        st.error(f"Ошибка загрузки из Upstash: {e}")
+        return DEFAULT_DB
+
+if "db" not in st.session_state:
+    st.session_state.db = load_db()
+
+db = st.session_state.db
 
 class MatchEngine:
     @staticmethod
@@ -740,21 +742,12 @@ class MatchEngine:
 
 
 # ==================== ШАПКА ====================
-header_col1, header_col2 = st.columns([3, 1])
-
-with header_col1:
-    if st.session_state.theme == "light":
-        st.title("🪻 STANDOFF 2 — ESPORTS HUB")
-        st.caption("Фиолетовая сакура • Glow Violet Edition")
-    else:
-        st.title("⛩️ STANDOFF 2 — ESPORTS HUB")
-        st.caption("Обычный темный киберспортивный режим")
-
-with header_col2:
-    if st.button("🔄 Пресеты", type="primary", use_container_width=True):
-        load_preset_teams()
-        st.success("Пресеты загружены!")
-        st.rerun()
+if st.session_state.theme == "light":
+    st.title("🪻 STANDOFF 2 — ESPORTS HUB")
+    st.caption("Фиолетовая сакура • Glow Violet Edition")
+else:
+    st.title("⛩️ STANDOFF 2 — ESPORTS HUB")
+    st.caption("Обычный темный киберспортивный режим")
 
 st.markdown("---")
 
@@ -771,7 +764,7 @@ with tab_match:
     teams_list = list(db["teams"].keys())
 
     if len(teams_list) < 2:
-        st.info("💡 Нажмите кнопку **'Пресеты'** справа вверху для загрузки команд!")
+        st.info("💡 Создайте минимум 2 команды во вкладке 'Команды', чтобы начать матч!")
     else:
         col1, col2 = st.columns(2)
         with col1: team_a = st.selectbox("Команда A", teams_list, index=0)
