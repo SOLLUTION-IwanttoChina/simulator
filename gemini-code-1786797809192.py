@@ -32,7 +32,7 @@ st.set_page_config(
 )
 
 # ==========================================
-# ЯПОНСКИЙ ТЕМНЫЙ СТИЛЬ (JAPANESE CYBER/SAMURAI THEME)
+# УЛЬТРА-КОМПАКТНЫЙ АДАПТИВНЫЙ СТИЛЬ
 # ==========================================
 st.markdown("""
 <style>
@@ -50,11 +50,6 @@ st.markdown("""
         border: 1px solid #2a2e3d !important;
         border-radius: 6px !important;
     }
-    
-    div[data-baseweb="popover"] div, div[data-baseweb="menu"] * {
-        background-color: #12141c !important;
-        color: #ffffff !important;
-    }
 
     .stButton > button {
         background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%) !important;
@@ -62,36 +57,30 @@ st.markdown("""
         border-radius: 6px !important;
         font-weight: 700 !important;
         border: 1px solid #f87171 !important;
-        transition: all 0.25s ease-in-out !important;
-        letter-spacing: 0.5px;
-    }
-    
-    .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 18px rgba(220, 38, 38, 0.5) !important;
-        background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
+        transition: all 0.2s ease-in-out !important;
     }
 
+    /* Карточка матча (оптимизирована под скриншоты) */
     .jp-match-card {
-        background-color: #10121a;
-        border: 1px solid #232736;
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 25px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+        background-color: #0f1118;
+        border: 1px solid #222634;
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 15px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
     }
 
     .jp-status-bar {
         background: rgba(234, 179, 8, 0.08);
-        border: 1px solid rgba(234, 179, 8, 0.3);
-        border-radius: 6px;
-        padding: 6px 12px;
-        font-size: 0.78rem;
+        border: 1px solid rgba(234, 179, 8, 0.25);
+        border-radius: 5px;
+        padding: 4px 8px;
+        font-size: 0.7rem;
         font-weight: 700;
         color: #eab308;
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
         text-transform: uppercase;
-        margin-bottom: 16px;
+        margin-bottom: 8px;
     }
 
     .jp-score-header {
@@ -99,91 +88,94 @@ st.markdown("""
         justify-content: space-between;
         align-items: center;
         text-align: center;
-        padding: 15px 10px;
-        background: #151824;
-        border-radius: 10px;
-        border-left: 4px solid #dc2626;
-        border-right: 4px solid #dc2626;
+        padding: 8px 12px;
+        background: #141722;
+        border-radius: 8px;
+        border-left: 3px solid #dc2626;
+        border-right: 3px solid #dc2626;
     }
 
     .jp-team-title {
-        font-size: 1.35rem;
+        font-size: 1.1rem;
         font-weight: 800;
         color: #f8fafc;
         width: 38%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .jp-score-main {
-        font-size: 2.3rem;
+        font-size: 1.7rem;
         font-weight: 900;
         color: #ffffff;
         width: 24%;
-        letter-spacing: 2px;
+        letter-spacing: 1px;
     }
 
     .jp-winner-tag {
         text-align: center;
-        margin-top: 10px;
-        font-size: 0.95rem;
+        margin-top: 6px;
+        font-size: 0.8rem;
         font-weight: 800;
         color: #eab308;
         text-transform: uppercase;
-        letter-spacing: 1.2px;
+        letter-spacing: 1px;
+    }
+
+    .jp-mvp-box {
+        background: linear-gradient(90deg, rgba(234, 179, 8, 0.12) 0%, rgba(15, 17, 24, 0.8) 100%);
+        border: 1px solid rgba(234, 179, 8, 0.3);
+        border-radius: 6px;
+        padding: 6px 10px;
+        font-size: 0.78rem;
+        color: #fef08a;
+        margin-top: 8px;
     }
 
     .jp-section-title {
-        font-size: 0.9rem;
+        font-size: 0.75rem;
         font-weight: 800;
-        color: #cbd5e1;
-        margin: 18px 0 10px 0;
+        color: #94a3b8;
+        margin: 10px 0 6px 0;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         text-transform: uppercase;
-        letter-spacing: 0.8px;
+        letter-spacing: 0.5px;
     }
 
     .jp-section-title span {
         color: #dc2626;
-        font-size: 1.2rem;
-    }
-
-    .jp-mvp-box {
-        background: linear-gradient(90deg, rgba(234, 179, 8, 0.12) 0%, rgba(16, 18, 26, 0.8) 100%);
-        border: 1px solid rgba(234, 179, 8, 0.35);
-        border-radius: 8px;
-        padding: 10px 16px;
-        font-size: 0.88rem;
-        color: #fef08a;
-        margin-top: 12px;
+        font-size: 1rem;
     }
 
     .jp-maps-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 8px;
     }
 
     .jp-map-item {
-        background: #161926;
-        border: 1px solid #282d40;
-        border-radius: 8px;
-        padding: 10px;
+        background: #141722;
+        border: 1px solid #232736;
+        border-radius: 6px;
+        padding: 6px;
         text-align: center;
     }
 
     .jp-map-name {
-        font-size: 0.82rem;
+        font-size: 0.7rem;
         font-weight: 700;
         color: #94a3b8;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
         text-transform: uppercase;
     }
 
     .jp-map-score {
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         font-weight: 600;
-        color: #e2e8f0;
+        color: #cbd5e1;
     }
 
     .jp-map-score.winner {
@@ -191,32 +183,39 @@ st.markdown("""
         font-weight: 800;
     }
 
+    /* Компактная таблица игроков */
+    .jp-table-wrapper {
+        overflow-x: auto;
+        border-radius: 6px;
+        border: 1px solid #202433;
+        margin-bottom: 8px;
+    }
+
     .jp-table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 0.8rem;
-        margin-bottom: 20px;
-        background: #141722;
-        border-radius: 8px;
-        overflow: hidden;
+        font-size: 0.72rem;
+        background: #12141e;
     }
 
     .jp-table th {
-        background: #1a1e2c;
+        background: #181b28;
         color: #64748b;
         font-weight: 700;
-        padding: 10px 8px;
+        padding: 5px 6px;
         text-align: center;
-        border-bottom: 1px solid #272c3e;
+        border-bottom: 1px solid #232736;
         text-transform: uppercase;
-        font-size: 0.72rem;
+        font-size: 0.65rem;
+        white-space: nowrap;
     }
 
     .jp-table td {
-        padding: 9px 8px;
+        padding: 4px 6px;
         text-align: center;
         color: #cbd5e1;
-        border-bottom: 1px solid #1f2333;
+        border-bottom: 1px solid #1a1d2b;
+        line-height: 1.1;
     }
 
     .jp-table tr.mvp-row {
@@ -227,12 +226,14 @@ st.markdown("""
         text-align: left;
         font-weight: 700;
         color: #ffffff;
+        white-space: nowrap;
     }
 
     .jp-table td.player-cell small {
         color: #64748b;
         font-weight: 400;
-        margin-left: 5px;
+        margin-left: 4px;
+        font-size: 0.62rem;
     }
 
     .jp-table td.rating-cell {
@@ -240,10 +241,46 @@ st.markdown("""
         color: #eab308;
     }
 
-    div[data-testid="stExpander"] {
-        background: #12141d !important;
-        border: 1px solid #232736 !important;
-        border-radius: 8px !important;
+    /* Адаптивность для телефонов */
+    @media only screen and (max-width: 768px) {
+        .jp-match-card {
+            padding: 8px;
+        }
+        .jp-team-title {
+            font-size: 0.9rem;
+        }
+        .jp-score-main {
+            font-size: 1.3rem;
+        }
+        .jp-status-bar {
+            font-size: 0.62rem;
+            padding: 3px 6px;
+        }
+        .jp-table {
+            font-size: 0.65rem;
+        }
+        .jp-table th, .jp-table td {
+            padding: 3px 4px;
+        }
+        .jp-table td.player-cell small {
+            display: block;
+            margin-left: 0;
+            font-size: 0.55rem;
+            line-height: 1;
+        }
+        .jp-maps-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+        }
+        .jp-map-item {
+            padding: 4px 2px;
+        }
+        .jp-map-name {
+            font-size: 0.62rem;
+        }
+        .jp-map-score {
+            font-size: 0.68rem;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -536,7 +573,7 @@ with tab_match:
 
                 mvp_banner_html = f'<div class="jp-mvp-box">⭐ <b>MVP матча</b> — <b>{mvp_player["player"]}</b> ({mvp_player["team"]}) &nbsp;|&nbsp; Рейтинг: <b>{mvp_player["Rating"]:.2f}</b></div>' if mvp_player else ''
 
-                full_card_html = f'<div class="jp-match-card"><div class="jp-status-bar">⛩️ МАТЧ СИМУЛИРОВАН • ФОРМАТ: {match_fmt}</div><div class="jp-score-header"><div class="jp-team-title">{team_a}</div><div class="jp-score-main">{maps_won_a} : {maps_won_b}</div><div class="jp-team-title">{team_b}</div></div><div class="jp-winner-tag">🏆 {winner_team} ПОБЕДА!</div>{mvp_banner_html}<div class="jp-section-title"><span>|</span> КАРТЫ МАТЧА</div><div class="jp-maps-grid">{maps_html}</div><div class="jp-section-title"><span>|</span> {team_a}</div><table class="jp-table"><thead><tr><th style="text-align:left;">ИГРОК / РОЛЬ</th><th>K</th><th>A</th><th>D</th><th>K/D</th><th>ADR</th><th>KAST</th><th>IMP</th><th>РЕЙТИНГ</th></tr></thead><tbody>{table_rows_a}</tbody></table><div class="jp-section-title"><span>|</span> {team_b}</div><table class="jp-table"><thead><tr><th style="text-align:left;">ИГРОК / РОЛЬ</th><th>K</th><th>A</th><th>D</th><th>K/D</th><th>ADR</th><th>KAST</th><th>IMP</th><th>РЕЙТИНГ</th></tr></thead><tbody>{table_rows_b}</tbody></table></div>'
+                full_card_html = f'<div class="jp-match-card"><div class="jp-status-bar">⛩️ МАТЧ СИМУЛИРОВАН • ФОРМАТ: {match_fmt}</div><div class="jp-score-header"><div class="jp-team-title">{team_a}</div><div class="jp-score-main">{maps_won_a} : {maps_won_b}</div><div class="jp-team-title">{team_b}</div></div><div class="jp-winner-tag">🏆 {winner_team} ПОБЕДА!</div>{mvp_banner_html}<div class="jp-section-title"><span>|</span> КАРТЫ МАТЧА</div><div class="jp-maps-grid">{maps_html}</div><div class="jp-section-title"><span>|</span> {team_a}</div><div class="jp-table-wrapper"><table class="jp-table"><thead><tr><th style="text-align:left;">ИГРОК / РОЛЬ</th><th>K</th><th>A</th><th>D</th><th>K/D</th><th>ADR</th><th>KAST</th><th>IMP</th><th>РЕЙТИНГ</th></tr></thead><tbody>{table_rows_a}</tbody></table></div><div class="jp-section-title"><span>|</span> {team_b}</div><div class="jp-table-wrapper"><table class="jp-table"><thead><tr><th style="text-align:left;">ИГРОК / РОЛЬ</th><th>K</th><th>A</th><th>D</th><th>K/D</th><th>ADR</th><th>KAST</th><th>IMP</th><th>РЕЙТИНГ</th></tr></thead><tbody>{table_rows_b}</tbody></table></div></div>'
 
                 st.markdown(full_card_html, unsafe_allow_html=True)
 
