@@ -28,12 +28,15 @@ st.set_page_config(
     page_title="Standoff 2 Esports Hub",
     layout="wide",
     page_icon="🎮",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 # Инициализация темы (по умолчанию — тёмная)
 if "theme" not in st.session_state:
     st.session_state.theme = "dark"
+
+# Ссылка / Base64 котика
+CAT_IMG_URL = "https://i.ibb.co/Ld35P0v/cat-hat.png"  # Если локальный файл, замените на 'cat.png'
 
 # ==========================================
 # ДИНАМИЧЕСКИЕ СТИЛИ (2 РЕЖИМА)
@@ -46,6 +49,11 @@ if st.session_state.theme == "light":
             background-color: #fff0f3;
             color: #2d3748;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        
+        /* Скрытие бокового меню */
+        [data-testid="stSidebar"] {
+            display: none;
         }
         
         div[data-baseweb="select"] > div,
@@ -65,6 +73,21 @@ if st.session_state.theme == "light":
             border: 1px solid #fda4af !important;
             box-shadow: 0 4px 12px rgba(244, 63, 94, 0.2) !important;
             transition: all 0.2s ease-in-out !important;
+        }
+
+        /* Кнопка-котик */
+        .cat-toggle-btn button {
+            background: #ffffff !important;
+            border: 2px solid #f43f5e !important;
+            border-radius: 50px !important;
+            padding: 4px 12px !important;
+            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.2) !important;
+            color: #9d174d !important;
+            font-weight: 800 !important;
+        }
+        .cat-toggle-btn button:hover {
+            transform: scale(1.05);
+            border-color: #e11d48 !important;
         }
 
         .jp-match-card {
@@ -259,6 +282,11 @@ else:
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
         
+        /* Скрытие бокового меню */
+        [data-testid="stSidebar"] {
+            display: none;
+        }
+        
         div[data-baseweb="select"] > div,
         div[data-baseweb="input"] > div,
         input, select, textarea {
@@ -275,6 +303,21 @@ else:
             font-weight: 700 !important;
             border: 1px solid #f87171 !important;
             transition: all 0.2s ease-in-out !important;
+        }
+
+        /* Кнопка-котик */
+        .cat-toggle-btn button {
+            background: #141722 !important;
+            border: 2px solid #dc2626 !important;
+            border-radius: 50px !important;
+            padding: 4px 12px !important;
+            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3) !important;
+            color: #ffffff !important;
+            font-weight: 800 !important;
+        }
+        .cat-toggle-btn button:hover {
+            transform: scale(1.05);
+            border-color: #f87171 !important;
         }
 
         .jp-match-card {
@@ -460,7 +503,7 @@ else:
     </style>
     """, unsafe_allow_html=True)
 
-# Идентичные ширины колонок для 100% совпадения таблиц первой и второй команды
+# Идентичные ширины колонок для таблиц
 st.markdown("""
 <style>
     .jp-col-player { width: 30%; }
@@ -642,23 +685,10 @@ class MatchEngine:
 
         return score_a, score_b, stats_a, stats_b, rounds_played
 
-# ==================== БОКОВАЯ ПАНЕЛЬ С КНОПКОЙ СНИЗУ СЛЕВА ====================
-with st.sidebar:
-    st.title("🎮 Настройки")
-    st.markdown("---")
-    
-    # Кнопка переключения внизу слева боковой панели
-    if st.session_state.theme == "dark":
-        if st.button("🌸 Светлый аниме режим", key="theme_btn", use_container_width=True):
-            st.session_state.theme = "light"
-            st.rerun()
-    else:
-        if st.button("🖤 Обычный темный режим", key="theme_btn", use_container_width=True):
-            st.session_state.theme = "dark"
-            st.rerun()
 
-# Заголовок приложения
-header_col1, header_col2 = st.columns([3, 1])
+# ==================== ВЕРХНЯЯ ШАПКА C КОТИКОМ ====================
+header_col1, header_col2, header_col3 = st.columns([3, 1, 1])
+
 with header_col1:
     if st.session_state.theme == "light":
         st.title("🌸 STANDOFF 2 — ESPORTS HUB (桜)")
@@ -668,9 +698,18 @@ with header_col1:
         st.caption("Обычный темный киберспортивный режим")
 
 with header_col2:
-    if st.button("🔄 Загрузить пресеты", type="primary", use_container_width=True):
+    # Интерактивная карточка с котиком для смены темы
+    st.markdown('<div class="cat-toggle-btn">', unsafe_allow_html=True)
+    theme_label = "🌸 Аниме" if st.session_state.theme == "dark" else "🖤 Тёмный"
+    if st.button(f"🐱 {theme_label}", key="cat_toggle", help="Нажмите на котика, чтобы сменить стиль!"):
+        st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
+        st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with header_col3:
+    if st.button("🔄 Пресеты", type="primary", use_container_width=True):
         load_preset_teams()
-        st.success("Данные успешно загружены!")
+        st.success("Пресеты загружены!")
         st.rerun()
 
 st.markdown("---")
@@ -688,7 +727,7 @@ with tab_match:
     teams_list = list(db["teams"].keys())
 
     if len(teams_list) < 2:
-        st.info("💡 Нажмите кнопку **'Загрузить пресеты'** справа вверху для загрузки команд!")
+        st.info("💡 Нажмите кнопку **'Пресеты'** справа вверху для загрузки команд!")
     else:
         col1, col2 = st.columns(2)
         with col1: team_a = st.selectbox("Команда A", teams_list, index=0)
@@ -773,7 +812,6 @@ with tab_match:
 
                 mvp_banner_html = f'<div class="jp-mvp-box">⭐ <b>MVP матча</b> — <b>{mvp_player["player"]}</b> ({mvp_player["team"]}) &nbsp;|&nbsp; Рейтинг: <b>{mvp_player["Rating"]:.2f}</b></div>' if mvp_player else ''
 
-                # Заголовок таблицы с абсолютно идентичной разметкой и шириной столбцов
                 table_header_html = '<thead><tr><th class="jp-col-player" style="text-align:left;">ИГРОК / РОЛЬ</th><th class="jp-col-k">K</th><th class="jp-col-a">A</th><th class="jp-col-d">D</th><th class="jp-col-kd">K/D</th><th class="jp-col-adr">ADR</th><th class="jp-col-kast">KAST</th><th class="jp-col-imp">IMP</th><th class="jp-col-rating">РЕЙТИНГ</th></tr></thead>'
 
                 icon_title = "🌸" if st.session_state.theme == "light" else "⛩️"
