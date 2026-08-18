@@ -3,7 +3,7 @@ import random
 import streamlit as st
 from upstash_redis import Redis
 
-# Подключение к Upstash Redis через Streamlit Secrets
+# Подключение к Upstash Redis
 redis = Redis(
     url=st.secrets["UPSTASH_REDIS_REST_URL"],
     token=st.secrets["UPSTASH_REDIS_REST_TOKEN"]
@@ -31,41 +31,40 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Инициализация темы (по умолчанию — тёмная)
+# Инициализация темы (по умолчанию - тёмная)
 if "theme" not in st.session_state:
     st.session_state.theme = "dark"
 
-# Ссылка / Base64 котика
-CAT_IMG_URL = "https://i.ibb.co/Ld35P0v/cat-hat.png"  # Если локальный файл, замените на 'cat.png'
+# Ссылка на картинку котика (автоматически подгружается)
+CAT_IMG_URL = "https://i.ibb.co/Ld35P0v/cat-hat.png"
 
 # ==========================================
 # ДИНАМИЧЕСКИЕ СТИЛИ (2 РЕЖИМА)
 # ==========================================
 if st.session_state.theme == "light":
-    # 🌸 1. СВЕТЛЫЙ ЯПОНСКИЙ / АНИМЕ РЕЖИМ (SAKURA ANIME)
-    st.markdown("""
+    # 🌸 1. ЯПОНСКИЙ СТИЛЬ (СВЕТЛЫЙ)
+    st.markdown(f"""
     <style>
-        .stApp {
+        .stApp {{
             background-color: #fff0f3;
             color: #2d3748;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        }
+        }}
         
-        /* Скрытие бокового меню */
-        [data-testid="stSidebar"] {
+        [data-testid="stSidebar"] {{
             display: none;
-        }
+        }}
         
         div[data-baseweb="select"] > div,
         div[data-baseweb="input"] > div,
-        input, select, textarea {
+        input, select, textarea {{
             background-color: #ffffff !important;
             color: #1a202c !important;
             border: 1px solid #fbcfe8 !important;
             border-radius: 8px !important;
-        }
+        }}
 
-        .stButton > button {
+        .stButton > button {{
             background: linear-gradient(135deg, #f43f5e 0%, #fb7185 100%) !important;
             color: #ffffff !important;
             border-radius: 8px !important;
@@ -73,33 +72,45 @@ if st.session_state.theme == "light":
             border: 1px solid #fda4af !important;
             box-shadow: 0 4px 12px rgba(244, 63, 94, 0.2) !important;
             transition: all 0.2s ease-in-out !important;
-        }
+        }}
 
-        /* Кнопка-котик */
-        .cat-toggle-btn button {
-            background: #ffffff !important;
-            border: 2px solid #f43f5e !important;
-            border-radius: 50px !important;
-            padding: 4px 12px !important;
-            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.2) !important;
-            color: #9d174d !important;
-            font-weight: 800 !important;
-        }
-        .cat-toggle-btn button:hover {
-            transform: scale(1.05);
-            border-color: #e11d48 !important;
-        }
+        /* Кнопка-котик в правом верхнем углу */
+        .cat-corner-wrapper {{
+            position: fixed;
+            top: 15px;
+            right: 25px;
+            z-index: 999999;
+        }}
+        
+        .cat-corner-wrapper button {{
+            width: 65px !important;
+            height: 65px !important;
+            border-radius: 50% !important;
+            background-image: url('{CAT_IMG_URL}') !important;
+            background-size: cover !important;
+            background-position: center !important;
+            border: 3px solid #f43f5e !important;
+            box-shadow: 0 4px 18px rgba(244, 63, 94, 0.4) !important;
+            color: transparent !important;
+            cursor: pointer !important;
+            transition: transform 0.2s ease, border-color 0.2s ease !important;
+        }}
+        
+        .cat-corner-wrapper button:hover {{
+            transform: scale(1.12) rotate(5deg) !important;
+            border-color: #be123c !important;
+        }}
 
-        .jp-match-card {
+        .jp-match-card {{
             background-color: #ffffff;
             border: 1px solid #fbcfe8;
             border-radius: 12px;
             padding: 14px;
             margin-bottom: 15px;
             box-shadow: 0 10px 25px rgba(244, 63, 94, 0.08);
-        }
+        }}
 
-        .jp-status-bar {
+        .jp-status-bar {{
             background: rgba(244, 63, 94, 0.08);
             border: 1px solid rgba(244, 63, 94, 0.3);
             border-radius: 6px;
@@ -110,9 +121,9 @@ if st.session_state.theme == "light":
             letter-spacing: 0.5px;
             text-transform: uppercase;
             margin-bottom: 8px;
-        }
+        }}
 
-        .jp-score-header {
+        .jp-score-header {{
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -122,9 +133,9 @@ if st.session_state.theme == "light":
             border-radius: 10px;
             border-left: 4px solid #f43f5e;
             border-right: 4px solid #f43f5e;
-        }
+        }}
 
-        .jp-team-title {
+        .jp-team-title {{
             font-size: 1.2rem;
             font-weight: 800;
             color: #881337;
@@ -132,17 +143,17 @@ if st.session_state.theme == "light":
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-        }
+        }}
 
-        .jp-score-main {
+        .jp-score-main {{
             font-size: 1.8rem;
             font-weight: 900;
             color: #e11d48;
             width: 24%;
             letter-spacing: 1px;
-        }
+        }}
 
-        .jp-winner-tag {
+        .jp-winner-tag {{
             text-align: center;
             margin-top: 6px;
             font-size: 0.85rem;
@@ -150,9 +161,9 @@ if st.session_state.theme == "light":
             color: #be123c;
             text-transform: uppercase;
             letter-spacing: 1px;
-        }
+        }}
 
-        .jp-mvp-box {
+        .jp-mvp-box {{
             background: linear-gradient(90deg, #ffe4e6 0%, #ffffff 100%);
             border: 1px solid #f43f5e;
             border-radius: 8px;
@@ -160,9 +171,9 @@ if st.session_state.theme == "light":
             font-size: 0.8rem;
             color: #9f1239;
             margin-top: 8px;
-        }
+        }}
 
-        .jp-section-title {
+        .jp-section-title {{
             font-size: 0.75rem;
             font-weight: 800;
             color: #9d174d;
@@ -171,62 +182,62 @@ if st.session_state.theme == "light":
             align-items: center;
             gap: 6px;
             text-transform: uppercase;
-        }
+        }}
 
-        .jp-section-title span {
+        .jp-section-title span {{
             color: #f43f5e;
             font-size: 1rem;
-        }
+        }}
 
-        .jp-maps-grid {
+        .jp-maps-grid {{
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
             gap: 8px;
-        }
+        }}
 
-        .jp-map-item {
+        .jp-map-item {{
             background: #fff0f5;
             border: 1px solid #fbcfe8;
             border-radius: 8px;
             padding: 6px;
             text-align: center;
-        }
+        }}
 
-        .jp-map-name {
+        .jp-map-name {{
             font-size: 0.7rem;
             font-weight: 700;
             color: #9d174d;
             margin-bottom: 2px;
             text-transform: uppercase;
-        }
+        }}
 
-        .jp-map-score {
+        .jp-map-score {{
             font-size: 0.75rem;
             font-weight: 600;
             color: #4b5563;
-        }
+        }}
 
-        .jp-map-score.winner {
+        .jp-map-score.winner {{
             color: #e11d48;
             font-weight: 800;
-        }
+        }}
 
-        .jp-table-wrapper {
+        .jp-table-wrapper {{
             overflow-x: auto;
             border-radius: 8px;
             border: 1px solid #fbcfe8;
             margin-bottom: 8px;
-        }
+        }}
 
-        .jp-table {
+        .jp-table {{
             width: 100%;
             table-layout: fixed;
             border-collapse: collapse;
             font-size: 0.73rem;
             background: #ffffff;
-        }
+        }}
 
-        .jp-table th {
+        .jp-table th {{
             background: #ffe4e6;
             color: #9f1239;
             font-weight: 800;
@@ -235,101 +246,112 @@ if st.session_state.theme == "light":
             border-bottom: 1px solid #fbcfe8;
             text-transform: uppercase;
             font-size: 0.65rem;
-        }
+        }}
 
-        .jp-table td {
+        .jp-table td {{
             padding: 6px;
             text-align: center;
             color: #374151;
             border-bottom: 1px solid #fff1f2;
             line-height: 1.1;
-        }
+        }}
 
-        .jp-table tr.mvp-row {
+        .jp-table tr.mvp-row {{
             background: #ffe4e6 !important;
-        }
+        }}
 
-        .jp-table td.player-cell {
+        .jp-table td.player-cell {{
             text-align: left;
             font-weight: 800;
             color: #881337;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-        }
+        }}
 
-        .jp-table td.player-cell small {
+        .jp-table td.player-cell small {{
             color: #9d174d;
             font-weight: 500;
             margin-left: 4px;
             font-size: 0.62rem;
-        }
+        }}
 
-        .jp-table td.rating-cell {
+        .jp-table td.rating-cell {{
             font-weight: 900;
             color: #e11d48;
-        }
+        }}
     </style>
     """, unsafe_allow_html=True)
 
 else:
-    # 🖤 2. ОБЫЧНЫЙ ТЁМНЫЙ РЕЖИМ (DARK CYBER)
-    st.markdown("""
+    # 🖤 2. ТЁМНЫЙ КИБЕРСПОРТИВНЫЙ РЕЖИМ
+    st.markdown(f"""
     <style>
-        .stApp {
+        .stApp {{
             background-color: #0b0c10;
             color: #e2e8f0;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        }
+        }}
         
-        /* Скрытие бокового меню */
-        [data-testid="stSidebar"] {
+        [data-testid="stSidebar"] {{
             display: none;
-        }
+        }}
         
         div[data-baseweb="select"] > div,
         div[data-baseweb="input"] > div,
-        input, select, textarea {
+        input, select, textarea {{
             background-color: #12141c !important;
             color: #ffffff !important;
             border: 1px solid #2a2e3d !important;
             border-radius: 6px !important;
-        }
+        }}
 
-        .stButton > button {
+        .stButton > button {{
             background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%) !important;
             color: #ffffff !important;
             border-radius: 6px !important;
             font-weight: 700 !important;
             border: 1px solid #f87171 !important;
             transition: all 0.2s ease-in-out !important;
-        }
+        }}
 
-        /* Кнопка-котик */
-        .cat-toggle-btn button {
-            background: #141722 !important;
-            border: 2px solid #dc2626 !important;
-            border-radius: 50px !important;
-            padding: 4px 12px !important;
-            box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3) !important;
-            color: #ffffff !important;
-            font-weight: 800 !important;
-        }
-        .cat-toggle-btn button:hover {
-            transform: scale(1.05);
+        /* Кнопка-котик в правом верхнем углу */
+        .cat-corner-wrapper {{
+            position: fixed;
+            top: 15px;
+            right: 25px;
+            z-index: 999999;
+        }}
+        
+        .cat-corner-wrapper button {{
+            width: 65px !important;
+            height: 65px !important;
+            border-radius: 50% !important;
+            background-image: url('{CAT_IMG_URL}') !important;
+            background-size: cover !important;
+            background-position: center !important;
+            border: 3px solid #dc2626 !important;
+            box-shadow: 0 4px 18px rgba(220, 38, 38, 0.5) !important;
+            color: transparent !important;
+            cursor: pointer !important;
+            transition: transform 0.2s ease, border-color 0.2s ease !important;
+        }}
+
+        .cat-corner-wrapper button:hover {{
+            transform: scale(1.12) rotate(-5deg) !important;
             border-color: #f87171 !important;
-        }
+        }}
 
-        .jp-match-card {
+        .jp-match-card {{
             background-color: #0f1118;
             border: 1px solid #222634;
             border-radius: 10px;
             padding: 14px;
             margin-bottom: 15px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-        }
+        }}
 
-        .jp-status-bar {
+        .jp-status-bar {{
             background: rgba(234, 179, 8, 0.08);
             border: 1px solid rgba(234, 179, 8, 0.25);
             border-radius: 5px;
@@ -340,9 +362,9 @@ else:
             letter-spacing: 0.5px;
             text-transform: uppercase;
             margin-bottom: 8px;
-        }
+        }}
 
-        .jp-score-header {
+        .jp-score-header {{
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -352,9 +374,9 @@ else:
             border-radius: 8px;
             border-left: 3px solid #dc2626;
             border-right: 3px solid #dc2626;
-        }
+        }}
 
-        .jp-team-title {
+        .jp-team-title {{
             font-size: 1.2rem;
             font-weight: 800;
             color: #f8fafc;
@@ -362,17 +384,17 @@ else:
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-        }
+        }}
 
-        .jp-score-main {
+        .jp-score-main {{
             font-size: 1.8rem;
             font-weight: 900;
             color: #ffffff;
             width: 24%;
             letter-spacing: 1px;
-        }
+        }}
 
-        .jp-winner-tag {
+        .jp-winner-tag {{
             text-align: center;
             margin-top: 6px;
             font-size: 0.85rem;
@@ -380,9 +402,9 @@ else:
             color: #eab308;
             text-transform: uppercase;
             letter-spacing: 1px;
-        }
+        }}
 
-        .jp-mvp-box {
+        .jp-mvp-box {{
             background: linear-gradient(90deg, rgba(234, 179, 8, 0.12) 0%, rgba(15, 17, 24, 0.8) 100%);
             border: 1px solid rgba(234, 179, 8, 0.3);
             border-radius: 6px;
@@ -390,9 +412,9 @@ else:
             font-size: 0.8rem;
             color: #fef08a;
             margin-top: 8px;
-        }
+        }}
 
-        .jp-section-title {
+        .jp-section-title {{
             font-size: 0.75rem;
             font-weight: 800;
             color: #94a3b8;
@@ -402,62 +424,62 @@ else:
             gap: 6px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-        }
+        }}
 
-        .jp-section-title span {
+        .jp-section-title span {{
             color: #dc2626;
             font-size: 1rem;
-        }
+        }}
 
-        .jp-maps-grid {
+        .jp-maps-grid {{
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
             gap: 8px;
-        }
+        }}
 
-        .jp-map-item {
+        .jp-map-item {{
             background: #141722;
             border: 1px solid #232736;
             border-radius: 6px;
             padding: 6px;
             text-align: center;
-        }
+        }}
 
-        .jp-map-name {
+        .jp-map-name {{
             font-size: 0.7rem;
             font-weight: 700;
             color: #94a3b8;
             margin-bottom: 2px;
             text-transform: uppercase;
-        }
+        }}
 
-        .jp-map-score {
+        .jp-map-score {{
             font-size: 0.75rem;
             font-weight: 600;
             color: #cbd5e1;
-        }
+        }}
 
-        .jp-map-score.winner {
+        .jp-map-score.winner {{
             color: #eab308;
             font-weight: 800;
-        }
+        }}
 
-        .jp-table-wrapper {
+        .jp-table-wrapper {{
             overflow-x: auto;
             border-radius: 6px;
             border: 1px solid #202433;
             margin-bottom: 8px;
-        }
+        }}
 
-        .jp-table {
+        .jp-table {{
             width: 100%;
             table-layout: fixed;
             border-collapse: collapse;
             font-size: 0.73rem;
             background: #12141e;
-        }
+        }}
 
-        .jp-table th {
+        .jp-table th {{
             background: #181b28;
             color: #64748b;
             font-weight: 700;
@@ -466,44 +488,43 @@ else:
             border-bottom: 1px solid #232736;
             text-transform: uppercase;
             font-size: 0.65rem;
-        }
+        }}
 
-        .jp-table td {
+        .jp-table td {{
             padding: 5px 6px;
             text-align: center;
             color: #cbd5e1;
             border-bottom: 1px solid #1a1d2b;
             line-height: 1.1;
-        }
+        }}
 
-        .jp-table tr.mvp-row {
+        .jp-table tr.mvp-row {{
             background: rgba(234, 179, 8, 0.08) !important;
-        }
+        }}
 
-        .jp-table td.player-cell {
+        .jp-table td.player-cell {{
             text-align: left;
             font-weight: 700;
             color: #ffffff;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-        }
+        }}
 
-        .jp-table td.player-cell small {
+        .jp-table td.player-cell small {{
             color: #64748b;
             font-weight: 400;
             margin-left: 4px;
             font-size: 0.62rem;
-        }
+        }}
 
-        .jp-table td.rating-cell {
+        .jp-table td.rating-cell {{
             font-weight: 800;
             color: #eab308;
-        }
+        }}
     </style>
     """, unsafe_allow_html=True)
 
-# Идентичные ширины колонок для таблиц
 st.markdown("""
 <style>
     .jp-col-player { width: 30%; }
@@ -517,6 +538,13 @@ st.markdown("""
     .jp-col-rating { width: 10%; }
 </style>
 """, unsafe_allow_html=True)
+
+# 🐱 КНОПКА-КОТИК В ПРАВОМ ВЕРХНЕМ УГЛУ
+st.markdown('<div class="cat-corner-wrapper">', unsafe_allow_html=True)
+if st.button("🐱", key="cat_toggle_btn", help="Нажмите на котика, чтобы сменить стиль!"):
+    st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
+    st.rerun()
+st.markdown('</div>', unsafe_allow_html=True)
 
 def load_db():
     try:
@@ -686,27 +714,18 @@ class MatchEngine:
         return score_a, score_b, stats_a, stats_b, rounds_played
 
 
-# ==================== ВЕРХНЯЯ ШАПКА C КОТИКОМ ====================
-header_col1, header_col2, header_col3 = st.columns([3, 1, 1])
+# ==================== ШАПКА ====================
+header_col1, header_col2 = st.columns([3, 1])
 
 with header_col1:
     if st.session_state.theme == "light":
-        st.title("🌸 STANDOFF 2 — ESPORTS HUB (桜)")
-        st.caption("Японский аниме стиль • Светлая тема")
+        st.title("🌸 STANDOFF 2 — ESPORTS HUB")
+        st.caption("Японский стиль • Светлый режим")
     else:
         st.title("⛩️ STANDOFF 2 — ESPORTS HUB")
         st.caption("Обычный темный киберспортивный режим")
 
 with header_col2:
-    # Интерактивная карточка с котиком для смены темы
-    st.markdown('<div class="cat-toggle-btn">', unsafe_allow_html=True)
-    theme_label = "🌸 Аниме" if st.session_state.theme == "dark" else "🖤 Тёмный"
-    if st.button(f"🐱 {theme_label}", key="cat_toggle", help="Нажмите на котика, чтобы сменить стиль!"):
-        st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
-        st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
-
-with header_col3:
     if st.button("🔄 Пресеты", type="primary", use_container_width=True):
         load_preset_teams()
         st.success("Пресеты загружены!")
