@@ -36,14 +36,12 @@ st.set_page_config(
 # ==========================================
 st.markdown("""
 <style>
-    /* Базовый фон в духе темного обсидиана */
     .stApp {
         background-color: #0b0c10;
         color: #e2e8f0;
         font-family: 'Inter', system-ui, sans-serif;
     }
     
-    /* Элементы ввода (Select, Input) */
     div[data-baseweb="select"] > div,
     div[data-baseweb="input"] > div,
     input, select, textarea {
@@ -58,7 +56,6 @@ st.markdown("""
         color: #ffffff !important;
     }
 
-    /* Кнопки в стиле самурайского клинка */
     .stButton > button {
         background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%) !important;
         color: #ffffff !important;
@@ -75,9 +72,6 @@ st.markdown("""
         background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
     }
 
-    /* ==========================================
-       ЭКРАН ИТОГОВ МАТЧА (КАК НА СКРИНШОТЕ)
-       ========================================== */
     .jp-match-card {
         background-color: #10121a;
         border: 1px solid #232736;
@@ -129,7 +123,7 @@ st.markdown("""
 
     .jp-winner-tag {
         text-align: center;
-        margin-top: 8px;
+        margin-top: 10px;
         font-size: 0.95rem;
         font-weight: 800;
         color: #eab308;
@@ -154,7 +148,6 @@ st.markdown("""
         font-size: 1.2rem;
     }
 
-    /* MVP Блок */
     .jp-mvp-box {
         background: linear-gradient(90deg, rgba(234, 179, 8, 0.12) 0%, rgba(16, 18, 26, 0.8) 100%);
         border: 1px solid rgba(234, 179, 8, 0.35);
@@ -162,12 +155,9 @@ st.markdown("""
         padding: 10px 16px;
         font-size: 0.88rem;
         color: #fef08a;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+        margin-top: 12px;
     }
 
-    /* Карточки карт */
     .jp-maps-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -201,7 +191,6 @@ st.markdown("""
         font-weight: 800;
     }
 
-    /* Таблица статистики игрока */
     .jp-table {
         width: 100%;
         border-collapse: collapse;
@@ -251,7 +240,6 @@ st.markdown("""
         color: #eab308;
     }
 
-    /* Expander CSS */
     div[data-testid="stExpander"] {
         background: #12141d !important;
         border: 1px solid #232736 !important;
@@ -505,7 +493,6 @@ with tab_match:
 
                 winner_team = team_a if maps_won_a > maps_won_b else (team_b if maps_won_b > maps_won_a else "Ничья")
 
-                # Расчет рейтингов всех игроков и определение MVP
                 all_processed_players = []
                 for t_name in [team_a, team_b]:
                     for p_name, st_data in total_stats[t_name].items():
@@ -523,23 +510,14 @@ with tab_match:
                         }
                         all_processed_players.append(item)
 
-                # Поиск MVP
                 mvp_player = max(all_processed_players, key=lambda x: x["Rating"]) if all_processed_players else None
 
-                # Генерация HTML-карточек карт
                 maps_html = ""
                 for m_name, sa, sb in map_results:
                     win_a_cls = "winner" if sa > sb else ""
                     win_b_cls = "winner" if sb > sa else ""
-                    maps_html += f"""
-                    <div class="jp-map-item">
-                        <div class="jp-map-name">{m_name}</div>
-                        <div class="jp-map-score {win_a_cls}">{team_a} {sa}</div>
-                        <div class="jp-map-score {win_b_cls}">{team_b} {sb}</div>
-                    </div>
-                    """
+                    maps_html += f'<div class="jp-map-item"><div class="jp-map-name">{m_name}</div><div class="jp-map-score {win_a_cls}">{team_a} {sa}</div><div class="jp-map-score {win_b_cls}">{team_b} {sb}</div></div>'
 
-                # Генерация строк таблиц
                 def render_team_table(t_name):
                     rows_html = ""
                     t_players = [p for p in all_processed_players if p["team"] == t_name]
@@ -550,77 +528,15 @@ with tab_match:
                         mvp_cls = "mvp-row" if is_mvp else ""
                         mvp_star = "⭐ " if is_mvp else ""
                         
-                        rows_html += f"""
-                        <tr class="{mvp_cls}">
-                            <td class="player-cell">{mvp_star}{p['player']}<small>{p['role']}</small></td>
-                            <td>{p['K']}</td>
-                            <td>{p['A']}</td>
-                            <td>{p['D']}</td>
-                            <td>{p['KD']}</td>
-                            <td>{p['ADR']}</td>
-                            <td>{p['KAST']}</td>
-                            <td>{p['IMP']}</td>
-                            <td class="rating-cell">{p['Rating']:.2f}</td>
-                        </tr>
-                        """
+                        rows_html += f'<tr class="{mvp_cls}"><td class="player-cell">{mvp_star}{p["player"]}<small>{p["role"]}</small></td><td>{p["K"]}</td><td>{p["A"]}</td><td>{p["D"]}</td><td>{p["KD"]}</td><td>{p["ADR"]}</td><td>{p["KAST"]}</td><td>{p["IMP"]}</td><td class="rating-cell">{p["Rating"]:.2f}</td></tr>'
                     return rows_html
 
                 table_rows_a = render_team_table(team_a)
                 table_rows_b = render_team_table(team_b)
 
-                mvp_banner_html = f"""
-                <div class="jp-mvp-box">
-                    ⭐ <b>MVP матча</b> — <b>{mvp_player['player']}</b> ({mvp_player['team']}) &nbsp;|&nbsp; Рейтинг: <b>{mvp_player['Rating']:.2f}</b>
-                </div>
-                """ if mvp_player else ""
+                mvp_banner_html = f'<div class="jp-mvp-box">⭐ <b>MVP матча</b> — <b>{mvp_player["player"]}</b> ({mvp_player["team"]}) &nbsp;|&nbsp; Рейтинг: <b>{mvp_player["Rating"]:.2f}</b></div>' if mvp_player else ''
 
-                # Главный HTML блок
-                full_card_html = f"""
-                <div class="jp-match-card">
-                    <div class="jp-status-bar">⛩️ МАТЧ СИМУЛИРОВАН • ФОРМАТ: {match_fmt}</div>
-                    <div class="jp-score-header">
-                        <div class="jp-team-title">{team_a}</div>
-                        <div class="jp-score-main">{maps_won_a} : {maps_won_b}</div>
-                        <div class="jp-team-title">{team_b}</div>
-                    </div>
-                    <div class="jp-winner-tag">🏆 {winner_team} ПОБЕДА!</div>
-                    
-                    <div style="margin-top: 15px;">
-                        {mvp_banner_html}
-                    </div>
-
-                    <div class="jp-section-title"><span>|</span> КАРТЫ МАТЧА</div>
-                    <div class="jp-maps-grid">
-                        {maps_html}
-                    </div>
-
-                    <div class="jp-section-title"><span>|</span> {team_a}</div>
-                    <table class="jp-table">
-                        <thead>
-                            <tr>
-                                <th style="text-align:left;">ИГРОК / РОЛЬ</th>
-                                <th>K</th><th>A</th><th>D</th><th>K/D</th><th>ADR</th><th>KAST</th><th>IMP</th><th>РЕЙТИНГ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {table_rows_a}
-                        </tbody>
-                    </table>
-
-                    <div class="jp-section-title"><span>|</span> {team_b}</div>
-                    <table class="jp-table">
-                        <thead>
-                            <tr>
-                                <th style="text-align:left;">ИГРОК / РОЛЬ</th>
-                                <th>K</th><th>A</th><th>D</th><th>K/D</th><th>ADR</th><th>KAST</th><th>IMP</th><th>РЕЙТИНГ</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {table_rows_b}
-                        </tbody>
-                    </table>
-                </div>
-                """
+                full_card_html = f'<div class="jp-match-card"><div class="jp-status-bar">⛩️ МАТЧ СИМУЛИРОВАН • ФОРМАТ: {match_fmt}</div><div class="jp-score-header"><div class="jp-team-title">{team_a}</div><div class="jp-score-main">{maps_won_a} : {maps_won_b}</div><div class="jp-team-title">{team_b}</div></div><div class="jp-winner-tag">🏆 {winner_team} ПОБЕДА!</div>{mvp_banner_html}<div class="jp-section-title"><span>|</span> КАРТЫ МАТЧА</div><div class="jp-maps-grid">{maps_html}</div><div class="jp-section-title"><span>|</span> {team_a}</div><table class="jp-table"><thead><tr><th style="text-align:left;">ИГРОК / РОЛЬ</th><th>K</th><th>A</th><th>D</th><th>K/D</th><th>ADR</th><th>KAST</th><th>IMP</th><th>РЕЙТИНГ</th></tr></thead><tbody>{table_rows_a}</tbody></table><div class="jp-section-title"><span>|</span> {team_b}</div><table class="jp-table"><thead><tr><th style="text-align:left;">ИГРОК / РОЛЬ</th><th>K</th><th>A</th><th>D</th><th>K/D</th><th>ADR</th><th>KAST</th><th>IMP</th><th>РЕЙТИНГ</th></tr></thead><tbody>{table_rows_b}</tbody></table></div>'
 
                 st.markdown(full_card_html, unsafe_allow_html=True)
 
