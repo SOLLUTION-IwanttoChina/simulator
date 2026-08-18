@@ -301,6 +301,95 @@ if st.session_state.theme == "light":
             font-weight: 900;
             color: #6d28d9;
         }}
+
+        /* КАРТОЧКА КОМАНДЫ (СВЕТЛАЯ ТЕМА) */
+        .team-card-box {{
+            background: linear-gradient(145deg, #ffffff 0%, #f3e8ff 100%);
+            border: 2px solid #ddd6fe;
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.12);
+        }}
+
+        .team-card-header {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e9d5ff;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }}
+
+        .team-card-title {{
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #3b0764;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }}
+
+        .team-ovr-badge {{
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            color: #ffffff;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.3);
+            text-align: center;
+        }}
+
+        .team-stats-grid {{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 14px;
+            background: #f5f3ff;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd6fe;
+        }}
+
+        .team-stat-item {{
+            font-size: 0.78rem;
+            color: #6b21a8;
+        }}
+
+        .team-stat-item b {{
+            color: #3b0764;
+        }}
+
+        .roster-grid {{
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }}
+
+        .roster-slot-card {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffffff;
+            border: 1px solid #e9d5ff;
+            border-left: 3px solid #8b5cf6;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #2e1065;
+        }}
+
+        .role-badge {{
+            background: rgba(139, 92, 246, 0.15);
+            color: #6d28d9;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -540,6 +629,94 @@ else:
         .jp-table td.rating-cell {{
             font-weight: 800;
             color: #eab308;
+        }}
+
+        /* КАРТОЧКА КОМАНДЫ (ТЕМНАЯ ТЕМА) */
+        .team-card-box {{
+            background: linear-gradient(145deg, #121520 0%, #0a0b10 100%);
+            border: 2px solid #2a2e3d;
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }}
+
+        .team-card-header {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #232736;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }}
+
+        .team-card-title {{
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }}
+
+        .team-ovr-badge {{
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            color: #ffffff;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 1.1rem;
+            box-shadow: 0 0 12px rgba(220, 38, 38, 0.4);
+            text-align: center;
+        }}
+
+        .team-stats-grid {{
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 14px;
+            background: #161925;
+            padding: 10px;
+            border-radius: 8px;
+        }}
+
+        .team-stat-item {{
+            font-size: 0.78rem;
+            color: #94a3b8;
+        }}
+
+        .team-stat-item b {{
+            color: #f8fafc;
+        }}
+
+        .roster-grid {{
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }}
+
+        .roster-slot-card {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #141722;
+            border: 1px solid #202433;
+            border-left: 3px solid #dc2626;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #ffffff;
+        }}
+
+        .role-badge {{
+            background: rgba(220, 38, 38, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
         }}
     </style>
     """, unsafe_allow_html=True)
@@ -900,11 +1077,11 @@ with tab_players:
 
 # ==================== КОМАНДЫ ====================
 with tab_teams:
-    st.subheader("Управление Командами")
+    st.subheader("🛡️ Профили и Составы Команд")
     t_col1, t_col2 = st.columns([1, 1])
 
     with t_col1:
-        st.markdown("##### 🛡️ Редактор команды")
+        st.markdown("##### ✏️ Редактор команды")
         team_options = ["➕ Создать новую"] + list(db["teams"].keys())
         selected_team = st.selectbox("Выберите команду:", team_options, key="team_select_box")
 
@@ -952,16 +1129,60 @@ with tab_teams:
                 st.rerun()
 
     with t_col2:
-        st.markdown("##### 📋 Составы Команд")
+        st.markdown("##### 📸 Паспорта Команд (для скриншотов)")
+        
         for tm, data in db["teams"].items():
-            with st.expander(f"🛡️ {tm}"):
-                st.write(f"**Тренер:** {data.get('coach', 'Нет')} | **Сыгранность:** {data.get('chemistry', 0)}%")
-                st.write(f"**Карты:** 🟢 {data.get('best_map')} | 🔴 {data.get('worst_map')}")
-                st.markdown("---")
-                roster = data.get("roster", {})
-                for slot, info in roster.items():
-                    if isinstance(info, dict):
-                        st.write(f"• **{info.get('role', 'Рифлер')}:** {info.get('player', 'Нет')}")
+            roster = data.get("roster", {})
+            player_ratings = []
+            roster_html = ""
+
+            for i in range(1, 6):
+                slot_info = roster.get(f"Slot_{i}", {})
+                p_name = slot_info.get("player", "Нет") if isinstance(slot_info, dict) else "Нет"
+                p_role = slot_info.get("role", "Рифлер") if isinstance(slot_info, dict) else "Рифлер"
+                
+                p_rating = db["players"].get(p_name, {}).get("base_rating", 0) if p_name != "Нет" else 0
+                if p_rating > 0:
+                    player_ratings.append(p_rating)
+
+                p_rating_display = f"{p_rating} OVR" if p_rating > 0 else "—"
+                roster_html += f'''
+                <div class="roster-slot-card">
+                    <div><b>{p_name}</b></div>
+                    <div><span class="role-badge">{p_role}</span> <span style="font-weight:700; margin-left:6px; opacity:0.8;">{p_rating_display}</span></div>
+                </div>
+                '''
+
+            # Расчет OVR команды
+            avg_p_rating = sum(player_ratings) / max(1, len(player_ratings)) if player_ratings else 0
+            coach_r = db["coaches"].get(data.get("coach"), {}).get("rating", 0)
+            team_ovr = round((avg_p_rating * 0.75) + (data.get("chemistry", 0) * 0.15) + (coach_r * 0.10))
+
+            tier_tag = "TIER 1" if team_ovr >= 88 else ("TIER 2" if team_ovr >= 75 else "TIER 3")
+
+            team_card_html = f'''
+            <div class="team-card-box">
+                <div class="team-card-header">
+                    <div class="team-card-title">
+                        🛡️ {tm}
+                        <span class="role-badge" style="background:rgba(234,179,8,0.15); color:#eab308; border-color:rgba(234,179,8,0.3);">{tier_tag}</span>
+                    </div>
+                    <div class="team-ovr-badge">
+                        <small style="font-size:0.55rem; display:block; text-transform:uppercase; letter-spacing:0.5px;">OVR</small>
+                        {team_ovr}
+                    </div>
+                </div>
+                <div class="team-stats-grid">
+                    <div class="team-stat-item">👔 Тренер: <b>{data.get("coach", "Нет")}</b></div>
+                    <div class="team-stat-item">🧩 Сыгранность: <b>{data.get("chemistry", 0)}%</b></div>
+                    <div class="team-stat-item">🟢 Пик: <b>{data.get("best_map", "Sandstone")}</b></div>
+                </div>
+                <div class="roster-grid">
+                    {roster_html}
+                </div>
+            </div>
+            '''
+            st.markdown(team_card_html, unsafe_allow_html=True)
 
 # ==================== ТРЕНЕРЫ ====================
 with tab_coaches:
