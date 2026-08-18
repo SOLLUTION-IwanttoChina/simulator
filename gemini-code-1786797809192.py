@@ -21,6 +21,7 @@ DEFAULT_DB = {
 ROLES = ["Капитан", "Снайпер", "Опенер", "Рифлер", "Саппорт", "Капитан-Снайпер", "Люркер"]
 PROFICIENCIES = ["Прекрасно", "Отлично", "Хорошо", "Средне", "Плохо"]
 ROLE_MULTIPLIERS = {"Прекрасно": 1.20, "Отлично": 1.10, "Хорошо": 1.00, "Средне": 0.85, "Плохо": 0.70}
+TIERS_OPTIONS = ["Авторасчет", "Tier 1", "Tier 2", "Tier 3"]
 
 MAPS = ["Sandstone", "Province", "Breeze", "Rust", "Dune", "Hanami", "Prison"]
 
@@ -763,12 +764,12 @@ def load_preset_teams(db_data):
 
     preset_teams = {
         "Virtus Pro": {
-            "best": "Prison", "worst": "Hanami",
+            "best": "Prison", "worst": "Hanami", "tier": "Авторасчет",
             "roster": [("Hi-Lo", "Рифлер"), ("Lunax", "Опенер"), ("Reason", "Снайпер"), ("Arventy", "Капитан-Снайпер"), ("chipaa", "Рифлер")],
             "ratings": {"Hi-Lo": 99, "Lunax": 98, "Reason": 97, "Arventy": 95, "chipaa": 90}
         },
         "CyberHero": {
-            "best": "Breeze", "worst": "Rust",
+            "best": "Breeze", "worst": "Rust", "tier": "Авторасчет",
             "roster": [("cxtleta", "Рифлер"), ("Enough", "Снайпер"), ("Nekr0", "Капитан"), ("FLACSYS", "Опенер"), ("scndoom", "Саппорт")],
             "ratings": {"cxtleta": 99, "Enough": 96, "Nekr0": 96, "FLACSYS": 93, "scndoom": 91}
         }
@@ -782,7 +783,7 @@ def load_preset_teams(db_data):
             roster_dict[f"Slot_{idx}"] = {"player": p_name, "role": p_role}
 
         db_data["teams"][t_name] = {
-            "chemistry": 90, "coach": "Kuba",
+            "chemistry": 90, "coach": "Kuba", "tier": data["tier"],
             "best_map": data["best"], "worst_map": data["worst"],
             "roster": roster_dict
         }
@@ -1090,13 +1091,20 @@ with tab_teams:
             default_coach = t_data.get("coach", "Нет")
             default_best = t_data.get("best_map", MAPS[0])
             default_worst = t_data.get("worst_map", MAPS[1])
+            default_tier = t_data.get("tier", "Авторасчет")
             default_roster = t_data.get("roster", {})
         else:
-            default_t_name, default_chem, default_coach, default_best, default_worst, default_roster = "", 50, "Нет", MAPS[0], MAPS[1], {}
+            default_t_name, default_chem, default_coach, default_best, default_worst, default_tier, default_roster = "", 50, "Нет", MAPS[0], MAPS[1], "Авторасчет", {}
 
         t_name = st.text_input("Название команды", value=default_t_name, key=f"t_name_{selected_team}")
-        t_chem = st.slider("Сыгранность состава (%)", 0, 100, default_chem, key=f"t_chem_{selected_team}")
         
+        c_t1, c_t2 = st.columns(2)
+        with c_t1:
+            t_chem = st.slider("Сыгранность состава (%)", 0, 100, default_chem, key=f"t_chem_{selected_team}")
+        with c_t2:
+            tier_index = TIERS_OPTIONS.index(default_tier) if default_tier in TIERS_OPTIONS else 0
+            t_tier = st.selectbox("Тир команды", TIERS_OPTIONS, index=tier_index, key=f"t_tier_{selected_team}")
+            
         coaches_list = ["Нет"] + list(db["coaches"].keys())
         coach_idx = coaches_list.index(default_coach) if default_coach in coaches_list else 0
         t_coach = st.selectbox("Главный тренер", coaches_list, index=coach_idx, key=f"t_coach_{selected_team}")
@@ -1121,7 +1129,14 @@ with tab_teams:
 
         if st.button("💾 Сохранить команду", use_container_width=True):
             if t_name:
-                db["teams"][t_name] = {"chemistry": t_chem, "coach": t_coach, "best_map": t_best, "worst_map": t_worst, "roster": roster_data}
+                db["teams"][t_name] = {
+                    "chemistry": t_chem,
+                    "coach": t_coach,
+                    "best_map": t_best,
+                    "worst_map": t_worst,
+                    "tier": t_tier,
+                    "roster": roster_data
+                }
                 save_db(db)
                 st.success(f"Команда '{t_name}' сохранена!")
                 st.rerun()
@@ -1156,7 +1171,12 @@ with tab_teams:
             coach_r = db["coaches"].get(data.get("coach"), {}).get("rating", 0)
             team_ovr = round((avg_p_rating * 0.75) + (data.get("chemistry", 0) * 0.15) + (coach_r * 0.10))
 
-            tier_tag = "TIER 1" if team_ovr >= 88 else ("TIER 2" if team_ovr >= 75 else "TIER 3")
+            # Определяем тир (ручной выбор или авторасчет)
+            saved_tier = data.get("tier", "Авторасчет")
+            if saved_tier == "Авторасчет":
+                tier_tag = "TIER 1" if team_ovr >= 88 else ("TIER 2" if team_ovr >= 75 else "TIER 3")
+            else:
+                tier_tag = saved_tier.upper()
 
             team_card_html = (
                 f'<div class="team-card-box">'
