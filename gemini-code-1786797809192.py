@@ -1031,7 +1031,50 @@ with tab_match:
 
                 full_card_html = f'<div class="jp-match-card"><div class="jp-status-bar">{icon_title} МАТЧ СИМУЛИРОВАН • ФОРМАТ: {match_fmt}</div><div class="jp-score-header"><div class="jp-team-title">{team_a}</div><div class="jp-score-main">{maps_won_a} : {maps_won_b}</div><div class="jp-team-title">{team_b}</div></div><div class="jp-winner-tag">🏆 {winner_team} ПОБЕДА!</div>{mvp_banner_html}<div class="jp-section-title"><span>|</span> КАРТЫ МАТЧА</div><div class="jp-maps-grid">{maps_html}</div><div class="jp-section-title"><span>|</span> {team_a}</div><div class="jp-table-wrapper"><table class="jp-table">{table_header_html}<tbody>{table_rows_a}</tbody></table></div><div class="jp-section-title"><span>|</span> {team_b}</div><div class="jp-table-wrapper"><table class="jp-table">{table_header_html}<tbody>{table_rows_b}</tbody></table></div></div>'
 
+                # СОХРАНЕНИЕ В ИСТОРИЮ МАТЧЕЙ
+                match_record = {
+                    "team_a": team_a,
+                    "team_b": team_b,
+                    "score_a": maps_won_a,
+                    "score_b": maps_won_b,
+                    "winner": winner_team,
+                    "format": match_fmt,
+                    "mvp": mvp_player["player"] if mvp_player else "—",
+                    "mvp_rating": mvp_player["Rating"] if mvp_player else 0.0,
+                    "card_html": full_card_html
+                }
+                
+                db["match_history"].insert(0, match_record)
+                if len(db["match_history"]) > 30: # Храним последние 30 матчей
+                    db["match_history"] = db["match_history"][:30]
+                save_db(db)
+
                 st.markdown(full_card_html, unsafe_allow_html=True)
+
+    # ==================== ОТОБРАЖЕНИЕ ИСТОРИИ МАТЧЕЙ ====================
+    st.markdown("---")
+    col_hist_title, col_hist_btn = st.columns([4, 1])
+    with col_hist_title:
+        st.subheader("📜 История Сыгранных Матчей")
+    with col_hist_btn:
+        if db.get("match_history"):
+            if st.button("🗑️ Очистить историю", key="clear_history_btn"):
+                db["match_history"] = []
+                save_db(db)
+                st.success("История очищена!")
+                st.rerun()
+
+    if not db.get("match_history"):
+        st.info("История пока пуста. Проведите симуляцию матча выше, чтобы сохранить результат.")
+    else:
+        for idx, match_data in enumerate(db["match_history"]):
+            label = (
+                f"⚔️ {match_data['team_a']} ({match_data['score_a']}) VS "
+                f"({match_data['score_b']}) {match_data['team_b']} | "
+                f"🏆 Победитель: {match_data['winner']} | MVP: {match_data.get('mvp', '—')}"
+            )
+            with st.expander(label, expanded=(idx == 0)):
+                st.markdown(match_data.get("card_html", ""), unsafe_allow_html=True)
 
 # ==================== ИГРОКИ ====================
 with tab_players:
