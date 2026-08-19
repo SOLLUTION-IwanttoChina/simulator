@@ -303,7 +303,6 @@ if st.session_state.theme == "light":
             color: #6d28d9;
         }}
 
-        /* КАРТОЧКА КОМАНДЫ (СВЕТЛАЯ ТЕМА) */
         .team-card-box {{
             background: linear-gradient(145deg, #ffffff 0%, #f3e8ff 100%);
             border: 2px solid #ddd6fe;
@@ -632,7 +631,6 @@ else:
             color: #eab308;
         }}
 
-        /* КАРТОЧКА КОМАНДЫ (ТЕМНАЯ ТЕМА) */
         .team-card-box {{
             background: linear-gradient(145deg, #121520 0%, #0a0b10 100%);
             border: 2px solid #2a2e3d;
@@ -927,11 +925,12 @@ else:
 
 st.markdown("---")
 
-tab_match, tab_players, tab_teams, tab_coaches = st.tabs([
+tab_match, tab_players, tab_teams, tab_coaches, tab_brackets = st.tabs([
     "⚔️ Матч-Центр", 
     "👤 Игроки", 
     "🛡️ Команды", 
-    "📋 Тренеры"
+    "📋 Тренеры",
+    "🏆 Конструктор"
 ])
 
 # ==================== МАТЧ-ЦЕНТР ====================
@@ -1225,3 +1224,118 @@ with tab_coaches:
         st.markdown("##### 📜 Список Тренеров")
         c_list = [{"Тренер": k, "Рейтинг": v.get("rating", 0)} for k, v in db["coaches"].items()]
         st.dataframe(c_list, use_container_width=True, height=400)
+
+# ==================== КОНСТРУКТОР СЕТОК (РУЧНОЙ РЕЖИМ) ====================
+with tab_brackets:
+    st.subheader("🏆 Конструктор Турниров и Сеток")
+    
+    # 1. Настройки формата турнира
+    with st.expander("⚙️ Настройки структуры турнира", expanded=True):
+        col_cfg1, col_cfg2, col_cfg3 = st.columns(3)
+        with col_cfg1:
+            has_groups = st.checkbox("Включить Групповую стадию", value=True)
+            has_lower_bracket = st.checkbox("Нижняя сетка в Плей-офф (Double Elimination)", value=True)
+        with col_cfg2:
+            num_qualifiers = st.number_input("Количество слотов / Квалификаций", min_value=2, max_value=16, value=4, step=2)
+            teams_per_group = st.selectbox("Команд в группе", [4, 6, 8]) if has_groups else 4
+        with col_cfg3:
+            playoff_teams_count = st.selectbox("Команд выходит в Плей-офф", [2, 4, 8], index=1)
+
+    # Выбор участников из вашей базы
+    available_teams = list(db["teams"].keys())
+    selected_teams = st.multiselect(
+        "Выберите участников турнира:", 
+        options=available_teams, 
+        default=available_teams[:min(len(available_teams), int(num_qualifiers))]
+    )
+
+    if len(selected_teams) < 2:
+        st.warning("⚠️ Выберите хотя бы 2 команды для формирования сетки!")
+    else:
+        st.markdown("---")
+        
+        # 2. РУЧНАЯ ГРУППОВАЯ СТАДИЯ (Если включена)
+        if has_groups:
+            st.markdown("### 📊 Групповая стадия (Ручной ввод результатов)")
+            
+            mid_point = len(selected_teams) // 2
+            group_a = selected_teams[:mid_point]
+            group_b = selected_teams[mid_point:]
+            
+            g_col1, g_col2 = st.columns(2)
+            
+            with g_col1:
+                st.markdown("#### Группа A")
+                group_a_winners = []
+                for idx, team in enumerate(group_a):
+                    score = st.number_input(f"Побед: {team} (Группа A)", min_value=0, max_value=10, value=0, key=f"ga_score_{idx}")
+                    group_a_winners.append((team, score))
+            
+            with g_col2:
+                st.markdown("#### Группа B")
+                group_b_winners = []
+                for idx, team in enumerate(group_b):
+                    score = st.number_input(f"Побед: {team} (Группа B)", min_value=0, max_value=10, value=0, key=f"gb_score_{idx}")
+                    group_b_winners.append((team, score))
+
+            st.markdown("---")
+
+        # 3. РУЧНОЙ ПЛЕЙ-ОФФ (СЕТКА)
+        st.markdown("### ⚔️ Плей-офф (Ручное управление сеткой)")
+        
+        # Полуфиналы / Верхняя сетка
+        st.markdown("#### 🔝 Верхняя сетка (Upper Bracket)")
+        ub_col1, ub_col2 = st.columns(2)
+        
+        t1 = selected_teams[0] if len(selected_teams) > 0 else "Команда 1"
+        t2 = selected_teams[1] if len(selected_teams) > 1 else "Команда 2"
+        t3 = selected_teams[2] if len(selected_teams) > 2 else "Команда 3"
+        t4 = selected_teams[3] if len(selected_teams) > 3 else "Команда 4"
+
+        with ub_col1:
+            st.markdown(f"**Матч 1:** {t1} vs {t2}")
+            m1_winner = st.selectbox("Победитель Матча 1:", [t1, t2], key="ub_m1")
+            m1_loser = t2 if m1_winner == t1 else t1
+
+        with ub_col2:
+            st.markdown(f"**Матч 2:** {t3} vs {t4}")
+            m2_winner = st.selectbox("Победитель Матча 2:", [t3, t4], key="ub_m2")
+            m2_loser = t4 if m2_winner == t3 else t3
+
+        # Финал Верхней сетки
+        st.markdown("**Финал Верхней Сетки:**")
+        ub_final_winner = st.selectbox(
+            f"{m1_winner} vs {m2_winner}", 
+            [m1_winner, m2_winner], 
+            key="ub_final"
+        )
+        ub_final_loser = m2_winner if ub_final_winner == m1_winner else m1_winner
+
+        # 4. НИЖНЯЯ СЕТКА (Double Elimination)
+        finalist_2 = ub_final_loser
+        
+        if has_lower_bracket:
+            st.markdown("---")
+            st.markdown("#### 🔻 Нижняя сетка (Lower Bracket)")
+            lb_col1, lb_col2 = st.columns(2)
+            
+            with lb_col1:
+                st.markdown(f"**Малый финал лузеров:** {m1_loser} vs {m2_loser}")
+                lb_m1_winner = st.selectbox("Победитель:", [m1_loser, m2_loser], key="lb_m1")
+
+            with lb_col2:
+                st.markdown(f"**Финал Лузеров:** {lb_m1_winner} vs {ub_final_loser}")
+                lb_final_winner = st.selectbox("Победитель Финала Лузеров (Выходит в Гранд-Финал):", [lb_m1_winner, ub_final_loser], key="lb_final")
+                finalist_2 = lb_final_winner
+
+        # 5. ГРАНД-ФИНАЛ
+        st.markdown("---")
+        st.markdown("### 👑 Гранд-Финал")
+        gf_col1, gf_col2 = st.columns([2, 1])
+        
+        with gf_col1:
+            st.markdown(f"### 🏆 {ub_final_winner}  vs  {finalist_2}")
+            grand_champion = st.selectbox("ЧЕМПИОН ТУРНИРА:", [ub_final_winner, finalist_2], key="grand_champion")
+            
+        with gf_col2:
+            st.success(f"🎉 **ПОБЕДИТЕЛЬ ТУРНИРА:**\n\n# {grand_champion}")
