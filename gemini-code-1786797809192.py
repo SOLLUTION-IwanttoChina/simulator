@@ -303,7 +303,6 @@ if st.session_state.theme == "light":
             color: #6d28d9;
         }}
 
-        /* КАРТОЧКА КОМАНДЫ (СВЕТЛАЯ ТЕМА) */
         .team-card-box {{
             background: linear-gradient(145deg, #ffffff 0%, #f3e8ff 100%);
             border: 2px solid #ddd6fe;
@@ -632,7 +631,6 @@ else:
             color: #eab308;
         }}
 
-        /* КАРТОЧКА КОМАНДЫ (ТЕМНАЯ ТЕМА) */
         .team-card-box {{
             background: linear-gradient(145deg, #121520 0%, #0a0b10 100%);
             border: 2px solid #2a2e3d;
@@ -927,11 +925,12 @@ else:
 
 st.markdown("---")
 
-tab_match, tab_players, tab_teams, tab_coaches = st.tabs([
+tab_match, tab_players, tab_teams, tab_coaches, tab_history = st.tabs([
     "⚔️ Матч-Центр", 
     "👤 Игроки", 
     "🛡️ Команды", 
-    "📋 Тренеры"
+    "📋 Тренеры",
+    "📜 История"
 ])
 
 # ==================== МАТЧ-ЦЕНТР ====================
@@ -1050,31 +1049,6 @@ with tab_match:
                 save_db(db)
 
                 st.markdown(full_card_html, unsafe_allow_html=True)
-
-    # ==================== ОТОБРАЖЕНИЕ ИСТОРИИ МАТЧЕЙ ====================
-    st.markdown("---")
-    col_hist_title, col_hist_btn = st.columns([4, 1])
-    with col_hist_title:
-        st.subheader("📜 История Сыгранных Матчей")
-    with col_hist_btn:
-        if db.get("match_history"):
-            if st.button("🗑️ Очистить историю", key="clear_history_btn"):
-                db["match_history"] = []
-                save_db(db)
-                st.success("История очищена!")
-                st.rerun()
-
-    if not db.get("match_history"):
-        st.info("История пока пуста. Проведите симуляцию матча выше, чтобы сохранить результат.")
-    else:
-        for idx, match_data in enumerate(db["match_history"]):
-            label = (
-                f"⚔️ {match_data['team_a']} ({match_data['score_a']}) VS "
-                f"({match_data['score_b']}) {match_data['team_b']} | "
-                f"🏆 Победитель: {match_data['winner']} | MVP: {match_data.get('mvp', '—')}"
-            )
-            with st.expander(label, expanded=(idx == 0)):
-                st.markdown(match_data.get("card_html", ""), unsafe_allow_html=True)
 
 # ==================== ИГРОКИ ====================
 with tab_players:
@@ -1268,3 +1242,37 @@ with tab_coaches:
         st.markdown("##### 📜 Список Тренеров")
         c_list = [{"Тренер": k, "Рейтинг": v.get("rating", 0)} for k, v in db["coaches"].items()]
         st.dataframe(c_list, use_container_width=True, height=400)
+
+# ==================== ИСТОРИЯ МАТЧЕЙ (ЗАЩИЩЕННАЯ ВКТАДКА) ====================
+with tab_history:
+    st.subheader("🔒 Закрытая История Матчей")
+    
+    password = st.text_input("Введите пароль доступа:", type="password", key="history_password_input")
+    
+    if password == "solution":
+        st.success("🔓 Доступ разрешен!")
+        
+        col_hist_title, col_hist_btn = st.columns([4, 1])
+        with col_hist_btn:
+            if db.get("match_history"):
+                if st.button("🗑️ Очистить историю", key="clear_history_btn"):
+                    db["match_history"] = []
+                    save_db(db)
+                    st.success("История очищена!")
+                    st.rerun()
+
+        if not db.get("match_history"):
+            st.info("История пока пуста. Проведите симуляцию матча в Матч-Центре, чтобы сохранить результат.")
+        else:
+            for idx, match_data in enumerate(db["match_history"]):
+                label = (
+                    f"⚔️ {match_data['team_a']} ({match_data['score_a']}) VS "
+                    f"({match_data['score_b']}) {match_data['team_b']} | "
+                    f"🏆 Победитель: {match_data['winner']} | MVP: {match_data.get('mvp', '—')}"
+                )
+                with st.expander(label, expanded=(idx == 0)):
+                    st.markdown(match_data.get("card_html", ""), unsafe_allow_html=True)
+    elif password != "":
+        st.error("❌ Неверный пароль!")
+    else:
+        st.info("🔑 Введите пароль для просмотра истории игр.")
