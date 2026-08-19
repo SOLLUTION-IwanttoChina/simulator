@@ -20,7 +20,7 @@ DEFAULT_DB = {
 
 ROLES = ["Капитан", "Снайпер", "Опенер", "Рифлер", "Саппорт", "Капитан-Снайпер", "Люркер"]
 PROFICIENCIES = ["Прекрасно", "Отлично", "Хорошо", "Средне", "Плохо"]
-ROLE_MULTIPLIERS = {"Прекрасно": 1.20, "Отлично": 1.10, "Хорошо": 1.00, "Средне": 0.85, "Плохо": 0.70}
+ROLE_MULTIPLIERS = {"Прекрасно": 1.25, "Отлично": 1.12, "Хорошо": 1.00, "Средне": 0.85, "Плохо": 0.65}
 TIERS_OPTIONS = ["Авторасчет", "Tier 1", "Tier 2", "Tier 3"]
 
 MAPS = ["Sandstone", "Province", "Breeze", "Rust", "Dune", "Hanami", "Prison"]
@@ -812,6 +812,9 @@ if "db" not in st.session_state:
 
 db = st.session_state.db
 
+# =========================================================
+# ОБНОВЛЕННЫЙ СИНЕРГЕТИЧЕСКИЙ ДВИЖОК БАЛАНСА (MATCH ENGINE)
+# =========================================================
 class MatchEngine:
     @staticmethod
     def get_player_power(player_name, role):
@@ -825,22 +828,43 @@ class MatchEngine:
         t_data = db["teams"].get(team_name, {})
         roster = t_data.get("roster", {})
         roster_items = []
+        roles_present = set()
+
         if isinstance(roster, dict):
             for k, v in roster.items():
                 if isinstance(v, dict):
                     p_name, p_role = v.get("player"), v.get("role", "Рифлер")
-                    if p_name and p_name != "Нет": roster_items.append((p_role, p_name))
+                    if p_name and p_name != "Нет":
+                        roster_items.append((p_role, p_name))
+                        roles_present.add(p_role)
 
         players_power = sum(MatchEngine.get_player_power(p_name, role) for role, p_name in roster_items)
-        if not roster_items or len(roster_items) < 5: players_power = max(players_power, 350)
+        if not roster_items or len(roster_items) < 5:
+            players_power = max(players_power, 320)
 
+        # 1. Синергетический буст от грамотного распределения ролей
+        role_synergy = 1.0
+        if {"Капитан", "Капитан-Снайпер"}.intersection(roles_present):
+            role_synergy += 0.05
+        if {"Снайпер", "Капитан-Снайпер"}.intersection(roles_present):
+            role_synergy += 0.05
+        if "Опенер" in roles_present:
+            role_synergy += 0.04
+
+        # 2. Множитель сыгранности (Chemistry)
         chem = t_data.get("chemistry", 0)
-        chem_factor = 0.85 + (chem / 100.0) * 0.30
+        chem_factor = 0.80 + (chem / 100.0) * 0.35
+
+        # 3. Множитель тренера
         coach_name = t_data.get("coach", "Нет")
         coach_rating = db["coaches"].get(coach_name, {}).get("rating", 0) if coach_name != "Нет" else 0
-        coach_factor = 1.0 + (coach_rating / 100.0) * 0.08
-        map_factor = 1.10 if map_name == t_data.get("best_map") else (0.90 if map_name == t_data.get("worst_map") else 1.0)
-        return players_power * chem_factor * coach_factor * map_factor
+        coach_factor = 1.0 + (coach_rating / 100.0) * 0.10
+
+        # 4. Фактор карты
+        map_factor = 1.12 if map_name == t_data.get("best_map") else (0.88 if map_name == t_data.get("worst_map") else 1.0)
+
+        # Итоговая синергетическая сила
+        return players_power * role_synergy * chem_factor * coach_factor * map_factor
 
     @staticmethod
     def simulate_map(team_a, team_b, map_name):
@@ -864,7 +888,9 @@ class MatchEngine:
         stats_a = {p[0]: {"role": p[1], "K": 0, "A": 0, "D": 0, "damage": 0, "kast": 0, "imp": 0} for p in roster_a}
         stats_b = {p[0]: {"role": p[1], "K": 0, "A": 0, "D": 0, "damage": 0, "kast": 0, "imp": 0} for p in roster_b}
 
-        prob_a = power_a / max(1, (power_a + power_b))
+        # Вычисление сбалансированной базовой вероятности на основе разницы сил
+        diff_ratio = (power_a - power_b) / max(1, (power_a + power_b))
+        base_prob_a = max(0.15, min(0.85, 0.50 + (diff_ratio * 0.40)))
 
         def pick_weighted_player(roster_pairs):
             if not roster_pairs: return None
@@ -873,7 +899,7 @@ class MatchEngine:
 
         while True:
             rounds_played += 1
-            win_prob = prob_a * 0.94 + random.uniform(-0.06, 0.06)
+            win_prob = base_prob_a + random.uniform(-0.04, 0.04)
             winner = team_a if random.random() < win_prob else team_b
 
             if winner == team_a:
@@ -884,33 +910,40 @@ class MatchEngine:
                 win_roster, lose_roster, win_stats, lose_stats = roster_b, roster_a, stats_b, stats_a
 
             if win_roster and lose_roster:
-                for _ in range(5):
+                # Победившая команда
+                kills_in_round = random.choices([3, 4, 5], weights=[0.25, 0.50, 0.25])[0]
+                for _ in range(kills_in_round):
                     killer = pick_weighted_player(win_roster)
                     victim = random.choice([p for p, r in lose_roster])
                     win_stats[killer]["K"] += 1
-                    win_stats[killer]["damage"] += random.randint(80, 150)
-                    win_stats[killer]["imp"] += random.randint(1, 2)
+                    win_stats[killer]["damage"] += random.randint(85, 135)
+                    win_stats[killer]["imp"] += random.choice([1, 2])
                     lose_stats[victim]["D"] += 1
-                    if len(win_roster) > 1 and random.random() < 0.55:
+                    if len(win_roster) > 1 and random.random() < 0.50:
                         assist = random.choice([p for p, r in win_roster if p != killer])
                         win_stats[assist]["A"] += 1
 
-                for _ in range(random.randint(1, 4)):
+                # Проигравшая команда в ответ делает 1-3 фрагов
+                lose_kills = random.randint(1, 3)
+                for _ in range(lose_kills):
                     killer = pick_weighted_player(lose_roster)
                     victim = random.choice([p for p, r in win_roster])
                     lose_stats[killer]["K"] += 1
-                    lose_stats[killer]["damage"] += random.randint(80, 140)
-                    lose_stats[killer]["imp"] += random.randint(1, 2)
+                    lose_stats[killer]["damage"] += random.randint(75, 115)
+                    lose_stats[killer]["imp"] += 1
                     win_stats[victim]["D"] += 1
-                    if len(lose_roster) > 1 and random.random() < 0.55:
+                    if len(lose_roster) > 1 and random.random() < 0.45:
                         assist = random.choice([p for p, r in lose_roster if p != killer])
                         lose_stats[assist]["A"] += 1
 
+            # KAST учет
             for st_dict in [stats_a, stats_b]:
                 for p in st_dict:
-                    if random.random() < 0.80: st_dict[p]["kast"] += 1
+                    if random.random() < 0.72:
+                        st_dict[p]["kast"] += 1
 
-            if (score_a >= 13 or score_b >= 13) and abs(score_a - score_b) >= 2: break
+            if (score_a >= 13 or score_b >= 13) and abs(score_a - score_b) >= 2:
+                break
 
         return score_a, score_b, stats_a, stats_b, rounds_played
 
@@ -989,7 +1022,9 @@ with tab_match:
                         adr = round(st_data["damage"] / max(1, total_rounds), 1)
                         kast_pct = min(98.0, round((st_data["kast"] / max(1, total_rounds)) * 100, 1))
                         imp_pct = min(99.0, round((st_data["imp"] / max(1, total_rounds)) * 50, 1))
-                        rating = round(0.35 + (kd * 0.35) + (adr / 110.0) * 0.30 + (kast_pct / 200.0) * 0.10, 2)
+                        
+                        # Реалистичная HLTV 2.0 модель расчёта рейтинга
+                        rating = round(0.20 + (kd * 0.38) + (adr / 100.0) * 0.32 + (kast_pct / 100.0) * 0.10, 2)
 
                         item = {
                             "team": t_name, "player": p_name, "role": st_data["role"],
@@ -1243,7 +1278,7 @@ with tab_coaches:
         c_list = [{"Тренер": k, "Рейтинг": v.get("rating", 0)} for k, v in db["coaches"].items()]
         st.dataframe(c_list, use_container_width=True, height=400)
 
-# ==================== ИСТОРИЯ МАТЧЕЙ (ЗАЩИЩЕННАЯ ВКТАДКА) ====================
+# ==================== ИСТОРИЯ МАТЧЕЙ (ЗАЩИЩЕННАЯ ВКЛАДКА) ====================
 with tab_history:
     st.subheader("🔒 Закрытая История Матчей")
     
