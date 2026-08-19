@@ -50,9 +50,7 @@ if st.session_state.theme == "light":
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }}
         
-        [data-testid="stSidebar"] {{
-            display: none;
-        }}
+        [data-testid="stSidebar"] {{ display: none; }}
         
         div[data-baseweb="select"] > div,
         div[data-baseweb="input"] > div,
@@ -61,12 +59,6 @@ if st.session_state.theme == "light":
             color: #1e1b4b !important;
             border: 1px solid #ddd6fe !important;
             border-radius: 8px !important;
-            transition: border-color 0.3s ease !important;
-        }}
-
-        div[data-baseweb="select"]:hover > div,
-        div[data-baseweb="input"]:hover > div {{
-            border-color: #8b5cf6 !important;
         }}
 
         .stButton > button {{
@@ -76,12 +68,6 @@ if st.session_state.theme == "light":
             font-weight: 700 !important;
             border: 1px solid #c084fc !important;
             box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25) !important;
-            transition: all 0.3s ease-in-out !important;
-        }}
-
-        .stButton > button:hover {{
-            transform: translateY(-2px) !important;
-            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4) !important;
         }}
 
         .cat-corner-wrapper {{
@@ -102,14 +88,44 @@ if st.session_state.theme == "light":
             box-shadow: 0 0 20px rgba(139, 92, 246, 0.5) !important;
             color: transparent !important;
             cursor: pointer !important;
-            transition: transform 0.3s ease, box-shadow 0.3s ease !important;
-        }}
-        
-        .cat-corner-wrapper button:hover {{
-            transform: scale(1.12) rotate(6deg) !important;
-            box-shadow: 0 0 28px rgba(168, 85, 247, 0.8) !important;
         }}
 
+        /* LvUp style Match Nodes */
+        .bracket-node {{
+            background: #ffffff;
+            border: 2px solid #ddd6fe;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.08);
+        }}
+        .bracket-header {{
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #7c3aed;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }}
+        .bracket-team {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 8px;
+            border-radius: 6px;
+            background: #f5f3ff;
+            margin-bottom: 4px;
+            font-weight: 700;
+            color: #2e1065;
+            font-size: 0.85rem;
+        }}
+        .bracket-team.winner {{
+            background: #d8b4fe;
+            color: #3b0764;
+            border-left: 4px solid #7c3aed;
+        }}
+        
         .jp-match-card {{
             background-color: #ffffff;
             border: 1px solid #e9d5ff;
@@ -118,13 +134,7 @@ if st.session_state.theme == "light":
             padding: 16px;
             margin-bottom: 18px;
             box-shadow: 0 8px 30px rgba(124, 58, 237, 0.08);
-            transition: all 0.3s ease;
         }}
-
-        .jp-match-card:hover {{
-            box-shadow: 0 12px 35px rgba(124, 58, 237, 0.16);
-        }}
-
         .jp-status-bar {{
             background: rgba(139, 92, 246, 0.1);
             border: 1px solid rgba(139, 92, 246, 0.3);
@@ -133,11 +143,9 @@ if st.session_state.theme == "light":
             font-size: 0.72rem;
             font-weight: 800;
             color: #6d28d9;
-            letter-spacing: 0.6px;
             text-transform: uppercase;
             margin-bottom: 10px;
         }}
-
         .jp-score-header {{
             display: flex;
             justify-content: space-between;
@@ -149,247 +157,33 @@ if st.session_state.theme == "light":
             border-left: 4px solid #8b5cf6;
             border-right: 4px solid #8b5cf6;
         }}
-
-        .jp-team-title {{
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: #3b0764;
-            width: 38%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }}
-
-        .jp-score-main {{
-            font-size: 1.85rem;
-            font-weight: 900;
-            color: #6d28d9;
-            width: 24%;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 8px rgba(109, 40, 217, 0.2);
-        }}
-
-        .jp-winner-tag {{
-            text-align: center;
-            margin-top: 8px;
-            font-size: 0.88rem;
-            font-weight: 800;
-            color: #7e22ce;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }}
-
-        .jp-mvp-box {{
-            background: linear-gradient(90deg, #f3e8ff 0%, #ffffff 100%);
-            border: 1px solid #c084fc;
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 0.82rem;
-            color: #581c87;
-            margin-top: 10px;
-            box-shadow: 0 2px 10px rgba(168, 85, 247, 0.1);
-        }}
-
-        .jp-section-title {{
-            font-size: 0.75rem;
-            font-weight: 800;
-            color: #6b21a8;
-            margin: 14px 0 6px 0;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-transform: uppercase;
-        }}
-
-        .jp-section-title span {{
-            color: #8b5cf6;
-            font-size: 1rem;
-        }}
-
-        .jp-maps-grid {{
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 8px;
-        }}
-
-        .jp-map-item {{
-            background: #f5f3ff;
-            border: 1px solid #ddd6fe;
-            border-radius: 8px;
-            padding: 7px;
-            text-align: center;
-            transition: transform 0.2s ease;
-        }}
-
-        .jp-map-item:hover {{
-            transform: translateY(-2px);
-        }}
-
-        .jp-map-name {{
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: #581c87;
-            margin-bottom: 2px;
-            text-transform: uppercase;
-        }}
-
-        .jp-map-score {{
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #4c1d95;
-        }}
-
-        .jp-map-score.winner {{
-            color: #7c3aed;
-            font-weight: 800;
-        }}
-
-        .jp-table-wrapper {{
-            overflow-x: auto;
-            border-radius: 8px;
-            border: 1px solid #ddd6fe;
-            margin-bottom: 8px;
-        }}
-
-        .jp-table {{
-            width: 100%;
-            table-layout: fixed;
-            border-collapse: collapse;
-            font-size: 0.73rem;
-            background: #ffffff;
-        }}
-
-        .jp-table th {{
-            background: #f3e8ff;
-            color: #581c87;
-            font-weight: 800;
-            padding: 7px;
-            text-align: center;
-            border-bottom: 1px solid #ddd6fe;
-            text-transform: uppercase;
-            font-size: 0.65rem;
-        }}
-
-        .jp-table td {{
-            padding: 6px;
-            text-align: center;
-            color: #334155;
-            border-bottom: 1px solid #f5f3ff;
-            line-height: 1.1;
-        }}
-
-        .jp-table tr.mvp-row {{
-            background: #f3e8ff !important;
-        }}
-
-        .jp-table td.player-cell {{
-            text-align: left;
-            font-weight: 800;
-            color: #3b0764;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }}
-
-        .jp-table td.player-cell small {{
-            color: #7e22ce;
-            font-weight: 500;
-            margin-left: 4px;
-            font-size: 0.62rem;
-        }}
-
-        .jp-table td.rating-cell {{
-            font-weight: 900;
-            color: #6d28d9;
-        }}
-
-        .team-card-box {{
-            background: linear-gradient(145deg, #ffffff 0%, #f3e8ff 100%);
-            border: 2px solid #ddd6fe;
-            border-radius: 14px;
-            padding: 18px 20px;
-            margin-bottom: 10px;
-            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.12);
-        }}
-
-        .team-card-header {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #e9d5ff;
-            padding-bottom: 12px;
-            margin-bottom: 12px;
-        }}
-
-        .team-card-title {{
-            font-size: 1.4rem;
-            font-weight: 900;
-            color: #3b0764;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }}
-
-        .team-ovr-badge {{
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-            color: #ffffff;
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-weight: 900;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.3);
-            text-align: center;
-        }}
-
-        .team-stats-grid {{
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 14px;
-            background: #f5f3ff;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ddd6fe;
-        }}
-
-        .team-stat-item {{
-            font-size: 0.78rem;
-            color: #6b21a8;
-        }}
-
-        .team-stat-item b {{
-            color: #3b0764;
-        }}
-
-        .roster-grid {{
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }}
-
-        .roster-slot-card {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #ffffff;
-            border: 1px solid #e9d5ff;
-            border-left: 3px solid #8b5cf6;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            color: #2e1065;
-        }}
-
-        .role-badge {{
-            background: rgba(139, 92, 246, 0.15);
-            color: #6d28d9;
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.68rem;
-            font-weight: 800;
-            text-transform: uppercase;
-        }}
+        .jp-team-title {{ font-size: 1.25rem; font-weight: 800; color: #3b0764; width: 38%; }}
+        .jp-score-main {{ font-size: 1.85rem; font-weight: 900; color: #6d28d9; width: 24%; }}
+        .jp-winner-tag {{ text-align: center; margin-top: 8px; font-size: 0.88rem; font-weight: 800; color: #7e22ce; text-transform: uppercase; }}
+        .jp-mvp-box {{ background: linear-gradient(90deg, #f3e8ff 0%, #ffffff 100%); border: 1px solid #c084fc; border-radius: 8px; padding: 8px 12px; font-size: 0.82rem; color: #581c87; margin-top: 10px; }}
+        .jp-section-title {{ font-size: 0.75rem; font-weight: 800; color: #6b21a8; margin: 14px 0 6px 0; text-transform: uppercase; }}
+        .jp-maps-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }}
+        .jp-map-item {{ background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 8px; padding: 7px; text-align: center; }}
+        .jp-map-name {{ font-size: 0.7rem; font-weight: 700; color: #581c87; text-transform: uppercase; }}
+        .jp-map-score {{ font-size: 0.75rem; font-weight: 600; color: #4c1d95; }}
+        .jp-map-score.winner {{ color: #7c3aed; font-weight: 800; }}
+        .jp-table-wrapper {{ overflow-x: auto; border-radius: 8px; border: 1px solid #ddd6fe; margin-bottom: 8px; }}
+        .jp-table {{ width: 100%; border-collapse: collapse; font-size: 0.73rem; background: #ffffff; }}
+        .jp-table th {{ background: #f3e8ff; color: #581c87; font-weight: 800; padding: 7px; text-align: center; border-bottom: 1px solid #ddd6fe; text-transform: uppercase; }}
+        .jp-table td {{ padding: 6px; text-align: center; color: #334155; border-bottom: 1px solid #f5f3ff; }}
+        .jp-table tr.mvp-row {{ background: #f3e8ff !important; }}
+        .jp-table td.player-cell {{ text-align: left; font-weight: 800; color: #3b0764; }}
+        .jp-table td.rating-cell {{ font-weight: 900; color: #6d28d9; }}
+        
+        .team-card-box {{ background: linear-gradient(145deg, #ffffff 0%, #f3e8ff 100%); border: 2px solid #ddd6fe; border-radius: 14px; padding: 18px 20px; margin-bottom: 10px; }}
+        .team-card-header {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e9d5ff; padding-bottom: 12px; margin-bottom: 12px; }}
+        .team-card-title {{ font-size: 1.4rem; font-weight: 900; color: #3b0764; display: flex; align-items: center; gap: 10px; }}
+        .team-ovr-badge {{ background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; padding: 6px 14px; border-radius: 8px; font-weight: 900; font-size: 1.1rem; text-align: center; }}
+        .team-stats-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; background: #f5f3ff; padding: 10px; border-radius: 8px; border: 1px solid #ddd6fe; }}
+        .team-stat-item {{ font-size: 0.78rem; color: #6b21a8; }}
+        .roster-grid {{ display: flex; flex-direction: column; gap: 6px; }}
+        .roster-slot-card {{ display: flex; justify-content: space-between; align-items: center; background: #ffffff; border: 1px solid #e9d5ff; border-left: 3px solid #8b5cf6; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; color: #2e1065; }}
+        .role-badge {{ background: rgba(139, 92, 246, 0.15); color: #6d28d9; border: 1px solid rgba(139, 92, 246, 0.3); padding: 2px 8px; border-radius: 4px; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -402,9 +196,7 @@ else:
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }}
         
-        [data-testid="stSidebar"] {{
-            display: none;
-        }}
+        [data-testid="stSidebar"] {{ display: none; }}
         
         div[data-baseweb="select"] > div,
         div[data-baseweb="input"] > div,
@@ -421,7 +213,6 @@ else:
             border-radius: 6px !important;
             font-weight: 700 !important;
             border: 1px solid #f87171 !important;
-            transition: all 0.2s ease-in-out !important;
         }}
 
         .cat-corner-wrapper {{
@@ -442,281 +233,74 @@ else:
             box-shadow: 0 4px 18px rgba(220, 38, 38, 0.5) !important;
             color: transparent !important;
             cursor: pointer !important;
-            transition: transform 0.2s ease, border-color 0.2s ease !important;
         }}
 
-        .cat-corner-wrapper button:hover {{
-            transform: scale(1.12) rotate(-5deg) !important;
-            border-color: #f87171 !important;
-        }}
-
-        .jp-match-card {{
-            background-color: #0f1118;
-            border: 1px solid #222634;
-            border-radius: 10px;
-            padding: 14px;
-            margin-bottom: 15px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-        }}
-
-        .jp-status-bar {{
-            background: rgba(234, 179, 8, 0.08);
-            border: 1px solid rgba(234, 179, 8, 0.25);
-            border-radius: 5px;
-            padding: 4px 8px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: #eab308;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }}
-
-        .jp-score-header {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            text-align: center;
-            padding: 10px 14px;
-            background: #141722;
-            border-radius: 8px;
-            border-left: 3px solid #dc2626;
-            border-right: 3px solid #dc2626;
-        }}
-
-        .jp-team-title {{
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #f8fafc;
-            width: 38%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }}
-
-        .jp-score-main {{
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: #ffffff;
-            width: 24%;
-            letter-spacing: 1px;
-        }}
-
-        .jp-winner-tag {{
-            text-align: center;
-            margin-top: 6px;
-            font-size: 0.85rem;
-            font-weight: 800;
-            color: #eab308;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }}
-
-        .jp-mvp-box {{
-            background: linear-gradient(90deg, rgba(234, 179, 8, 0.12) 0%, rgba(15, 17, 24, 0.8) 100%);
-            border: 1px solid rgba(234, 179, 8, 0.3);
-            border-radius: 6px;
-            padding: 6px 10px;
-            font-size: 0.8rem;
-            color: #fef08a;
-            margin-top: 8px;
-        }}
-
-        .jp-section-title {{
-            font-size: 0.75rem;
-            font-weight: 800;
-            color: #94a3b8;
-            margin: 12px 0 6px 0;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }}
-
-        .jp-section-title span {{
-            color: #dc2626;
-            font-size: 1rem;
-        }}
-
-        .jp-maps-grid {{
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 8px;
-        }}
-
-        .jp-map-item {{
-            background: #141722;
-            border: 1px solid #232736;
-            border-radius: 6px;
-            padding: 6px;
-            text-align: center;
-        }}
-
-        .jp-map-name {{
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: #94a3b8;
-            margin-bottom: 2px;
-            text-transform: uppercase;
-        }}
-
-        .jp-map-score {{
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #cbd5e1;
-        }}
-
-        .jp-map-score.winner {{
-            color: #eab308;
-            font-weight: 800;
-        }}
-
-        .jp-table-wrapper {{
-            overflow-x: auto;
-            border-radius: 6px;
-            border: 1px solid #202433;
-            margin-bottom: 8px;
-        }}
-
-        .jp-table {{
-            width: 100%;
-            table-layout: fixed;
-            border-collapse: collapse;
-            font-size: 0.73rem;
+        /* LvUp style Match Nodes */
+        .bracket-node {{
             background: #12141e;
-        }}
-
-        .jp-table th {{
-            background: #181b28;
-            color: #64748b;
-            font-weight: 700;
-            padding: 6px;
-            text-align: center;
-            border-bottom: 1px solid #232736;
-            text-transform: uppercase;
-            font-size: 0.65rem;
-        }}
-
-        .jp-table td {{
-            padding: 5px 6px;
-            text-align: center;
-            color: #cbd5e1;
-            border-bottom: 1px solid #1a1d2b;
-            line-height: 1.1;
-        }}
-
-        .jp-table tr.mvp-row {{
-            background: rgba(234, 179, 8, 0.08) !important;
-        }}
-
-        .jp-table td.player-cell {{
-            text-align: left;
-            font-weight: 700;
-            color: #ffffff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }}
-
-        .jp-table td.player-cell small {{
-            color: #64748b;
-            font-weight: 400;
-            margin-left: 4px;
-            font-size: 0.62rem;
-        }}
-
-        .jp-table td.rating-cell {{
-            font-weight: 800;
-            color: #eab308;
-        }}
-
-        .team-card-box {{
-            background: linear-gradient(145deg, #121520 0%, #0a0b10 100%);
-            border: 2px solid #2a2e3d;
-            border-radius: 14px;
-            padding: 18px 20px;
-            margin-bottom: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }}
-
-        .team-card-header {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #232736;
-            padding-bottom: 12px;
-            margin-bottom: 12px;
-        }}
-
-        .team-card-title {{
-            font-size: 1.4rem;
-            font-weight: 900;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }}
-
-        .team-ovr-badge {{
-            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-            color: #ffffff;
-            padding: 6px 14px;
+            border: 1px solid #232736;
             border-radius: 8px;
-            font-weight: 900;
-            font-size: 1.1rem;
-            box-shadow: 0 0 12px rgba(220, 38, 38, 0.4);
-            text-align: center;
-        }}
-
-        .team-stats-grid {{
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 14px;
-            background: #161925;
             padding: 10px;
-            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.5);
         }}
-
-        .team-stat-item {{
-            font-size: 0.78rem;
-            color: #94a3b8;
-        }}
-
-        .team-stat-item b {{
-            color: #f8fafc;
-        }}
-
-        .roster-grid {{
+        .bracket-header {{
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #f87171;
+            text-transform: uppercase;
+            margin-bottom: 6px;
             display: flex;
-            flex-direction: column;
-            gap: 6px;
+            justify-content: space-between;
         }}
-
-        .roster-slot-card {{
+        .bracket-team {{
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #141722;
-            border: 1px solid #202433;
+            padding: 6px 8px;
+            border-radius: 5px;
+            background: #181b28;
+            margin-bottom: 4px;
+            font-weight: 700;
+            color: #cbd5e1;
+            font-size: 0.85rem;
+        }}
+        .bracket-team.winner {{
+            background: #281013;
+            color: #fca5a5;
             border-left: 3px solid #dc2626;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            color: #ffffff;
         }}
 
-        .role-badge {{
-            background: rgba(220, 38, 38, 0.15);
-            color: #f87171;
-            border: 1px solid rgba(220, 38, 38, 0.3);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.68rem;
-            font-weight: 800;
-            text-transform: uppercase;
-        }}
+        .jp-match-card {{ background-color: #0f1118; border: 1px solid #222634; border-radius: 10px; padding: 14px; margin-bottom: 15px; }}
+        .jp-status-bar {{ background: rgba(234, 179, 8, 0.08); border: 1px solid rgba(234, 179, 8, 0.25); border-radius: 5px; padding: 4px 8px; font-size: 0.72rem; font-weight: 700; color: #eab308; text-transform: uppercase; margin-bottom: 8px; }}
+        .jp-score-header {{ display: flex; justify-content: space-between; align-items: center; text-align: center; padding: 10px 14px; background: #141722; border-radius: 8px; border-left: 3px solid #dc2626; border-right: 3px solid #dc2626; }}
+        .jp-team-title {{ font-size: 1.2rem; font-weight: 800; color: #f8fafc; width: 38%; }}
+        .jp-score-main {{ font-size: 1.8rem; font-weight: 900; color: #ffffff; width: 24%; }}
+        .jp-winner-tag {{ text-align: center; margin-top: 6px; font-size: 0.85rem; font-weight: 800; color: #eab308; text-transform: uppercase; }}
+        .jp-mvp-box {{ background: linear-gradient(90deg, rgba(234, 179, 8, 0.12) 0%, rgba(15, 17, 24, 0.8) 100%); border: 1px solid rgba(234, 179, 8, 0.3); border-radius: 6px; padding: 6px 10px; font-size: 0.8rem; color: #fef08a; margin-top: 8px; }}
+        .jp-section-title {{ font-size: 0.75rem; font-weight: 800; color: #94a3b8; margin: 12px 0 6px 0; text-transform: uppercase; }}
+        .jp-maps-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }}
+        .jp-map-item {{ background: #141722; border: 1px solid #232736; border-radius: 6px; padding: 6px; text-align: center; }}
+        .jp-map-name {{ font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; }}
+        .jp-map-score {{ font-size: 0.75rem; font-weight: 600; color: #cbd5e1; }}
+        .jp-map-score.winner {{ color: #eab308; font-weight: 800; }}
+        .jp-table-wrapper {{ overflow-x: auto; border-radius: 6px; border: 1px solid #202433; margin-bottom: 8px; }}
+        .jp-table {{ width: 100%; border-collapse: collapse; font-size: 0.73rem; background: #12141e; }}
+        .jp-table th {{ background: #181b28; color: #64748b; font-weight: 700; padding: 6px; text-align: center; border-bottom: 1px solid #232736; text-transform: uppercase; }}
+        .jp-table td {{ padding: 5px 6px; text-align: center; color: #cbd5e1; border-bottom: 1px solid #1a1d2b; }}
+        .jp-table tr.mvp-row {{ background: rgba(234, 179, 8, 0.08) !important; }}
+        .jp-table td.player-cell {{ text-align: left; font-weight: 700; color: #ffffff; }}
+        .jp-table td.rating-cell {{ font-weight: 800; color: #eab308; }}
+        
+        .team-card-box {{ background: linear-gradient(145deg, #121520 0%, #0a0b10 100%); border: 2px solid #2a2e3d; border-radius: 14px; padding: 18px 20px; margin-bottom: 10px; }}
+        .team-card-header {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #232736; padding-bottom: 12px; margin-bottom: 12px; }}
+        .team-card-title {{ font-size: 1.4rem; font-weight: 900; color: #ffffff; display: flex; align-items: center; gap: 10px; }}
+        .team-ovr-badge {{ background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: #ffffff; padding: 6px 14px; border-radius: 8px; font-weight: 900; font-size: 1.1rem; text-align: center; }}
+        .team-stats-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; background: #161925; padding: 10px; border-radius: 8px; }}
+        .team-stat-item {{ font-size: 0.78rem; color: #94a3b8; }}
+        .roster-grid {{ display: flex; flex-direction: column; gap: 6px; }}
+        .roster-slot-card {{ display: flex; justify-content: space-between; align-items: center; background: #141722; border: 1px solid #202433; border-left: 3px solid #dc2626; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; color: #ffffff; }}
+        .role-badge {{ background: rgba(220, 38, 38, 0.15); color: #f87171; border: 1px solid rgba(220, 38, 38, 0.3); padding: 2px 8px; border-radius: 4px; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -770,6 +354,16 @@ def load_preset_teams(db_data):
             "best": "Breeze", "worst": "Rust", "tier": "Авторасчет",
             "roster": [("cxtleta", "Рифлер"), ("Enough", "Снайпер"), ("Nekr0", "Капитан"), ("FLACSYS", "Опенер"), ("scndoom", "Саппорт")],
             "ratings": {"cxtleta": 99, "Enough": 96, "Nekr0": 96, "FLACSYS": 93, "scndoom": 91}
+        },
+        "STRICT": {
+            "best": "Sandstone", "worst": "Dune", "tier": "Авторасчет",
+            "roster": [("st1ck", "Капитан"), ("Swoop", "Снайпер"), ("k3nny", "Опенер"), ("fLek", "Рифлер"), ("Zero", "Саппорт")],
+            "ratings": {"st1ck": 92, "Swoop": 91, "k3nny": 89, "fLek": 88, "Zero": 85}
+        },
+        "Horizon": {
+            "best": "Province", "worst": "Prison", "tier": "Авторасчет",
+            "roster": [("Skyline", "Рифлер"), ("Vortex", "Снайпер"), ("Spark", "Опенер"), ("Nova", "Капитан"), ("Blade", "Саппорт")],
+            "ratings": {"Skyline": 90, "Vortex": 91, "Spark": 87, "Nova": 88, "Blade": 84}
         }
     }
 
@@ -881,7 +475,7 @@ class MatchEngine:
                 win_roster, lose_roster, win_stats, lose_stats = roster_a, roster_b, stats_a, stats_b
             else:
                 score_b += 1
-                win_roster, lose_roster, win_stats, lose_stats = roster_b, roster_a, stats_b, stats_a
+                win_roster, lose_roster, win_stats, lose_stats = roster_b, roster_a, stats_a, stats_b
 
             if win_roster and lose_roster:
                 for _ in range(5):
@@ -930,7 +524,7 @@ tab_match, tab_players, tab_teams, tab_coaches, tab_brackets = st.tabs([
     "👤 Игроки", 
     "🛡️ Команды", 
     "📋 Тренеры",
-    "🏆 Конструктор"
+    "🏆 Конструктор (LvUp)"
 ])
 
 # ==================== МАТЧ-ЦЕНТР ====================
@@ -1142,7 +736,6 @@ with tab_teams:
 
     with t_col2:
         st.markdown("##### 📸 Паспорта Команд")
-        
         for tm, data in db["teams"].items():
             roster = data.get("roster", {})
             player_ratings = []
@@ -1154,43 +747,22 @@ with tab_teams:
                 p_role = slot_info.get("role", "Рифлер") if isinstance(slot_info, dict) else "Рифлер"
                 
                 p_rating = db["players"].get(p_name, {}).get("base_rating", 0) if p_name != "Нет" else 0
-                if p_rating > 0:
-                    player_ratings.append(p_rating)
+                if p_rating > 0: player_ratings.append(p_rating)
 
                 p_rating_display = f"{p_rating} OVR" if p_rating > 0 else "—"
-                roster_html += (
-                    f'<div class="roster-slot-card">'
-                    f'<div><b>{p_name}</b></div>'
-                    f'<div><span class="role-badge">{p_role}</span> <span style="font-weight:700; margin-left:6px; opacity:0.8;">{p_rating_display}</span></div>'
-                    f'</div>'
-                )
+                roster_html += f'<div class="roster-slot-card"><div><b>{p_name}</b></div><div><span class="role-badge">{p_role}</span> <span style="font-weight:700; margin-left:6px; opacity:0.8;">{p_rating_display}</span></div></div>'
 
-            # Расчет OVR команды
             avg_p_rating = sum(player_ratings) / max(1, len(player_ratings)) if player_ratings else 0
             coach_r = db["coaches"].get(data.get("coach"), {}).get("rating", 0)
             team_ovr = round((avg_p_rating * 0.75) + (data.get("chemistry", 0) * 0.15) + (coach_r * 0.10))
 
-            # Определяем тир (ручной выбор или авторасчет)
             saved_tier = data.get("tier", "Авторасчет")
             if saved_tier == "Авторасчет":
                 tier_tag = "TIER 1" if team_ovr >= 88 else ("TIER 2" if team_ovr >= 75 else "TIER 3")
             else:
                 tier_tag = saved_tier.upper()
 
-            team_card_html = (
-                f'<div class="team-card-box">'
-                f'<div class="team-card-header">'
-                f'<div class="team-card-title">🛡️ {tm} <span class="role-badge" style="background:rgba(234,179,8,0.15); color:#eab308; border-color:rgba(234,179,8,0.3);">{tier_tag}</span></div>'
-                f'<div class="team-ovr-badge"><small style="font-size:0.55rem; display:block; text-transform:uppercase; letter-spacing:0.5px;">OVR</small>{team_ovr}</div>'
-                f'</div>'
-                f'<div class="team-stats-grid">'
-                f'<div class="team-stat-item">👔 Тренер: <b>{data.get("coach", "Нет")}</b></div>'
-                f'<div class="team-stat-item">🧩 Сыгранность: <b>{data.get("chemistry", 0)}%</b></div>'
-                f'<div class="team-stat-item">🟢 Пик: <b>{data.get("best_map", "Sandstone")}</b></div>'
-                f'</div>'
-                f'<div class="roster-grid">{roster_html}</div>'
-                f'</div>'
-            )
+            team_card_html = f'<div class="team-card-box"><div class="team-card-header"><div class="team-card-title">🛡️ {tm} <span class="role-badge">{tier_tag}</span></div><div class="team-ovr-badge">{team_ovr}</div></div><div class="team-stats-grid"><div class="team-stat-item">👔 Тренер: <b>{data.get("coach", "Нет")}</b></div><div class="team-stat-item">🧩 Сыгранность: <b>{data.get("chemistry", 0)}%</b></div><div class="team-stat-item">🟢 Пик: <b>{data.get("best_map", "Sandstone")}</b></div></div><div class="roster-grid">{roster_html}</div></div>'
 
             with st.expander(f"🛡️ Паспорт команды: {tm}", expanded=False):
                 st.markdown(team_card_html, unsafe_allow_html=True)
@@ -1225,117 +797,194 @@ with tab_coaches:
         c_list = [{"Тренер": k, "Рейтинг": v.get("rating", 0)} for k, v in db["coaches"].items()]
         st.dataframe(c_list, use_container_width=True, height=400)
 
-# ==================== КОНСТРУКТОР СЕТОК (РУЧНОЙ РЕЖИМ) ====================
+
+# =========================================================================
+# ==================== 🏆 КОНСТРУКТОР СЕТОК (LVUP.GG STYLE) =============
+# =========================================================================
 with tab_brackets:
-    st.subheader("🏆 Конструктор Турниров и Сеток")
-    
-    # 1. Настройки формата турнира
-    with st.expander("⚙️ Настройки структуры турнира", expanded=True):
-        col_cfg1, col_cfg2, col_cfg3 = st.columns(3)
-        with col_cfg1:
-            has_groups = st.checkbox("Включить Групповую стадию", value=True)
-            has_lower_bracket = st.checkbox("Нижняя сетка в Плей-офф (Double Elimination)", value=True)
-        with col_cfg2:
-            num_qualifiers = st.number_input("Количество слотов / Квалификаций", min_value=2, max_value=16, value=4, step=2)
-            teams_per_group = st.selectbox("Команд в группе", [4, 6, 8]) if has_groups else 4
-        with col_cfg3:
-            playoff_teams_count = st.selectbox("Команд выходит в Плей-офф", [2, 4, 8], index=1)
+    st.subheader("🏆 Конструктор Турниров и Сеток (LvUp.gg Style)")
 
-    # Выбор участников из вашей базы
-    available_teams = list(db["teams"].keys())
-    selected_teams = st.multiselect(
-        "Выберите участников турнира:", 
-        options=available_teams, 
-        default=available_teams[:min(len(available_teams), int(num_qualifiers))]
-    )
+    if "tourney" not in st.session_state:
+        st.session_state.tourney = None
 
-    if len(selected_teams) < 2:
-        st.warning("⚠️ Выберите хотя бы 2 команды для формирования сетки!")
-    else:
+    # --- ФОРМА СОЗДАНИЯ ТУРНИРА ---
+    with st.expander("⚡ Панель организатора: Создание нового турнира", expanded=(st.session_state.tourney is None)):
+        t_col1, t_col2, t_col3 = st.columns(3)
+        with t_col1:
+            t_title = st.text_input("Название турнира", value="Standoff 2 Major Cup")
+            t_format = st.selectbox("Формат сетки", ["Single Elimination (4 команды)", "Single Elimination (8 команд)", "Double Elimination (4 команды)"])
+        with t_col2:
+            t_map_fmt = st.selectbox("Формат матчей", ["BO1", "BO3"])
+            shuffle_teams = st.checkbox("🎲 Случайный сидинг (Жеребьевка)", value=True)
+        with t_col3:
+            all_teams = list(db["teams"].keys())
+            req_count = 8 if "8" in t_format else 4
+            selected_participants = st.multiselect(
+                f"Участники ({req_count} команд):",
+                options=all_teams,
+                default=all_teams[:min(req_count, len(all_teams))]
+            )
+
+        if st.button("🚀 СФОРМИРОВАТЬ ТУРНИРНУЮ СЕТКУ", type="primary", use_container_width=True):
+            if len(selected_participants) < req_count:
+                st.error(f"Необходимо выбрать минимум {req_count} команд! У вас создано: {len(all_teams)}.")
+            else:
+                participants = selected_participants[:req_count]
+                if shuffle_teams:
+                    random.shuffle(participants)
+
+                matches = {}
+                if t_format == "Single Elimination (4 команды)":
+                    matches = {
+                        "M1": {"round": "1/2 Финала", "team_a": participants[0], "team_b": participants[1], "score_a": 0, "score_b": 0, "winner": None, "next_match": "M3", "slot": "team_a"},
+                        "M2": {"round": "1/2 Финала", "team_a": participants[2], "team_b": participants[3], "score_a": 0, "score_b": 0, "winner": None, "next_match": "M3", "slot": "team_b"},
+                        "M3": {"round": "🏆 Гранд-Финал", "team_a": "TBD", "team_b": "TBD", "score_a": 0, "score_b": 0, "winner": None, "next_match": None, "slot": None}
+                    }
+                elif t_format == "Single Elimination (8 команд)":
+                    matches = {
+                        "M1": {"round": "1/4 Финала", "team_a": participants[0], "team_b": participants[1], "score_a": 0, "score_b": 0, "winner": None, "next_match": "M5", "slot": "team_a"},
+                        "M2": {"round": "1/4 Финала", "team_a": participants[2], "team_b": participants[3], "score_a": 0, "score_b": 0, "winner": None, "next_match": "M5", "slot": "team_b"},
+                        "M3": {"round": "1/4 Финала", "team_a": participants[4], "team_b": participants[5], "score_a": 0, "score_b": 0, "winner": None, "next_match": "M6", "slot": "team_a"},
+                        "M4": {"round": "1/4 Финала", "team_a": participants[6], "team_b": participants[7], "score_a": 0, "score_b": 0, "winner": None, "next_match": "M6", "slot": "team_b"},
+                        "M5": {"round": "1/2 Финала", "team_a": "TBD", "team_b": "TBD", "score_a": 0, "score_b": 0, "winner": None, "next_match": "M7", "slot": "team_a"},
+                        "M6": {"round": "1/2 Финала", "team_a": "TBD", "team_b": "TBD", "score_a": 0, "score_b": 0, "winner": None, "next_match": "M7", "slot": "team_b"},
+                        "M7": {"round": "🏆 Гранд-Финал", "team_a": "TBD", "team_b": "TBD", "score_a": 0, "score_b": 0, "winner": None, "next_match": None, "slot": None}
+                    }
+                elif t_format == "Double Elimination (4 команды)":
+                    matches = {
+                        "M1": {"round": "Верхняя Сетка R1", "team_a": participants[0], "team_b": participants[1], "score_a": 0, "score_b": 0, "winner": None, "loser": None, "next_win": "M3", "win_slot": "team_a", "next_lose": "M4", "lose_slot": "team_a"},
+                        "M2": {"round": "Верхняя Сетка R1", "team_a": participants[2], "team_b": participants[3], "score_a": 0, "score_b": 0, "winner": None, "loser": None, "next_win": "M3", "win_slot": "team_b", "next_lose": "M4", "lose_slot": "team_b"},
+                        "M3": {"round": "Финал Верхней Сетки", "team_a": "TBD", "team_b": "TBD", "score_a": 0, "score_b": 0, "winner": None, "loser": None, "next_win": "M6", "win_slot": "team_a", "next_lose": "M5", "lose_slot": "team_b"},
+                        "M4": {"round": "Нижняя Сетка R1", "team_a": "TBD", "team_b": "TBD", "score_a": 0, "score_b": 0, "winner": None, "next_match": "M5", "slot": "team_a"},
+                        "M5": {"round": "Финал Нижней Сетки", "team_a": "TBD", "team_b": "TBD", "score_a": 0, "score_b": 0, "winner": None, "next_match": "M6", "slot": "team_b"},
+                        "M6": {"round": "🏆 Гранд-Финал", "team_a": "TBD", "team_b": "TBD", "score_a": 0, "score_b": 0, "winner": None, "next_match": None, "slot": None}
+                    }
+
+                st.session_state.tourney = {
+                    "title": t_title,
+                    "format": t_format,
+                    "map_fmt": t_map_fmt,
+                    "matches": matches
+                }
+                st.rerun()
+
+    # --- ИНТЕРАКТИВНОЕ ОТОБРАЖЕНИЕ И УПРАВЛЕНИЕ СЕТКОЙ ---
+    if st.session_state.tourney:
+        tourney = st.session_state.tourney
+        st.markdown(f"### 🎮 {tourney['title']} — `{tourney['format']}`")
+
+        # Функция для проброса победителя по сетке
+        def advance_winner(m_id, winner_name, score_a, score_b):
+            m = tourney["matches"][m_id]
+            m["winner"] = winner_name
+            m["score_a"] = score_a
+            m["score_b"] = score_b
+
+            loser_name = m["team_b"] if winner_name == m["team_a"] else m["team_a"]
+            if "loser" in m: m["loser"] = loser_name
+
+            # Проброс победителя
+            next_m_id = m.get("next_match") or m.get("next_win")
+            slot = m.get("slot") or m.get("win_slot")
+            if next_m_id and next_m_id in tourney["matches"]:
+                tourney["matches"][next_m_id][slot] = winner_name
+
+            # Проброс проигравшего (Double Elimination)
+            lose_m_id = m.get("next_lose")
+            lose_slot = m.get("lose_slot")
+            if lose_m_id and lose_m_id in tourney["matches"]:
+                tourney["matches"][lose_m_id][lose_slot] = loser_name
+
+        # РЕНДЕР КАРТОЧКИ МАТЧА В СТИЛЕ LVUP
+        def render_lvup_card(m_id):
+            m = tourney["matches"][m_id]
+            st.markdown(f'<div class="bracket-node"><div class="bracket-header"><span>{m["round"]}</span><span>ID: {m_id}</span></div>', unsafe_allow_html=True)
+
+            cls_a = "winner" if m["winner"] == m["team_a"] and m["team_a"] != "TBD" else ""
+            cls_b = "winner" if m["winner"] == m["team_b"] and m["team_b"] != "TBD" else ""
+
+            st.markdown(
+                f'<div class="bracket-team {cls_a}"><span>{m["team_a"]}</span><span>{m["score_a"]}</span></div>'
+                f'<div class="bracket-team {cls_b}"><span>{m["team_b"]}</span><span>{m["score_b"]}</span></div></div>',
+                unsafe_allow_html=True
+            )
+
+            # Элементы управления (Симуляция / Ввод)
+            if m["team_a"] != "TBD" and m["team_b"] != "TBD" and not m["winner"]:
+                c1, c2 = st.columns([1, 1])
+                with c1:
+                    if st.button("🎲 Играть", key=f"btn_sim_{m_id}", use_container_width=True):
+                        needed_wins = 1 if tourney["map_fmt"] == "BO1" else 2
+                        sa, sb = 0, 0
+                        while sa < needed_wins and sb < needed_wins:
+                            res_a, res_b, _, _, _ = MatchEngine.simulate_map(m["team_a"], m["team_b"], random.choice(MAPS))
+                            if res_a > res_b: sa += 1
+                            else: sb += 1
+                        winner = m["team_a"] if sa > sb else m["team_b"]
+                        advance_winner(m_id, winner, sa, sb)
+                        st.rerun()
+
+                with c2:
+                    with st.popover("✏️ Ввод"):
+                        sa_in = st.number_input("Счет A", min_value=0, max_value=3, value=0, key=f"sa_{m_id}")
+                        sb_in = st.number_input("Счет B", min_value=0, max_value=3, value=0, key=f"sb_{m_id}")
+                        if st.button("OK", key=f"save_{m_id}"):
+                            if sa_in != sb_in:
+                                win_t = m["team_a"] if sa_in > sb_in else m["team_b"]
+                                advance_winner(m_id, win_t, sa_in, sb_in)
+                                st.rerun()
+
+        # РАСПРЕДЕЛЕНИЕ МАТЧЕЙ ПО КОЛОНКАМ (СТАДИЯМ СЕТКИ)
+        if tourney["format"] == "Single Elimination (4 команды)":
+            col_r1, col_r2 = st.columns(2)
+            with col_r1:
+                st.markdown("#### 1/2 Финала")
+                render_lvup_card("M1")
+                render_lvup_card("M2")
+            with col_r2:
+                st.markdown("#### Гранд-Финал")
+                render_lvup_card("M3")
+
+        elif tourney["format"] == "Single Elimination (8 команд)":
+            col_r1, col_r2, col_r3 = st.columns(3)
+            with col_r1:
+                st.markdown("#### 1/4 Финала")
+                render_lvup_card("M1")
+                render_lvup_card("M2")
+                render_lvup_card("M3")
+                render_lvup_card("M4")
+            with col_r2:
+                st.markdown("#### 1/2 Финала")
+                render_lvup_card("M5")
+                render_lvup_card("M6")
+            with col_r3:
+                st.markdown("#### Гранд-Финал")
+                render_lvup_card("M7")
+
+        elif tourney["format"] == "Double Elimination (4 команды)":
+            col_ub, col_lb, col_gf = st.columns(3)
+            with col_ub:
+                st.markdown("#### Верхняя Сетка")
+                render_lvup_card("M1")
+                render_lvup_card("M2")
+                render_lvup_card("M3")
+            with col_lb:
+                st.markdown("#### Нижняя Сетка")
+                render_lvup_card("M4")
+                render_lvup_card("M5")
+            with col_gf:
+                st.markdown("#### Гранд-Финал")
+                render_lvup_card("M6")
+
+        # ВЫВОД ЧЕМПИОНА
+        final_match_key = "M3" if "4 команды" in tourney["format"] and "Double" not in tourney["format"] else ("M7" if "8" in tourney["format"] else "M6")
+        champion = tourney["matches"][final_match_key]["winner"]
+
+        if champion:
+            st.balloons()
+            st.success(f"👑 **ЧЕМПИОН ТУРНИРА:** **{champion}**!")
+
         st.markdown("---")
-        
-        # 2. РУЧНАЯ ГРУППОВАЯ СТАДИЯ (Если включена)
-        if has_groups:
-            st.markdown("### 📊 Групповая стадия (Ручной ввод результатов)")
-            
-            mid_point = len(selected_teams) // 2
-            group_a = selected_teams[:mid_point]
-            group_b = selected_teams[mid_point:]
-            
-            g_col1, g_col2 = st.columns(2)
-            
-            with g_col1:
-                st.markdown("#### Группа A")
-                group_a_winners = []
-                for idx, team in enumerate(group_a):
-                    score = st.number_input(f"Побед: {team} (Группа A)", min_value=0, max_value=10, value=0, key=f"ga_score_{idx}")
-                    group_a_winners.append((team, score))
-            
-            with g_col2:
-                st.markdown("#### Группа B")
-                group_b_winners = []
-                for idx, team in enumerate(group_b):
-                    score = st.number_input(f"Побед: {team} (Группа B)", min_value=0, max_value=10, value=0, key=f"gb_score_{idx}")
-                    group_b_winners.append((team, score))
-
-            st.markdown("---")
-
-        # 3. РУЧНОЙ ПЛЕЙ-ОФФ (СЕТКА)
-        st.markdown("### ⚔️ Плей-офф (Ручное управление сеткой)")
-        
-        # Полуфиналы / Верхняя сетка
-        st.markdown("#### 🔝 Верхняя сетка (Upper Bracket)")
-        ub_col1, ub_col2 = st.columns(2)
-        
-        t1 = selected_teams[0] if len(selected_teams) > 0 else "Команда 1"
-        t2 = selected_teams[1] if len(selected_teams) > 1 else "Команда 2"
-        t3 = selected_teams[2] if len(selected_teams) > 2 else "Команда 3"
-        t4 = selected_teams[3] if len(selected_teams) > 3 else "Команда 4"
-
-        with ub_col1:
-            st.markdown(f"**Матч 1:** {t1} vs {t2}")
-            m1_winner = st.selectbox("Победитель Матча 1:", [t1, t2], key="ub_m1")
-            m1_loser = t2 if m1_winner == t1 else t1
-
-        with ub_col2:
-            st.markdown(f"**Матч 2:** {t3} vs {t4}")
-            m2_winner = st.selectbox("Победитель Матча 2:", [t3, t4], key="ub_m2")
-            m2_loser = t4 if m2_winner == t3 else t3
-
-        # Финал Верхней сетки
-        st.markdown("**Финал Верхней Сетки:**")
-        ub_final_winner = st.selectbox(
-            f"{m1_winner} vs {m2_winner}", 
-            [m1_winner, m2_winner], 
-            key="ub_final"
-        )
-        ub_final_loser = m2_winner if ub_final_winner == m1_winner else m1_winner
-
-        # 4. НИЖНЯЯ СЕТКА (Double Elimination)
-        finalist_2 = ub_final_loser
-        
-        if has_lower_bracket:
-            st.markdown("---")
-            st.markdown("#### 🔻 Нижняя сетка (Lower Bracket)")
-            lb_col1, lb_col2 = st.columns(2)
-            
-            with lb_col1:
-                st.markdown(f"**Малый финал лузеров:** {m1_loser} vs {m2_loser}")
-                lb_m1_winner = st.selectbox("Победитель:", [m1_loser, m2_loser], key="lb_m1")
-
-            with lb_col2:
-                st.markdown(f"**Финал Лузеров:** {lb_m1_winner} vs {ub_final_loser}")
-                lb_final_winner = st.selectbox("Победитель Финала Лузеров (Выходит в Гранд-Финал):", [lb_m1_winner, ub_final_loser], key="lb_final")
-                finalist_2 = lb_final_winner
-
-        # 5. ГРАНД-ФИНАЛ
-        st.markdown("---")
-        st.markdown("### 👑 Гранд-Финал")
-        gf_col1, gf_col2 = st.columns([2, 1])
-        
-        with gf_col1:
-            st.markdown(f"### 🏆 {ub_final_winner}  vs  {finalist_2}")
-            grand_champion = st.selectbox("ЧЕМПИОН ТУРНИРА:", [ub_final_winner, finalist_2], key="grand_champion")
-            
-        with gf_col2:
-            st.success(f"🎉 **ПОБЕДИТЕЛЬ ТУРНИРА:**\n\n# {grand_champion}")
+        if st.button("🗑️ Сбросить сетку и создать новый турнир"):
+            st.session_state.tourney = None
+            st.rerun()
