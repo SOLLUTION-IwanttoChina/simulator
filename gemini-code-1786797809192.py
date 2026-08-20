@@ -851,14 +851,14 @@ class MatchEngine:
         if "Опенер" in roles_present:
             role_synergy += 0.04
 
-        # 2. Множитель сыгранности (Chemistry)
+        # 2. Множитель сыгранности (Смягчен: диапазон 0.90 -> 1.10)
         chem = t_data.get("chemistry", 0)
-        chem_factor = 0.80 + (chem / 100.0) * 0.35
+        chem_factor = 0.90 + (chem / 100.0) * 0.20
 
-        # 3. Множитель тренера
+        # 3. Множитель тренера (Смягчен: максимальный бонус +5%)
         coach_name = t_data.get("coach", "Нет")
         coach_rating = db["coaches"].get(coach_name, {}).get("rating", 0) if coach_name != "Нет" else 0
-        coach_factor = 1.0 + (coach_rating / 100.0) * 0.10
+        coach_factor = 1.0 + (coach_rating / 100.0) * 0.05
 
         # 4. Фактор карты
         map_factor = 1.12 if map_name == t_data.get("best_map") else (0.88 if map_name == t_data.get("worst_map") else 1.0)
@@ -1213,7 +1213,8 @@ with tab_teams:
 
             avg_p_rating = sum(player_ratings) / max(1, len(player_ratings)) if player_ratings else 0
             coach_r = db["coaches"].get(data.get("coach"), {}).get("rating", 0)
-            team_ovr = round((avg_p_rating * 0.75) + (data.get("chemistry", 0) * 0.15) + (coach_r * 0.10))
+            # Обновленный расчет OVR: 84% скилл игроков, 10% сыгранность, 6% тренер
+            team_ovr = round((avg_p_rating * 0.84) + (data.get("chemistry", 0) * 0.10) + (coach_r * 0.06))
 
             saved_tier = data.get("tier", "Авторасчет")
             if saved_tier == "Авторасчет":
@@ -1269,7 +1270,7 @@ with tab_coaches:
         c_list = [{"Тренер": k, "Рейтинг": v.get("rating", 0)} for k, v in db["coaches"].items()]
         st.dataframe(c_list, use_container_width=True, height=400)
 
-# ==================== ИСТОРИЯ МАТЧЕЙ (СВОБОДНЫЙ ПРОСМОТР + ЗАЩИЩЕННАЯ ОЧИСТКА) ====================
+# ==================== ИСТОРИЯ МАТЧЕЙ ====================
 with tab_history:
     st.subheader("📜 История Проведенных Матчей")
     
