@@ -851,11 +851,11 @@ class MatchEngine:
         if "Опенер" in roles_present:
             role_synergy += 0.04
 
-        # 2. Множитель сыгранности (Смягчен: диапазон 0.90 -> 1.10)
+        # 2. Множитель сыгранности (диапазон 0.90 -> 1.10)
         chem = t_data.get("chemistry", 0)
         chem_factor = 0.90 + (chem / 100.0) * 0.20
 
-        # 3. Множитель тренера (Смягчен: максимальный бонус +5%)
+        # 3. Множитель тренера (максимальный бонус +5%)
         coach_name = t_data.get("coach", "Нет")
         coach_rating = db["coaches"].get(coach_name, {}).get("rating", 0) if coach_name != "Нет" else 0
         coach_factor = 1.0 + (coach_rating / 100.0) * 0.05
@@ -929,8 +929,8 @@ class MatchEngine:
                     lose_stats[killer]["damage"] += random.randint(75, 115)
                     lose_stats[killer]["imp"] += 1
                     win_stats[victim]["D"] += 1
-                    if len(lose_roster) > 1 and random.random() < 0.45:
-                        assist = random.choice([p for p, r in lose_roster if p != killer])
+                    if len(win_roster) > 1 and random.random() < 0.45:
+                        assist = random.choice([p for p, r in win_roster if p != killer])
                         lose_stats[assist]["A"] += 1
 
             for st_dict in [stats_a, stats_b]:
@@ -1122,6 +1122,25 @@ with tab_players:
 # ==================== КОМАНДЫ ====================
 with tab_teams:
     st.subheader("🛡️ Профили и Составы Команд")
+
+    # Защищенный блок удаления команд
+    with st.expander("🗑️ Зона администратора (Удаление команды)"):
+        if not db.get("teams"):
+            st.info("В базе нет зарегистрированных команд для удаления.")
+        else:
+            team_to_delete = st.selectbox("Выберите команду для удаления:", list(db["teams"].keys()), key="del_team_select")
+            del_pwd = st.text_input("Введите пароль администратора:", type="password", key="del_team_pwd_input")
+            if st.button("🗑️ Подтвердить и удалить команду", key="del_team_btn"):
+                if del_pwd == "solution":
+                    del db["teams"][team_to_delete]
+                    save_db(db)
+                    st.success(f"Команда '{team_to_delete}' успешно удалена!")
+                    st.rerun()
+                else:
+                    st.error("❌ Неверный пароль администратора!")
+
+    st.markdown("---")
+
     t_col1, t_col2 = st.columns([1, 1])
 
     with t_col1:
