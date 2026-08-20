@@ -888,7 +888,6 @@ class MatchEngine:
         stats_a = {p[0]: {"role": p[1], "K": 0, "A": 0, "D": 0, "damage": 0, "kast": 0, "imp": 0} for p in roster_a}
         stats_b = {p[0]: {"role": p[1], "K": 0, "A": 0, "D": 0, "damage": 0, "kast": 0, "imp": 0} for p in roster_b}
 
-        # Вычисление сбалансированной базовой вероятности на основе разницы сил
         diff_ratio = (power_a - power_b) / max(1, (power_a + power_b))
         base_prob_a = max(0.15, min(0.85, 0.50 + (diff_ratio * 0.40)))
 
@@ -910,7 +909,6 @@ class MatchEngine:
                 win_roster, lose_roster, win_stats, lose_stats = roster_b, roster_a, stats_b, stats_a
 
             if win_roster and lose_roster:
-                # Победившая команда
                 kills_in_round = random.choices([3, 4, 5], weights=[0.25, 0.50, 0.25])[0]
                 for _ in range(kills_in_round):
                     killer = pick_weighted_player(win_roster)
@@ -923,7 +921,6 @@ class MatchEngine:
                         assist = random.choice([p for p, r in win_roster if p != killer])
                         win_stats[assist]["A"] += 1
 
-                # Проигравшая команда в ответ делает 1-3 фрагов
                 lose_kills = random.randint(1, 3)
                 for _ in range(lose_kills):
                     killer = pick_weighted_player(lose_roster)
@@ -936,7 +933,6 @@ class MatchEngine:
                         assist = random.choice([p for p, r in lose_roster if p != killer])
                         lose_stats[assist]["A"] += 1
 
-            # KAST учет
             for st_dict in [stats_a, stats_b]:
                 for p in st_dict:
                     if random.random() < 0.72:
@@ -1022,8 +1018,6 @@ with tab_match:
                         adr = round(st_data["damage"] / max(1, total_rounds), 1)
                         kast_pct = min(98.0, round((st_data["kast"] / max(1, total_rounds)) * 100, 1))
                         imp_pct = min(99.0, round((st_data["imp"] / max(1, total_rounds)) * 50, 1))
-                        
-                        # Реалистичная HLTV 2.0 модель расчёта рейтинга
                         rating = round(0.20 + (kd * 0.38) + (adr / 100.0) * 0.32 + (kast_pct / 100.0) * 0.10, 2)
 
                         item = {
@@ -1065,7 +1059,6 @@ with tab_match:
 
                 full_card_html = f'<div class="jp-match-card"><div class="jp-status-bar">{icon_title} МАТЧ СИМУЛИРОВАН • ФОРМАТ: {match_fmt}</div><div class="jp-score-header"><div class="jp-team-title">{team_a}</div><div class="jp-score-main">{maps_won_a} : {maps_won_b}</div><div class="jp-team-title">{team_b}</div></div><div class="jp-winner-tag">🏆 {winner_team} ПОБЕДА!</div>{mvp_banner_html}<div class="jp-section-title"><span>|</span> КАРТЫ МАТЧА</div><div class="jp-maps-grid">{maps_html}</div><div class="jp-section-title"><span>|</span> {team_a}</div><div class="jp-table-wrapper"><table class="jp-table">{table_header_html}<tbody>{table_rows_a}</tbody></table></div><div class="jp-section-title"><span>|</span> {team_b}</div><div class="jp-table-wrapper"><table class="jp-table">{table_header_html}<tbody>{table_rows_b}</tbody></table></div></div>'
 
-                # СОХРАНЕНИЕ В ИСТОРИЮ МАТЧЕЙ
                 match_record = {
                     "team_a": team_a,
                     "team_b": team_b,
@@ -1079,7 +1072,7 @@ with tab_match:
                 }
                 
                 db["match_history"].insert(0, match_record)
-                if len(db["match_history"]) > 30: # Храним последние 30 матчей
+                if len(db["match_history"]) > 30:
                     db["match_history"] = db["match_history"][:30]
                 save_db(db)
 
@@ -1218,12 +1211,10 @@ with tab_teams:
                     f'</div>'
                 )
 
-            # Расчет OVR команды
             avg_p_rating = sum(player_ratings) / max(1, len(player_ratings)) if player_ratings else 0
             coach_r = db["coaches"].get(data.get("coach"), {}).get("rating", 0)
             team_ovr = round((avg_p_rating * 0.75) + (data.get("chemistry", 0) * 0.15) + (coach_r * 0.10))
 
-            # Определяем тир (ручной выбор или авторасчет)
             saved_tier = data.get("tier", "Авторасчет")
             if saved_tier == "Авторасчет":
                 tier_tag = "TIER 1" if team_ovr >= 88 else ("TIER 2" if team_ovr >= 75 else "TIER 3")
@@ -1278,36 +1269,33 @@ with tab_coaches:
         c_list = [{"Тренер": k, "Рейтинг": v.get("rating", 0)} for k, v in db["coaches"].items()]
         st.dataframe(c_list, use_container_width=True, height=400)
 
-# ==================== ИСТОРИЯ МАТЧЕЙ (ЗАЩИЩЕННАЯ ВКЛАДКА) ====================
+# ==================== ИСТОРИЯ МАТЧЕЙ (СВОБОДНЫЙ ПРОСМОТР + ЗАЩИЩЕННАЯ ОЧИСТКА) ====================
 with tab_history:
-    st.subheader("🔒 Закрытая История Матчей")
+    st.subheader("📜 История Проведенных Матчей")
     
-    password = st.text_input("Введите пароль доступа:", type="password", key="history_password_input")
-    
-    if password == "solution":
-        st.success("🔓 Доступ разрешен!")
-        
-        col_hist_title, col_hist_btn = st.columns([4, 1])
-        with col_hist_btn:
-            if db.get("match_history"):
-                if st.button("🗑️ Очистить историю", key="clear_history_btn"):
-                    db["match_history"] = []
-                    save_db(db)
-                    st.success("История очищена!")
-                    st.rerun()
+    # Защищенный блок очистки истории
+    with st.expander("🗑️ Зона администратора (Очистка истории)"):
+        clear_pwd = st.text_input("Введите пароль для очистки истории:", type="password", key="clear_hist_pwd_input")
+        if st.button("🗑️ Подтвердить и очистить всё", key="clear_history_btn"):
+            if clear_pwd == "solution":
+                db["match_history"] = []
+                save_db(db)
+                st.success("История матчей успешно очищена!")
+                st.rerun()
+            else:
+                st.error("❌ Неверный пароль администратора!")
 
-        if not db.get("match_history"):
-            st.info("История пока пуста. Проведите симуляцию матча в Матч-Центре, чтобы сохранить результат.")
-        else:
-            for idx, match_data in enumerate(db["match_history"]):
-                label = (
-                    f"⚔️ {match_data['team_a']} ({match_data['score_a']}) VS "
-                    f"({match_data['score_b']}) {match_data['team_b']} | "
-                    f"🏆 Победитель: {match_data['winner']} | MVP: {match_data.get('mvp', '—')}"
-                )
-                with st.expander(label, expanded=(idx == 0)):
-                    st.markdown(match_data.get("card_html", ""), unsafe_allow_html=True)
-    elif password != "":
-        st.error("❌ Неверный пароль!")
+    st.markdown("---")
+
+    # Свободный вывод всей истории матчей
+    if not db.get("match_history"):
+        st.info("История пока пуста. Проведите симуляцию матча в Матч-Центре, чтобы сохранить результат.")
     else:
-        st.info("🔑 Введите пароль для просмотра истории игр.")
+        for idx, match_data in enumerate(db["match_history"]):
+            label = (
+                f"⚔️ {match_data['team_a']} ({match_data['score_a']}) VS "
+                f"({match_data['score_b']}) {match_data['team_b']} | "
+                f"🏆 Победитель: {match_data['winner']} | MVP: {match_data.get('mvp', '—')}"
+            )
+            with st.expander(label, expanded=(idx == 0)):
+                st.markdown(match_data.get("card_html", ""), unsafe_allow_html=True)
