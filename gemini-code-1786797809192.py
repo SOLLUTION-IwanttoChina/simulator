@@ -27,20 +27,20 @@ TIERS_OPTIONS = ["Авторасчет", "Tier 1", "Tier 2", "Tier 3"]
 MAPS = ["Sandstone", "Province", "Breeze", "Rust", "Dune", "Hanami", "Prison"]
 
 st.set_page_config(
-    page_title="Standoff 2 Esports Hub",
+    page_title="Standoff 2 Esports Hub — Anime Sakura",
     layout="wide",
-    page_icon="🎮",
+    page_icon="🌸",
     initial_sidebar_state="collapsed"
 )
 
-# Инициализация темы (dark -> light -> sakura -> dark)
+# Инициализация темы
 if "theme" not in st.session_state:
-    st.session_state.theme = "dark"
+    st.session_state.theme = "sakura"
 
 CAT_IMG_URL = "https://i.ibb.co/Ld35P0v/cat-hat.png"
 
-# Векторная анимированная ветка сакуры (ночная нота, без избыточного розового)
-SAKURA_BRANCH_SVG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 700 600' width='100%' height='100%'><g stroke-linecap='round'><path d='M700,0 C520,110 420,50 300,160 C200,240 150,210 30,290 C10,300 0,310 -10,320' stroke='%232a2135' stroke-width='16' fill='none'/><path d='M480,85 C380,140 320,130 230,230' stroke='%232a2135' stroke-width='9' fill='none'/><path d='M330,150 C260,120 200,140 130,90' stroke='%232a2135' stroke-width='6' fill='none'/><path d='M210,225 C160,265 110,275 30,360' stroke='%232a2135' stroke-width='5' fill='none'/></g><g fill='%23d8b4fe' opacity='0.75'><circle cx='300' cy='160' r='14'/><circle cx='285' cy='150' r='11'/><circle cx='315' cy='170' r='11'/><circle cx='230' cy='230' r='15'/><circle cx='215' cy='220' r='12'/><circle cx='245' cy='240' r='11'/><circle cx='130' cy='90' r='13'/><circle cx='115' cy='80' r='10'/><circle cx='145' cy='100' r='9'/><circle cx='30' cy='290' r='16'/><circle cx='15' cy='280' r='13'/><circle cx='45' cy='300' r='12'/><circle cx='380' cy='140' r='12'/><circle cx='160' cy='260' r='11'/><circle cx='30' cy='360' r='13'/></g><g fill='%23e9d5ff' opacity='0.85'><circle cx='300' cy='160' r='6'/><circle cx='230' cy='230' r='7'/><circle cx='130' cy='90' r='5'/><circle cx='30' cy='290' r='7'/></g></svg>"
+# Векторная реалистичная аниме-ветка сакуры (SVG)
+SAKURA_BRANCH_SVG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' width='100%' height='100%'><defs><linearGradient id='wood' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%233b233a'/><stop offset='50%' stop-color='%23221323'/><stop offset='100%' stop-color='%23130a14'/></linearGradient><linearGradient id='petal' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23ffffff'/><stop offset='50%' stop-color='%23ffb7d5'/><stop offset='100%' stop-color='%23f472b6'/></linearGradient><filter id='glow'><feGaussianBlur stdDeviation='3' result='coloredBlur'/><feMerge><feMergeNode in='coloredBlur'/><feMergeNode in='SourceGraphic'/></feMerge></filter></defs><g filter='url(%23glow)' fill='none' stroke-linecap='round'><path d='M800,-10 C620,80 500,40 360,180 C240,290 170,250 0,360' stroke='url(%23wood)' stroke-width='22'/><path d='M540,110 C420,170 340,150 220,290' stroke='url(%23wood)' stroke-width='12'/><path d='M380,170 C300,120 220,150 120,90' stroke='url(%23wood)' stroke-width='8'/><path d='M230,260 C160,310 100,320 -20,410' stroke='url(%23wood)' stroke-width='6'/></g><g fill='url(%23petal)' opacity='0.92'><g transform='translate(360,180) scale(1.3)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='3' fill='%23fbbf24'/></g><g transform='translate(220,290) scale(1.5)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='3' fill='%23fbbf24'/></g><g transform='translate(120,90) scale(1.2)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='2.5' fill='%23fbbf24'/></g><g transform='translate(480,130) scale(1.4)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='3' fill='%23fbbf24'/></g><g transform='translate(50,330) scale(1.1)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='2' fill='%23fbbf24'/></g><circle cx='340' cy='190' r='7'/><circle cx='240' cy='280' r='8'/><circle cx='140' cy='80' r='6'/><circle cx='460' cy='140' r='7'/><circle cx='200' cy='300' r='6'/></g></svg>"
 
 # ==========================================
 # ДИНАМИЧЕСКИЕ СТИЛИ (3 ТЕМЫ)
@@ -128,32 +128,50 @@ if st.session_state.theme == "light":
     """, unsafe_allow_html=True)
 
 elif st.session_state.theme == "sakura":
-    # 🌸 3-Я ТЕМА: SAKURA (с крупной веткой и без избытка розового)
+    # 🌸 REALISTIC ANIME SAKURA THEME (Слой ветки убран на ФОН: z-index: 0)
     st.markdown(f"""
     <style>
         @keyframes swayBranch {{
-            0% {{ transform: rotate(0deg) translateY(0px) scale(1); }}
-            50% {{ transform: rotate(3deg) translateY(12px) scale(1.02); }}
-            100% {{ transform: rotate(0deg) translateY(0px) scale(1); }}
+            0% {{ transform: rotate(0deg) translateY(0px); }}
+            50% {{ transform: rotate(2deg) translateY(8px); }}
+            100% {{ transform: rotate(0deg) translateY(0px); }}
         }}
 
+        @keyframes petalFall {{
+            0% {{ transform: translateY(-50px) translateX(0) rotate(0deg); opacity: 0; }}
+            20% {{ opacity: 0.8; }}
+            100% {{ transform: translateY(800px) translateX(-250px) rotate(360deg); opacity: 0; }}
+        }}
+
+        /* РЕАЛИСТИЧНАЯ ВЕТКА НА ЗАДНЕМ ФОНЕ */
         .sakura-bg-branch {{
             position: fixed;
-            top: -20px;
-            right: -20px;
-            width: 580px;
-            height: 520px;
+            top: -10px;
+            right: -10px;
+            width: 650px;
+            height: 550px;
             background: url("{SAKURA_BRANCH_SVG}") no-repeat right top / contain;
             pointer-events: none;
-            z-index: 99990;
+            z-index: 0 !important; /* УБРАНО ЗА КАРТОЧКИ НА ЗАДНИЙ ПЛАН */
             transform-origin: top right;
-            animation: swayBranch 7s ease-in-out infinite;
+            animation: swayBranch 8s ease-in-out infinite;
             opacity: 0.85;
+            filter: drop-shadow(0 0 15px rgba(244, 114, 182, 0.2));
+        }}
+
+        /* Падающие лепестки сакуры */
+        .sakura-petal {{
+            position: fixed;
+            background: linear-gradient(135deg, #ffffff 0%, #ffb7d5 50%, #f472b6 100%);
+            border-radius: 12px 1px 12px 1px;
+            pointer-events: none;
+            z-index: 0 !important;
+            animation: petalFall linear infinite;
         }}
 
         .stApp {{
-            background-color: #0f0e17;
-            color: #e2e8f0;
+            background-color: #120e18;
+            color: #f1f5f9;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }}
         [data-testid="stSidebar"] {{ display: none; }}
@@ -161,86 +179,88 @@ elif st.session_state.theme == "sakura":
         div[data-baseweb="select"] > div,
         div[data-baseweb="input"] > div,
         input, select, textarea {{
-            background-color: #1a1826 !important;
+            background-color: #1c1526 !important;
             color: #ffffff !important;
-            border: 1px solid #2e2a42 !important;
+            border: 1px solid #3b2a4f !important;
             border-radius: 8px !important;
         }}
 
-        /* Элегантные темные кнопки в индиго-фиолетовой гамме */
         .stButton > button {{
-            background: linear-gradient(135deg, #2a1f3d 0%, #4c1d95 60%, #5b21b6 100%) !important;
+            background: linear-gradient(135deg, #4c1d95 0%, #831843 100%) !important;
             color: #ffffff !important;
             border-radius: 8px !important;
             font-weight: 800 !important;
             letter-spacing: 0.5px !important;
-            border: 1px solid #a78bfa !important;
-            box-shadow: 0 4px 16px rgba(167, 139, 250, 0.2) !important;
+            border: 1px solid #f472b6 !important;
+            box-shadow: 0 4px 16px rgba(244, 114, 182, 0.25) !important;
             transition: all 0.25s ease-in-out !important;
         }}
 
         .stButton > button:hover {{
             transform: translateY(-2px) !important;
-            box-shadow: 0 6px 22px rgba(167, 139, 250, 0.4) !important;
-            background: linear-gradient(135deg, #3b2d54 0%, #6d28d9 100%) !important;
+            box-shadow: 0 6px 22px rgba(244, 114, 182, 0.45) !important;
+            background: linear-gradient(135deg, #6d28d9 0%, #9d174d 100%) !important;
         }}
 
         .cat-corner-wrapper {{ position: fixed; top: 15px; right: 25px; z-index: 999999; }}
         .cat-corner-wrapper button {{
             width: 65px !important; height: 65px !important; border-radius: 50% !important;
             background-image: url('{CAT_IMG_URL}') !important; background-size: cover !important;
-            border: 3px solid #a78bfa !important; box-shadow: 0 0 20px rgba(167, 139, 250, 0.4) !important;
+            border: 3px solid #f472b6 !important; box-shadow: 0 0 20px rgba(244, 114, 182, 0.4) !important;
             color: transparent !important; cursor: pointer !important;
         }}
 
         .jp-match-card {{
-            background-color: rgba(22, 20, 34, 0.96);
-            border: 1px solid #2e2a42;
-            border-top: 4px solid #a78bfa;
+            background-color: rgba(24, 18, 33, 0.92);
+            backdrop-filter: blur(8px);
+            border: 1px solid #3b2a4f;
+            border-top: 4px solid #f472b6;
             border-radius: 12px; padding: 16px; margin-bottom: 18px;
             box-shadow: 0 10px 32px rgba(0, 0, 0, 0.6);
+            position: relative;
+            z-index: 1; /* Поверх сакуры */
         }}
 
         .jp-status-bar {{
-            background: rgba(167, 139, 250, 0.1); border: 1px solid rgba(167, 139, 250, 0.3);
-            border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; font-weight: 800; color: #c084fc; text-transform: uppercase; margin-bottom: 10px;
+            background: rgba(244, 114, 182, 0.12); border: 1px solid rgba(244, 114, 182, 0.35);
+            border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; font-weight: 800; color: #f472b6; text-transform: uppercase; margin-bottom: 10px;
         }}
 
         .jp-score-header {{
             display: flex; justify-content: space-between; align-items: center; text-align: center;
-            padding: 12px 16px; background: #1c192e; border-radius: 10px;
-            border-left: 4px solid #a78bfa; border-right: 4px solid #a78bfa;
+            padding: 12px 16px; background: #231930; border-radius: 10px;
+            border-left: 4px solid #f472b6; border-right: 4px solid #f472b6;
         }}
 
         .jp-team-title {{ font-size: 1.25rem; font-weight: 800; color: #ffffff; width: 38%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-        .jp-score-main {{ font-size: 1.85rem; font-weight: 900; color: #c084fc; width: 24%; }}
-        .jp-winner-tag {{ text-align: center; margin-top: 8px; font-size: 0.88rem; font-weight: 800; color: #c084fc; text-transform: uppercase; }}
-        .jp-mvp-box {{ background: linear-gradient(90deg, rgba(167, 139, 250, 0.15) 0%, #1a1826 100%); border: 1px solid #a78bfa; border-radius: 8px; padding: 8px 12px; font-size: 0.82rem; color: #e9d5ff; margin-top: 10px; }}
+        .jp-score-main {{ font-size: 1.85rem; font-weight: 900; color: #f472b6; width: 24%; }}
+        .jp-winner-tag {{ text-align: center; margin-top: 8px; font-size: 0.88rem; font-weight: 800; color: #f472b6; text-transform: uppercase; }}
+        .jp-mvp-box {{ background: linear-gradient(90deg, rgba(244, 114, 182, 0.18) 0%, #1c1526 100%); border: 1px solid #f472b6; border-radius: 8px; padding: 8px 12px; font-size: 0.82rem; color: #fbcfe8; margin-top: 10px; }}
         .jp-section-title {{ font-size: 0.75rem; font-weight: 800; color: #cbd5e1; margin: 14px 0 6px 0; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }}
-        .jp-section-title span {{ color: #a78bfa; font-size: 1rem; }}
+        .jp-section-title span {{ color: #f472b6; font-size: 1rem; }}
         .jp-maps-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }}
-        .jp-map-item {{ background: #1c192e; border: 1px solid #2e2a42; border-radius: 8px; padding: 7px; text-align: center; }}
+        .jp-map-item {{ background: #231930; border: 1px solid #3b2a4f; border-radius: 8px; padding: 7px; text-align: center; }}
         .jp-map-name {{ font-size: 0.7rem; font-weight: 700; color: #94a3b8; margin-bottom: 2px; text-transform: uppercase; }}
         .jp-map-score {{ font-size: 0.75rem; font-weight: 600; color: #e2e8f0; }}
-        .jp-map-score.winner {{ color: #c084fc; font-weight: 800; }}
-        .jp-table-wrapper {{ overflow-x: auto; border-radius: 8px; border: 1px solid #2e2a42; margin-bottom: 8px; }}
-        .jp-table {{ width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 0.73rem; background: #1a1826; }}
-        .jp-table th {{ background: #221f35; color: #94a3b8; font-weight: 800; padding: 7px; text-align: center; border-bottom: 1px solid #2e2a42; text-transform: uppercase; font-size: 0.65rem; }}
-        .jp-table td {{ padding: 6px; text-align: center; color: #cbd5e1; border-bottom: 1px solid #232035; line-height: 1.1; }}
-        .jp-table tr.mvp-row {{ background: rgba(167, 139, 250, 0.12) !important; }}
+        .jp-map-score.winner {{ color: #f472b6; font-weight: 800; }}
+        .jp-table-wrapper {{ overflow-x: auto; border-radius: 8px; border: 1px solid #3b2a4f; margin-bottom: 8px; }}
+        .jp-table {{ width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 0.73rem; background: #1c1526; }}
+        .jp-table th {{ background: #281d38; color: #94a3b8; font-weight: 800; padding: 7px; text-align: center; border-bottom: 1px solid #3b2a4f; text-transform: uppercase; font-size: 0.65rem; }}
+        .jp-table td {{ padding: 6px; text-align: center; color: #cbd5e1; border-bottom: 1px solid #281d38; line-height: 1.1; }}
+        .jp-table tr.mvp-row {{ background: rgba(244, 114, 182, 0.15) !important; }}
         .jp-table td.player-cell {{ text-align: left; font-weight: 800; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-        .jp-table td.player-cell small {{ color: #c084fc; font-weight: 500; margin-left: 4px; font-size: 0.62rem; }}
-        .jp-table td.rating-cell {{ font-weight: 900; color: #c084fc; }}
-        .team-card-box {{ background: linear-gradient(145deg, #181628 0%, #0f0e17 100%); border: 2px solid #2e2a42; border-radius: 14px; padding: 18px 20px; margin-bottom: 10px; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5); }}
-        .team-card-header {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2e2a42; padding-bottom: 12px; margin-bottom: 12px; }}
+        .jp-table td.player-cell small {{ color: #f472b6; font-weight: 500; margin-left: 4px; font-size: 0.62rem; }}
+        .jp-table td.rating-cell {{ font-weight: 900; color: #f472b6; }}
+        .team-card-box {{ background: linear-gradient(145deg, #1f172a 0%, #120e18 100%); border: 2px solid #3b2a4f; border-radius: 14px; padding: 18px 20px; margin-bottom: 10px; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5); position: relative; z-index: 1; }}
+        .team-card-header {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3b2a4f; padding-bottom: 12px; margin-bottom: 12px; }}
         .team-card-title {{ font-size: 1.4rem; font-weight: 900; color: #ffffff; display: flex; align-items: center; gap: 10px; }}
-        .team-ovr-badge {{ background: linear-gradient(135deg, #5b21b6 0%, #312e81 100%); color: #ffffff; padding: 6px 14px; border-radius: 8px; font-weight: 900; font-size: 1.1rem; text-align: center; border: 1px solid #a78bfa; }}
-        .team-stats-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; background: #1c192e; padding: 10px; border-radius: 8px; border: 1px solid #2e2a42; }}
+        .team-ovr-badge {{ background: linear-gradient(135deg, #831843 0%, #4c1d95 100%); color: #ffffff; padding: 6px 14px; border-radius: 8px; font-weight: 900; font-size: 1.1rem; text-align: center; border: 1px solid #f472b6; }}
+        .team-stats-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; background: #231930; padding: 10px; border-radius: 8px; border: 1px solid #3b2a4f; }}
         .team-stat-item {{ font-size: 0.78rem; color: #94a3b8; }}
         .team-stat-item b {{ color: #f1f5f9; }}
         .roster-grid {{ display: flex; flex-direction: column; gap: 6px; }}
-        .roster-slot-card {{ display: flex; justify-content: space-between; align-items: center; background: #181628; border: 1px solid #2e2a42; border-left: 3px solid #a78bfa; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; color: #ffffff; }}
-        .role-badge {{ background: rgba(167, 139, 250, 0.15); color: #c084fc; border: 1px solid rgba(167, 139, 250, 0.3); padding: 2px 8px; border-radius: 4px; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; }}
+        .roster-slot-card {{ display: flex; justify-content: space-between; align-items: center; background: #1c1526; border: 1px solid #3b2a4f; border-left: 3px solid #f472b6; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; color: #ffffff; }}
+        .role-badge {{ background: rgba(244, 114, 182, 0.15); color: #f472b6; border: 1px solid rgba(244, 114, 182, 0.3); padding: 2px 8px; border-radius: 4px; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -326,9 +346,9 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# 🐱 КНОПКА-КОТИК (Переключение 3 тем по кругу)
+# 🐱 КНОПКА-КОТИК
 st.markdown('<div class="cat-corner-wrapper">', unsafe_allow_html=True)
-if st.button("🐱", key="cat_toggle_btn", help="Нажмите на котика, чтобы сменить стиль!"):
+if st.button("🐱", key="cat_toggle_btn", help="Переключить тему"):
     if st.session_state.theme == "dark":
         st.session_state.theme = "light"
     elif st.session_state.theme == "light":
@@ -342,7 +362,7 @@ def save_db(data):
     try:
         redis.set(DB_KEY, json.dumps(data, ensure_ascii=False))
     except Exception as e:
-        st.error(f"Сбой сети при сохранении: {e}")
+        st.error(f"Сбой сохранения: {e}")
 
 def load_preset_teams(db_data):
     db_data["players"].clear()
@@ -549,9 +569,14 @@ if st.session_state.theme == "light":
     st.title("🪻 STANDOFF 2 — ESPORTS HUB")
     st.caption("Фиолетовая сакура • Glow Violet Edition")
 elif st.session_state.theme == "sakura":
-    st.markdown('<div class="sakura-bg-branch"></div>', unsafe_allow_html=True)
+    # ГЕНЕРАЦИЯ ПАДАЮЩИХ ЛЕПЕСТКОВ
+    petals_html = "".join([
+        f'<div class="sakura-petal" style="top:{random.randint(-10, 40)}%; left:{random.randint(10, 90)}%; width:{random.randint(8,14)}px; height:{random.randint(10,18)}px; animation-duration:{random.randint(6,12)}s; animation-delay:{random.uniform(0,5):.1f}s;"></div>'
+        for _ in range(12)
+    ])
+    st.markdown(f'<div class="sakura-bg-branch"></div>{petals_html}', unsafe_allow_html=True)
     st.title("🌸 STANDOFF 2 — SAKURA EDITION")
-    st.caption("Ночной стиль • Анимированная ветка сакуры в глубоких тонах")
+    st.caption("Аниме Стиль • Сакура зафиксирована на дальнем фоне")
 else:
     st.title("⛩️ STANDOFF 2 — ESPORTS HUB")
     st.caption("Обычный темный киберспортивный режим")
@@ -847,7 +872,7 @@ with tab_teams:
             team_card_html = (
                 f'<div class="team-card-box">'
                 f'<div class="team-card-header">'
-                f'<div class="team-card-title">🛡️ {tm} <span class="role-badge" style="background:rgba(234,179,8,0.15); color:#eab308; border-color:rgba(234,179,8,0.3);">{tier_tag}</span></div>'
+                f'<div class="team-card-title">🛡️ {tm} <span class="role-badge" style="background:rgba(244,114,182,0.15); color:#f472b6; border-color:rgba(244,114,182,0.3);">{tier_tag}</span></div>'
                 f'<div class="team-ovr-badge"><small style="font-size:0.55rem; display:block; text-transform:uppercase; letter-spacing:0.5px;">OVR</small>{team_ovr}</div>'
                 f'</div>'
                 f'<div class="team-stats-grid">'
