@@ -15,7 +15,8 @@ DEFAULT_DB = {
     "players": {},
     "coaches": {},
     "teams": {},
-    "match_history": []
+    "match_history": [],
+    "events": []
 }
 
 ROLES = ["Капитан", "Снайпер", "Опенер", "Рифлер", "Саппорт", "Капитан-Снайпер", "Люркер"]
@@ -795,6 +796,8 @@ def load_db():
             data = json.loads(raw_data) if isinstance(raw_data, str) else raw_data
             if "match_history" not in data:
                 data["match_history"] = []
+            if "events" not in data:
+                data["events"] = []
             
             if not data.get("teams") and not data.get("players"):
                 load_preset_teams(data)
@@ -960,12 +963,13 @@ else:
 
 st.markdown("---")
 
-tab_match, tab_players, tab_teams, tab_coaches, tab_history = st.tabs([
+tab_match, tab_players, tab_teams, tab_coaches, tab_history, tab_events = st.tabs([
     "⚔️ Матч-Центр", 
     "👤 Игроки", 
     "🛡️ Команды", 
     "📋 Тренеры",
-    "📜 История"
+    "📜 История",
+    "📅 События"
 ])
 
 # ==================== МАТЧ-ЦЕНТР ====================
@@ -1238,7 +1242,6 @@ with tab_teams:
 
             avg_p_rating = sum(player_ratings) / max(1, len(player_ratings)) if player_ratings else 0
             coach_r = db["coaches"].get(data.get("coach"), {}).get("rating", 0)
-            # Обновленный расчет OVR: 84% скилл игроков, 10% сыгранность, 6% тренер
             team_ovr = round((avg_p_rating * 0.84) + (data.get("chemistry", 0) * 0.10) + (coach_r * 0.06))
 
             saved_tier = data.get("tier", "Авторасчет")
@@ -1313,7 +1316,6 @@ with tab_history:
 
     st.markdown("---")
 
-    # Свободный вывод всей истории матчей
     if not db.get("match_history"):
         st.info("История пока пуста. Проведите симуляцию матча в Матч-Центре, чтобы сохранить результат.")
     else:
@@ -1325,3 +1327,59 @@ with tab_history:
             )
             with st.expander(label, expanded=(idx == 0)):
                 st.markdown(match_data.get("card_html", ""), unsafe_allow_html=True)
+
+# ==================== СОБЫТИЯ И ТУРНИРЫ ====================
+with tab_events:
+    st.subheader("📅 Календарь Событий и Турниров")
+
+    e_col1, e_col2 = st.columns([1, 1])
+
+    with e_col1:
+        st.markdown("##### ➕ Добавить событие")
+        event_title = st.text_input("Название события / турнира", key="e_title_input")
+
+        c_d, c_t = st.columns(2)
+        with c_d:
+            event_date = st.date_input("Дата проведения", key="e_date_input")
+        with c_t:
+            event_time = st.time_input("Время проведения", key="e_time_input")
+
+        event_desc = st.text_area("Описание / Заметки (необязательно)", key="e_desc_input")
+
+        if st.button("💾 Сохранить событие", use_container_width=True, key="e_save_btn"):
+            if event_title:
+                new_event = {
+                    "id": random.randint(100000, 999999),
+                    "title": event_title,
+                    "date": str(event_date),
+                    "time": str(event_time)[:5],
+                    "desc": event_desc
+                }
+                db.setdefault("events", []).append(new_event)
+                save_db(db)
+                st.success(f"Событие '{event_title}' успешно добавлено!")
+                st.rerun()
+            else:
+                st.error("Пожалуйста, введите название события!")
+
+    with e_col2:
+        st.markdown("##### 📋 Запланированные события")
+        events_list = db.get("events", [])
+
+        if not events_list:
+            st.info("Запланированных событий пока нет.")
+        else:
+            events_list.sort(key=lambda x: (x.get("date", ""), x.get("time", "")))
+
+            for idx, ev in enumerate(events_list):
+                with st.expander(f"📌 {ev.get('date')} | {ev.get('time')} — {ev.get('title')}", expanded=True):
+                    if ev.get("desc"):
+                        st.write(ev.get("desc"))
+
+                    st.caption(f"🗓️ Дата: {ev.get('date')} | ⏰ Время: {ev.get('time')}")
+
+                    if st.button("🗑️ Удалить событие", key=f"del_ev_{ev.get('id', idx)}"):
+                        db["events"] = [e for e in db["events"] if e.get("id") != ev.get("id")]
+                        save_db(db)
+                        st.success("Событие удалено!")
+                        st.rerun()
