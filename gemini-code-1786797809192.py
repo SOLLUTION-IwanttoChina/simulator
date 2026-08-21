@@ -33,14 +33,15 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Инициализация темы (по умолчанию - тёмная)
+# Инициализация темы (dark -> light -> sakura -> dark)
 if "theme" not in st.session_state:
     st.session_state.theme = "dark"
 
 CAT_IMG_URL = "https://i.ibb.co/Ld35P0v/cat-hat.png"
+SAKURA_BRANCH_URL = "https://i.postimg.co/c1mX79Bv/sakura-branch-anime.png"
 
 # ==========================================
-# ДИНАМИЧЕСКИЕ СТИЛИ
+# ДИНАМИЧЕСКИЕ СТИЛИ (3 ТЕМЫ)
 # ==========================================
 if st.session_state.theme == "light":
     st.markdown(f"""
@@ -50,11 +51,7 @@ if st.session_state.theme == "light":
             color: #2e1065;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }}
-        
-        [data-testid="stSidebar"] {{
-            display: none;
-        }}
-        
+        [data-testid="stSidebar"] {{ display: none; }}
         div[data-baseweb="select"] > div,
         div[data-baseweb="input"] > div,
         input, select, textarea {{
@@ -62,14 +59,7 @@ if st.session_state.theme == "light":
             color: #1e1b4b !important;
             border: 1px solid #ddd6fe !important;
             border-radius: 8px !important;
-            transition: border-color 0.3s ease !important;
         }}
-
-        div[data-baseweb="select"]:hover > div,
-        div[data-baseweb="input"]:hover > div {{
-            border-color: #8b5cf6 !important;
-        }}
-
         .stButton > button {{
             background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%) !important;
             color: #ffffff !important;
@@ -79,322 +69,182 @@ if st.session_state.theme == "light":
             box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25) !important;
             transition: all 0.3s ease-in-out !important;
         }}
-
         .stButton > button:hover {{
             transform: translateY(-2px) !important;
             box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4) !important;
         }}
-
-        .cat-corner-wrapper {{
-            position: fixed;
-            top: 15px;
-            right: 25px;
-            z-index: 999999;
-        }}
-        
+        .cat-corner-wrapper {{ position: fixed; top: 15px; right: 25px; z-index: 999999; }}
         .cat-corner-wrapper button {{
-            width: 65px !important;
-            height: 65px !important;
-            border-radius: 50% !important;
-            background-image: url('{CAT_IMG_URL}') !important;
-            background-size: cover !important;
-            background-position: center !important;
-            border: 3px solid #8b5cf6 !important;
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5) !important;
-            color: transparent !important;
-            cursor: pointer !important;
-            transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+            width: 65px !important; height: 65px !important; border-radius: 50% !important;
+            background-image: url('{CAT_IMG_URL}') !important; background-size: cover !important;
+            border: 3px solid #8b5cf6 !important; box-shadow: 0 0 20px rgba(139, 92, 246, 0.5) !important;
+            color: transparent !important; cursor: pointer !important;
         }}
-        
-        .cat-corner-wrapper button:hover {{
-            transform: scale(1.12) rotate(6deg) !important;
-            box-shadow: 0 0 28px rgba(168, 85, 247, 0.8) !important;
+        .jp-match-card {{
+            background-color: #ffffff; border: 1px solid #e9d5ff; border-top: 4px solid #8b5cf6;
+            border-radius: 12px; padding: 16px; margin-bottom: 18px; box-shadow: 0 8px 30px rgba(124, 58, 237, 0.08);
+        }}
+        .jp-status-bar {{
+            background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; font-weight: 800; color: #6d28d9; text-transform: uppercase; margin-bottom: 10px;
+        }}
+        .jp-score-header {{
+            display: flex; justify-content: space-between; align-items: center; text-align: center;
+            padding: 12px 16px; background: linear-gradient(90deg, #f3e8ff 0%, #faf5ff 50%, #f3e8ff 100%);
+            border-radius: 10px; border-left: 4px solid #8b5cf6; border-right: 4px solid #8b5cf6;
+        }}
+        .jp-team-title {{ font-size: 1.25rem; font-weight: 800; color: #3b0764; width: 38%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
+        .jp-score-main {{ font-size: 1.85rem; font-weight: 900; color: #6d28d9; width: 24%; }}
+        .jp-winner-tag {{ text-align: center; margin-top: 8px; font-size: 0.88rem; font-weight: 800; color: #7e22ce; text-transform: uppercase; }}
+        .jp-mvp-box {{ background: linear-gradient(90deg, #f3e8ff 0%, #ffffff 100%); border: 1px solid #c084fc; border-radius: 8px; padding: 8px 12px; font-size: 0.82rem; color: #581c87; margin-top: 10px; }}
+        .jp-section-title {{ font-size: 0.75rem; font-weight: 800; color: #6b21a8; margin: 14px 0 6px 0; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }}
+        .jp-section-title span {{ color: #8b5cf6; font-size: 1rem; }}
+        .jp-maps-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }}
+        .jp-map-item {{ background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 8px; padding: 7px; text-align: center; }}
+        .jp-map-name {{ font-size: 0.7rem; font-weight: 700; color: #581c87; margin-bottom: 2px; text-transform: uppercase; }}
+        .jp-map-score {{ font-size: 0.75rem; font-weight: 600; color: #4c1d95; }}
+        .jp-map-score.winner {{ color: #7c3aed; font-weight: 800; }}
+        .jp-table-wrapper {{ overflow-x: auto; border-radius: 8px; border: 1px solid #ddd6fe; margin-bottom: 8px; }}
+        .jp-table {{ width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 0.73rem; background: #ffffff; }}
+        .jp-table th {{ background: #f3e8ff; color: #581c87; font-weight: 800; padding: 7px; text-align: center; border-bottom: 1px solid #ddd6fe; text-transform: uppercase; font-size: 0.65rem; }}
+        .jp-table td {{ padding: 6px; text-align: center; color: #334155; border-bottom: 1px solid #f5f3ff; line-height: 1.1; }}
+        .jp-table tr.mvp-row {{ background: #f3e8ff !important; }}
+        .jp-table td.player-cell {{ text-align: left; font-weight: 800; color: #3b0764; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
+        .jp-table td.player-cell small {{ color: #7e22ce; font-weight: 500; margin-left: 4px; font-size: 0.62rem; }}
+        .jp-table td.rating-cell {{ font-weight: 900; color: #6d28d9; }}
+        .team-card-box {{ background: linear-gradient(145deg, #ffffff 0%, #f3e8ff 100%); border: 2px solid #ddd6fe; border-radius: 14px; padding: 18px 20px; margin-bottom: 10px; box-shadow: 0 8px 24px rgba(124, 58, 237, 0.12); }}
+        .team-card-header {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e9d5ff; padding-bottom: 12px; margin-bottom: 12px; }}
+        .team-card-title {{ font-size: 1.4rem; font-weight: 900; color: #3b0764; display: flex; align-items: center; gap: 10px; }}
+        .team-ovr-badge {{ background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; padding: 6px 14px; border-radius: 8px; font-weight: 900; font-size: 1.1rem; text-align: center; }}
+        .team-stats-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; background: #f5f3ff; padding: 10px; border-radius: 8px; border: 1px solid #ddd6fe; }}
+        .team-stat-item {{ font-size: 0.78rem; color: #6b21a8; }}
+        .team-stat-item b {{ color: #3b0764; }}
+        .roster-grid {{ display: flex; flex-direction: column; gap: 6px; }}
+        .roster-slot-card {{ display: flex; justify-content: space-between; align-items: center; background: #ffffff; border: 1px solid #e9d5ff; border-left: 3px solid #8b5cf6; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; color: #2e1065; }}
+        .role-badge {{ background: rgba(139, 92, 246, 0.15); color: #6d28d9; border: 1px solid rgba(139, 92, 246, 0.3); padding: 2px 8px; border-radius: 4px; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; }}
+    </style>
+    """, unsafe_allow_html=True)
+
+elif st.session_state.theme == "sakura":
+    # 🌸 3-Я ТЕМА: ANIME SAKURA (с шелестящей веткой сакуры)
+    st.markdown(f"""
+    <style>
+        @keyframes swayBranch {{
+            0% {{ transform: rotate(0deg) scale(1); }}
+            50% {{ transform: rotate(3deg) translateY(6px) scale(1.02); }}
+            100% {{ transform: rotate(0deg) scale(1); }}
+        }}
+
+        .sakura-branch-bg {{
+            position: fixed;
+            top: -20px;
+            right: -30px;
+            width: 480px;
+            height: 420px;
+            background: url('{SAKURA_BRANCH_URL}') no-repeat right top / contain;
+            pointer-events: none;
+            z-index: 99990;
+            transform-origin: top right;
+            animation: swayBranch 6.5s ease-in-out infinite;
+            opacity: 0.88;
+            filter: drop-shadow(0 0 12px rgba(244, 114, 182, 0.25));
+        }}
+
+        .stApp {{
+            background-color: #12111a;
+            color: #f1f5f9;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }}
+        [data-testid="stSidebar"] {{ display: none; }}
+
+        div[data-baseweb="select"] > div,
+        div[data-baseweb="input"] > div,
+        input, select, textarea {{
+            background-color: #1a1826 !important;
+            color: #ffffff !important;
+            border: 1px solid #3b3554 !important;
+            border-radius: 8px !important;
+        }}
+
+        /* Уникальные аниме-кнопки */
+        .stButton > button {{
+            background: linear-gradient(135deg, #311b42 0%, #6b21a8 50%, #9d174d 100%) !important;
+            color: #ffffff !important;
+            border-radius: 12px 2px 12px 2px !important;
+            font-weight: 800 !important;
+            letter-spacing: 0.5px !important;
+            border: 1px solid #f472b6 !important;
+            box-shadow: 0 4px 16px rgba(244, 114, 182, 0.3) !important;
+            transition: all 0.25s ease-in-out !important;
+        }}
+
+        .stButton > button:hover {{
+            transform: translateY(-2px) scale(1.01) !important;
+            box-shadow: 0 6px 24px rgba(244, 114, 182, 0.6) !important;
+            background: linear-gradient(135deg, #4c1d95 0%, #831843 100%) !important;
+        }}
+
+        .cat-corner-wrapper {{ position: fixed; top: 15px; right: 25px; z-index: 999999; }}
+        .cat-corner-wrapper button {{
+            width: 65px !important; height: 65px !important; border-radius: 50% !important;
+            background-image: url('{CAT_IMG_URL}') !important; background-size: cover !important;
+            border: 3px solid #f472b6 !important; box-shadow: 0 0 22px rgba(244, 114, 182, 0.6) !important;
+            color: transparent !important; cursor: pointer !important;
         }}
 
         .jp-match-card {{
-            background-color: #ffffff;
-            border: 1px solid #e9d5ff;
-            border-top: 4px solid #8b5cf6;
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 18px;
-            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.08);
-            transition: all 0.3s ease;
-        }}
-
-        .jp-match-card:hover {{
-            box-shadow: 0 12px 35px rgba(124, 58, 237, 0.16);
+            background-color: rgba(26, 24, 38, 0.95);
+            border: 1px solid #3b3554;
+            border-top: 4px solid #f472b6;
+            border-radius: 12px; padding: 16px; margin-bottom: 18px;
+            box-shadow: 0 10px 32px rgba(0, 0, 0, 0.6);
         }}
 
         .jp-status-bar {{
-            background: rgba(139, 92, 246, 0.1);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 6px;
-            padding: 4px 10px;
-            font-size: 0.72rem;
-            font-weight: 800;
-            color: #6d28d9;
-            letter-spacing: 0.6px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
+            background: rgba(244, 114, 182, 0.1); border: 1px solid rgba(244, 114, 182, 0.3);
+            border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; font-weight: 800; color: #f472b6; text-transform: uppercase; margin-bottom: 10px;
         }}
 
         .jp-score-header {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            text-align: center;
-            padding: 12px 16px;
-            background: linear-gradient(90deg, #f3e8ff 0%, #faf5ff 50%, #f3e8ff 100%);
-            border-radius: 10px;
-            border-left: 4px solid #8b5cf6;
-            border-right: 4px solid #8b5cf6;
+            display: flex; justify-content: space-between; align-items: center; text-align: center;
+            padding: 12px 16px; background: #221f33; border-radius: 10px;
+            border-left: 4px solid #f472b6; border-right: 4px solid #f472b6;
         }}
 
-        .jp-team-title {{
-            font-size: 1.25rem;
-            font-weight: 800;
-            color: #3b0764;
-            width: 38%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }}
-
-        .jp-score-main {{
-            font-size: 1.85rem;
-            font-weight: 900;
-            color: #6d28d9;
-            width: 24%;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 8px rgba(109, 40, 217, 0.2);
-        }}
-
-        .jp-winner-tag {{
-            text-align: center;
-            margin-top: 8px;
-            font-size: 0.88rem;
-            font-weight: 800;
-            color: #7e22ce;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }}
-
-        .jp-mvp-box {{
-            background: linear-gradient(90deg, #f3e8ff 0%, #ffffff 100%);
-            border: 1px solid #c084fc;
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 0.82rem;
-            color: #581c87;
-            margin-top: 10px;
-            box-shadow: 0 2px 10px rgba(168, 85, 247, 0.1);
-        }}
-
-        .jp-section-title {{
-            font-size: 0.75rem;
-            font-weight: 800;
-            color: #6b21a8;
-            margin: 14px 0 6px 0;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-transform: uppercase;
-        }}
-
-        .jp-section-title span {{
-            color: #8b5cf6;
-            font-size: 1rem;
-        }}
-
-        .jp-maps-grid {{
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 8px;
-        }}
-
-        .jp-map-item {{
-            background: #f5f3ff;
-            border: 1px solid #ddd6fe;
-            border-radius: 8px;
-            padding: 7px;
-            text-align: center;
-            transition: transform 0.2s ease;
-        }}
-
-        .jp-map-item:hover {{
-            transform: translateY(-2px);
-        }}
-
-        .jp-map-name {{
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: #581c87;
-            margin-bottom: 2px;
-            text-transform: uppercase;
-        }}
-
-        .jp-map-score {{
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #4c1d95;
-        }}
-
-        .jp-map-score.winner {{
-            color: #7c3aed;
-            font-weight: 800;
-        }}
-
-        .jp-table-wrapper {{
-            overflow-x: auto;
-            border-radius: 8px;
-            border: 1px solid #ddd6fe;
-            margin-bottom: 8px;
-        }}
-
-        .jp-table {{
-            width: 100%;
-            table-layout: fixed;
-            border-collapse: collapse;
-            font-size: 0.73rem;
-            background: #ffffff;
-        }}
-
-        .jp-table th {{
-            background: #f3e8ff;
-            color: #581c87;
-            font-weight: 800;
-            padding: 7px;
-            text-align: center;
-            border-bottom: 1px solid #ddd6fe;
-            text-transform: uppercase;
-            font-size: 0.65rem;
-        }}
-
-        .jp-table td {{
-            padding: 6px;
-            text-align: center;
-            color: #334155;
-            border-bottom: 1px solid #f5f3ff;
-            line-height: 1.1;
-        }}
-
-        .jp-table tr.mvp-row {{
-            background: #f3e8ff !important;
-        }}
-
-        .jp-table td.player-cell {{
-            text-align: left;
-            font-weight: 800;
-            color: #3b0764;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }}
-
-        .jp-table td.player-cell small {{
-            color: #7e22ce;
-            font-weight: 500;
-            margin-left: 4px;
-            font-size: 0.62rem;
-        }}
-
-        .jp-table td.rating-cell {{
-            font-weight: 900;
-            color: #6d28d9;
-        }}
-
-        .team-card-box {{
-            background: linear-gradient(145deg, #ffffff 0%, #f3e8ff 100%);
-            border: 2px solid #ddd6fe;
-            border-radius: 14px;
-            padding: 18px 20px;
-            margin-bottom: 10px;
-            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.12);
-        }}
-
-        .team-card-header {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #e9d5ff;
-            padding-bottom: 12px;
-            margin-bottom: 12px;
-        }}
-
-        .team-card-title {{
-            font-size: 1.4rem;
-            font-weight: 900;
-            color: #3b0764;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }}
-
-        .team-ovr-badge {{
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
-            color: #ffffff;
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-weight: 900;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.3);
-            text-align: center;
-        }}
-
-        .team-stats-grid {{
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 14px;
-            background: #f5f3ff;
-            padding: 10px;
-            border-radius: 8px;
-            border: 1px solid #ddd6fe;
-        }}
-
-        .team-stat-item {{
-            font-size: 0.78rem;
-            color: #6b21a8;
-        }}
-
-        .team-stat-item b {{
-            color: #3b0764;
-        }}
-
-        .roster-grid {{
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }}
-
-        .roster-slot-card {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #ffffff;
-            border: 1px solid #e9d5ff;
-            border-left: 3px solid #8b5cf6;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            color: #2e1065;
-        }}
-
-        .role-badge {{
-            background: rgba(139, 92, 246, 0.15);
-            color: #6d28d9;
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.68rem;
-            font-weight: 800;
-            text-transform: uppercase;
-        }}
+        .jp-team-title {{ font-size: 1.25rem; font-weight: 800; color: #ffffff; width: 38%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
+        .jp-score-main {{ font-size: 1.85rem; font-weight: 900; color: #f472b6; width: 24%; }}
+        .jp-winner-tag {{ text-align: center; margin-top: 8px; font-size: 0.88rem; font-weight: 800; color: #f472b6; text-transform: uppercase; }}
+        .jp-mvp-box {{ background: linear-gradient(90deg, rgba(244, 114, 182, 0.15) 0%, #1a1826 100%); border: 1px solid #f472b6; border-radius: 8px; padding: 8px 12px; font-size: 0.82rem; color: #fbcfe8; margin-top: 10px; }}
+        .jp-section-title {{ font-size: 0.75rem; font-weight: 800; color: #cbd5e1; margin: 14px 0 6px 0; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }}
+        .jp-section-title span {{ color: #f472b6; font-size: 1rem; }}
+        .jp-maps-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }}
+        .jp-map-item {{ background: #221f33; border: 1px solid #35304d; border-radius: 8px; padding: 7px; text-align: center; }}
+        .jp-map-name {{ font-size: 0.7rem; font-weight: 700; color: #94a3b8; margin-bottom: 2px; text-transform: uppercase; }}
+        .jp-map-score {{ font-size: 0.75rem; font-weight: 600; color: #e2e8f0; }}
+        .jp-map-score.winner {{ color: #f472b6; font-weight: 800; }}
+        .jp-table-wrapper {{ overflow-x: auto; border-radius: 8px; border: 1px solid #35304d; margin-bottom: 8px; }}
+        .jp-table {{ width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 0.73rem; background: #1a1826; }}
+        .jp-table th {{ background: #252238; color: #94a3b8; font-weight: 800; padding: 7px; text-align: center; border-bottom: 1px solid #35304d; text-transform: uppercase; font-size: 0.65rem; }}
+        .jp-table td {{ padding: 6px; text-align: center; color: #cbd5e1; border-bottom: 1px solid #232033; line-height: 1.1; }}
+        .jp-table tr.mvp-row {{ background: rgba(244, 114, 182, 0.12) !important; }}
+        .jp-table td.player-cell {{ text-align: left; font-weight: 800; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
+        .jp-table td.player-cell small {{ color: #f472b6; font-weight: 500; margin-left: 4px; font-size: 0.62rem; }}
+        .jp-table td.rating-cell {{ font-weight: 900; color: #f472b6; }}
+        .team-card-box {{ background: linear-gradient(145deg, #1e1b2e 0%, #12111a 100%); border: 2px solid #3b3554; border-radius: 14px; padding: 18px 20px; margin-bottom: 10px; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5); }}
+        .team-card-header {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #35304d; padding-bottom: 12px; margin-bottom: 12px; }}
+        .team-card-title {{ font-size: 1.4rem; font-weight: 900; color: #ffffff; display: flex; align-items: center; gap: 10px; }}
+        .team-ovr-badge {{ background: linear-gradient(135deg, #9d174d 0%, #6b21a8 100%); color: #ffffff; padding: 6px 14px; border-radius: 8px; font-weight: 900; font-size: 1.1rem; text-align: center; border: 1px solid #f472b6; }}
+        .team-stats-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; background: #221f33; padding: 10px; border-radius: 8px; border: 1px solid #35304d; }}
+        .team-stat-item {{ font-size: 0.78rem; color: #94a3b8; }}
+        .team-stat-item b {{ color: #f1f5f9; }}
+        .roster-grid {{ display: flex; flex-direction: column; gap: 6px; }}
+        .roster-slot-card {{ display: flex; justify-content: space-between; align-items: center; background: #1d1a2b; border: 1px solid #35304d; border-left: 3px solid #f472b6; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; color: #ffffff; }}
+        .role-badge {{ background: rgba(244, 114, 182, 0.15); color: #f472b6; border: 1px solid rgba(244, 114, 182, 0.3); padding: 2px 8px; border-radius: 4px; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; }}
     </style>
     """, unsafe_allow_html=True)
 
 else:
+    # 🖤 1-Я ТЕМА: DARK
     st.markdown(f"""
     <style>
         .stApp {{
@@ -402,11 +252,7 @@ else:
             color: #e2e8f0;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }}
-        
-        [data-testid="stSidebar"] {{
-            display: none;
-        }}
-        
+        [data-testid="stSidebar"] {{ display: none; }}
         div[data-baseweb="select"] > div,
         div[data-baseweb="input"] > div,
         input, select, textarea {{
@@ -415,7 +261,6 @@ else:
             border: 1px solid #2a2e3d !important;
             border-radius: 6px !important;
         }}
-
         .stButton > button {{
             background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%) !important;
             color: #ffffff !important;
@@ -424,300 +269,45 @@ else:
             border: 1px solid #f87171 !important;
             transition: all 0.2s ease-in-out !important;
         }}
-
-        .cat-corner-wrapper {{
-            position: fixed;
-            top: 15px;
-            right: 25px;
-            z-index: 999999;
-        }}
-        
+        .cat-corner-wrapper {{ position: fixed; top: 15px; right: 25px; z-index: 999999; }}
         .cat-corner-wrapper button {{
-            width: 65px !important;
-            height: 65px !important;
-            border-radius: 50% !important;
-            background-image: url('{CAT_IMG_URL}') !important;
-            background-size: cover !important;
-            background-position: center !important;
-            border: 3px solid #dc2626 !important;
-            box-shadow: 0 4px 18px rgba(220, 38, 38, 0.5) !important;
-            color: transparent !important;
-            cursor: pointer !important;
-            transition: transform 0.2s ease, border-color 0.2s ease !important;
+            width: 65px !important; height: 65px !important; border-radius: 50% !important;
+            background-image: url('{CAT_IMG_URL}') !important; background-size: cover !important;
+            border: 3px solid #dc2626 !important; box-shadow: 0 4px 18px rgba(220, 38, 38, 0.5) !important;
+            color: transparent !important; cursor: pointer !important;
         }}
-
-        .cat-corner-wrapper button:hover {{
-            transform: scale(1.12) rotate(-5deg) !important;
-            border-color: #f87171 !important;
-        }}
-
-        .jp-match-card {{
-            background-color: #0f1118;
-            border: 1px solid #222634;
-            border-radius: 10px;
-            padding: 14px;
-            margin-bottom: 15px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-        }}
-
-        .jp-status-bar {{
-            background: rgba(234, 179, 8, 0.08);
-            border: 1px solid rgba(234, 179, 8, 0.25);
-            border-radius: 5px;
-            padding: 4px 8px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: #eab308;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }}
-
-        .jp-score-header {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            text-align: center;
-            padding: 10px 14px;
-            background: #141722;
-            border-radius: 8px;
-            border-left: 3px solid #dc2626;
-            border-right: 3px solid #dc2626;
-        }}
-
-        .jp-team-title {{
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: #f8fafc;
-            width: 38%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }}
-
-        .jp-score-main {{
-            font-size: 1.8rem;
-            font-weight: 900;
-            color: #ffffff;
-            width: 24%;
-            letter-spacing: 1px;
-        }}
-
-        .jp-winner-tag {{
-            text-align: center;
-            margin-top: 6px;
-            font-size: 0.85rem;
-            font-weight: 800;
-            color: #eab308;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }}
-
-        .jp-mvp-box {{
-            background: linear-gradient(90deg, rgba(234, 179, 8, 0.12) 0%, rgba(15, 17, 24, 0.8) 100%);
-            border: 1px solid rgba(234, 179, 8, 0.3);
-            border-radius: 6px;
-            padding: 6px 10px;
-            font-size: 0.8rem;
-            color: #fef08a;
-            margin-top: 8px;
-        }}
-
-        .jp-section-title {{
-            font-size: 0.75rem;
-            font-weight: 800;
-            color: #94a3b8;
-            margin: 12px 0 6px 0;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }}
-
-        .jp-section-title span {{
-            color: #dc2626;
-            font-size: 1rem;
-        }}
-
-        .jp-maps-grid {{
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 8px;
-        }}
-
-        .jp-map-item {{
-            background: #141722;
-            border: 1px solid #232736;
-            border-radius: 6px;
-            padding: 6px;
-            text-align: center;
-        }}
-
-        .jp-map-name {{
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: #94a3b8;
-            margin-bottom: 2px;
-            text-transform: uppercase;
-        }}
-
-        .jp-map-score {{
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #cbd5e1;
-        }}
-
-        .jp-map-score.winner {{
-            color: #eab308;
-            font-weight: 800;
-        }}
-
-        .jp-table-wrapper {{
-            overflow-x: auto;
-            border-radius: 6px;
-            border: 1px solid #202433;
-            margin-bottom: 8px;
-        }}
-
-        .jp-table {{
-            width: 100%;
-            table-layout: fixed;
-            border-collapse: collapse;
-            font-size: 0.73rem;
-            background: #12141e;
-        }}
-
-        .jp-table th {{
-            background: #181b28;
-            color: #64748b;
-            font-weight: 700;
-            padding: 6px;
-            text-align: center;
-            border-bottom: 1px solid #232736;
-            text-transform: uppercase;
-            font-size: 0.65rem;
-        }}
-
-        .jp-table td {{
-            padding: 5px 6px;
-            text-align: center;
-            color: #cbd5e1;
-            border-bottom: 1px solid #1a1d2b;
-            line-height: 1.1;
-        }}
-
-        .jp-table tr.mvp-row {{
-            background: rgba(234, 179, 8, 0.08) !important;
-        }}
-
-        .jp-table td.player-cell {{
-            text-align: left;
-            font-weight: 700;
-            color: #ffffff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }}
-
-        .jp-table td.player-cell small {{
-            color: #64748b;
-            font-weight: 400;
-            margin-left: 4px;
-            font-size: 0.62rem;
-        }}
-
-        .jp-table td.rating-cell {{
-            font-weight: 800;
-            color: #eab308;
-        }}
-
-        .team-card-box {{
-            background: linear-gradient(145deg, #121520 0%, #0a0b10 100%);
-            border: 2px solid #2a2e3d;
-            border-radius: 14px;
-            padding: 18px 20px;
-            margin-bottom: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }}
-
-        .team-card-header {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #232736;
-            padding-bottom: 12px;
-            margin-bottom: 12px;
-        }}
-
-        .team-card-title {{
-            font-size: 1.4rem;
-            font-weight: 900;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }}
-
-        .team-ovr-badge {{
-            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-            color: #ffffff;
-            padding: 6px 14px;
-            border-radius: 8px;
-            font-weight: 900;
-            font-size: 1.1rem;
-            box-shadow: 0 0 12px rgba(220, 38, 38, 0.4);
-            text-align: center;
-        }}
-
-        .team-stats-grid {{
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 14px;
-            background: #161925;
-            padding: 10px;
-            border-radius: 8px;
-        }}
-
-        .team-stat-item {{
-            font-size: 0.78rem;
-            color: #94a3b8;
-        }}
-
-        .team-stat-item b {{
-            color: #f8fafc;
-        }}
-
-        .roster-grid {{
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }}
-
-        .roster-slot-card {{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #141722;
-            border: 1px solid #202433;
-            border-left: 3px solid #dc2626;
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            color: #ffffff;
-        }}
-
-        .role-badge {{
-            background: rgba(220, 38, 38, 0.15);
-            color: #f87171;
-            border: 1px solid rgba(220, 38, 38, 0.3);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.68rem;
-            font-weight: 800;
-            text-transform: uppercase;
-        }}
+        .jp-match-card {{ background-color: #0f1118; border: 1px solid #222634; border-radius: 10px; padding: 14px; margin-bottom: 15px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6); }}
+        .jp-status-bar {{ background: rgba(234, 179, 8, 0.08); border: 1px solid rgba(234, 179, 8, 0.25); border-radius: 5px; padding: 4px 8px; font-size: 0.72rem; font-weight: 700; color: #eab308; text-transform: uppercase; margin-bottom: 8px; }}
+        .jp-score-header {{ display: flex; justify-content: space-between; align-items: center; text-align: center; padding: 10px 14px; background: #141722; border-radius: 8px; border-left: 3px solid #dc2626; border-right: 3px solid #dc2626; }}
+        .jp-team-title {{ font-size: 1.2rem; font-weight: 800; color: #f8fafc; width: 38%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
+        .jp-score-main {{ font-size: 1.8rem; font-weight: 900; color: #ffffff; width: 24%; }}
+        .jp-winner-tag {{ text-align: center; margin-top: 6px; font-size: 0.85rem; font-weight: 800; color: #eab308; text-transform: uppercase; }}
+        .jp-mvp-box {{ background: linear-gradient(90deg, rgba(234, 179, 8, 0.12) 0%, rgba(15, 17, 24, 0.8) 100%); border: 1px solid rgba(234, 179, 8, 0.3); border-radius: 6px; padding: 6px 10px; font-size: 0.8rem; color: #fef08a; margin-top: 8px; }}
+        .jp-section-title {{ font-size: 0.75rem; font-weight: 800; color: #94a3b8; margin: 12px 0 6px 0; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }}
+        .jp-section-title span {{ color: #dc2626; font-size: 1rem; }}
+        .jp-maps-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }}
+        .jp-map-item {{ background: #141722; border: 1px solid #232736; border-radius: 6px; padding: 6px; text-align: center; }}
+        .jp-map-name {{ font-size: 0.7rem; font-weight: 700; color: #94a3b8; margin-bottom: 2px; text-transform: uppercase; }}
+        .jp-map-score {{ font-size: 0.75rem; font-weight: 600; color: #cbd5e1; }}
+        .jp-map-score.winner {{ color: #eab308; font-weight: 800; }}
+        .jp-table-wrapper {{ overflow-x: auto; border-radius: 6px; border: 1px solid #202433; margin-bottom: 8px; }}
+        .jp-table {{ width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 0.73rem; background: #12141e; }}
+        .jp-table th {{ background: #181b28; color: #64748b; font-weight: 700; padding: 6px; text-align: center; border-bottom: 1px solid #232736; text-transform: uppercase; font-size: 0.65rem; }}
+        .jp-table td {{ padding: 5px 6px; text-align: center; color: #cbd5e1; border-bottom: 1px solid #1a1d2b; line-height: 1.1; }}
+        .jp-table tr.mvp-row {{ background: rgba(234, 179, 8, 0.08) !important; }}
+        .jp-table td.player-cell {{ text-align: left; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
+        .jp-table td.player-cell small {{ color: #64748b; font-weight: 400; margin-left: 4px; font-size: 0.62rem; }}
+        .jp-table td.rating-cell {{ font-weight: 800; color: #eab308; }}
+        .team-card-box {{ background: linear-gradient(145deg, #121520 0%, #0a0b10 100%); border: 2px solid #2a2e3d; border-radius: 14px; padding: 18px 20px; margin-bottom: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }}
+        .team-card-header {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #232736; padding-bottom: 12px; margin-bottom: 12px; }}
+        .team-card-title {{ font-size: 1.4rem; font-weight: 900; color: #ffffff; display: flex; align-items: center; gap: 10px; }}
+        .team-ovr-badge {{ background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: #ffffff; padding: 6px 14px; border-radius: 8px; font-weight: 900; font-size: 1.1rem; text-align: center; }}
+        .team-stats-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; background: #161925; padding: 10px; border-radius: 8px; }}
+        .team-stat-item {{ font-size: 0.78rem; color: #94a3b8; }}
+        .team-stat-item b {{ color: #f8fafc; }}
+        .roster-grid {{ display: flex; flex-direction: column; gap: 6px; }}
+        .roster-slot-card {{ display: flex; justify-content: space-between; align-items: center; background: #141722; border: 1px solid #202433; border-left: 3px solid #dc2626; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; color: #ffffff; }}
+        .role-badge {{ background: rgba(220, 38, 38, 0.15); color: #f87171; border: 1px solid rgba(220, 38, 38, 0.3); padding: 2px 8px; border-radius: 4px; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -735,10 +325,15 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# 🐱 КНОПКА-КОТИК В ПРАВОМ ВЕРХНЕМ УГЛУ
+# 🐱 КНОПКА-КОТИК (Переключение 3 тем по кругу)
 st.markdown('<div class="cat-corner-wrapper">', unsafe_allow_html=True)
 if st.button("🐱", key="cat_toggle_btn", help="Нажмите на котика, чтобы сменить стиль!"):
-    st.session_state.theme = "light" if st.session_state.theme == "dark" else "dark"
+    if st.session_state.theme == "dark":
+        st.session_state.theme = "light"
+    elif st.session_state.theme == "light":
+        st.session_state.theme = "sakura"
+    else:
+        st.session_state.theme = "dark"
     st.rerun()
 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -816,7 +411,7 @@ if "db" not in st.session_state:
 db = st.session_state.db
 
 # =========================================================
-# ОБНОВЛЕННЫЙ СИНЕРГЕТИЧЕСКИЙ ДВИЖОК БАЛАНСА (MATCH ENGINE)
+# ДВИЖОК БАЛАНСА (MATCH ENGINE)
 # =========================================================
 class MatchEngine:
     @staticmethod
@@ -845,7 +440,6 @@ class MatchEngine:
         if not roster_items or len(roster_items) < 5:
             players_power = max(players_power, 320)
 
-        # 1. Синергетический буст от грамотного распределения ролей
         role_synergy = 1.0
         if {"Капитан", "Капитан-Снайпер"}.intersection(roles_present):
             role_synergy += 0.05
@@ -854,19 +448,15 @@ class MatchEngine:
         if "Опенер" in roles_present:
             role_synergy += 0.04
 
-        # 2. Множитель сыгранности (диапазон 0.90 -> 1.10)
         chem = t_data.get("chemistry", 0)
         chem_factor = 0.90 + (chem / 100.0) * 0.20
 
-        # 3. Множитель тренера (максимальный бонус +5%)
         coach_name = t_data.get("coach", "Нет")
         coach_rating = db["coaches"].get(coach_name, {}).get("rating", 0) if coach_name != "Нет" else 0
         coach_factor = 1.0 + (coach_rating / 100.0) * 0.05
 
-        # 4. Фактор карты
         map_factor = 1.12 if map_name == t_data.get("best_map") else (0.88 if map_name == t_data.get("worst_map") else 1.0)
 
-        # Итоговая синергетическая сила
         return players_power * role_synergy * chem_factor * coach_factor * map_factor
 
     @staticmethod
@@ -957,6 +547,10 @@ class MatchEngine:
 if st.session_state.theme == "light":
     st.title("🪻 STANDOFF 2 — ESPORTS HUB")
     st.caption("Фиолетовая сакура • Glow Violet Edition")
+elif st.session_state.theme == "sakura":
+    st.markdown('<div class="sakura-branch-bg"></div>', unsafe_allow_html=True)
+    st.title("🌸 STANDOFF 2 — ANIME SAKURA EDITION")
+    st.caption("Аниме стиль • Анимированная сакура и ночной штиль")
 else:
     st.title("⛩️ STANDOFF 2 — ESPORTS HUB")
     st.caption("Обычный темный киберспортивный режим")
@@ -1065,7 +659,7 @@ with tab_match:
 
                 table_header_html = '<thead><tr><th class="jp-col-player" style="text-align:left;">ИГРОК / РОЛЬ</th><th class="jp-col-k">K</th><th class="jp-col-a">A</th><th class="jp-col-d">D</th><th class="jp-col-kd">K/D</th><th class="jp-col-adr">ADR</th><th class="jp-col-kast">KAST</th><th class="jp-col-imp">IMP</th><th class="jp-col-rating">РЕЙТИНГ</th></tr></thead>'
 
-                icon_title = "🪻" if st.session_state.theme == "light" else "⛩️"
+                icon_title = "🌸" if st.session_state.theme == "sakura" else ("🪻" if st.session_state.theme == "light" else "⛩️")
 
                 full_card_html = f'<div class="jp-match-card"><div class="jp-status-bar">{icon_title} МАТЧ СИМУЛИРОВАН • ФОРМАТ: {match_fmt}</div><div class="jp-score-header"><div class="jp-team-title">{team_a}</div><div class="jp-score-main">{maps_won_a} : {maps_won_b}</div><div class="jp-team-title">{team_b}</div></div><div class="jp-winner-tag">🏆 {winner_team} ПОБЕДА!</div>{mvp_banner_html}<div class="jp-section-title"><span>|</span> КАРТЫ МАТЧА</div><div class="jp-maps-grid">{maps_html}</div><div class="jp-section-title"><span>|</span> {team_a}</div><div class="jp-table-wrapper"><table class="jp-table">{table_header_html}<tbody>{table_rows_a}</tbody></table></div><div class="jp-section-title"><span>|</span> {team_b}</div><div class="jp-table-wrapper"><table class="jp-table">{table_header_html}<tbody>{table_rows_b}</tbody></table></div></div>'
 
@@ -1133,7 +727,6 @@ with tab_players:
 with tab_teams:
     st.subheader("🛡️ Профили и Составы Команд")
 
-    # Защищенный блок удаления команд
     with st.expander("🗑️ Зона администратора (Удаление команды)"):
         if not db.get("teams"):
             st.info("В базе нет зарегистрированных команд для удаления.")
@@ -1301,8 +894,7 @@ with tab_coaches:
 # ==================== ИСТОРИЯ МАТЧЕЙ ====================
 with tab_history:
     st.subheader("📜 История Проведенных Матчей")
-    
-    # Защищенный блок очистки истории
+
     with st.expander("🗑️ Зона администратора (Очистка истории)"):
         clear_pwd = st.text_input("Введите пароль для очистки истории:", type="password", key="clear_hist_pwd_input")
         if st.button("🗑️ Подтвердить и очистить всё", key="clear_history_btn"):
