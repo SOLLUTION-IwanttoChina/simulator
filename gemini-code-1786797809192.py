@@ -918,8 +918,11 @@ class MatchEngine:
                     win_stats[killer]["imp"] += random.choice([1, 2])
                     lose_stats[victim]["D"] += 1
                     if len(win_roster) > 1 and random.random() < 0.50:
-                        assist = random.choice([p for p, r in win_roster if p != killer])
-                        win_stats[assist]["A"] += 1
+                        assisters = [p for p, r in win_roster if p != killer]
+                        if assisters:
+                            assist = random.choice(assisters)
+                            if assist in win_stats:
+                                win_stats[assist]["A"] += 1
 
                 lose_kills = random.randint(1, 3)
                 for _ in range(lose_kills):
@@ -929,9 +932,12 @@ class MatchEngine:
                     lose_stats[killer]["damage"] += random.randint(75, 115)
                     lose_stats[killer]["imp"] += 1
                     win_stats[victim]["D"] += 1
-                    if len(win_roster) > 1 and random.random() < 0.45:
-                        assist = random.choice([p for p, r in win_roster if p != killer])
-                        lose_stats[assist]["A"] += 1
+                    if len(lose_roster) > 1 and random.random() < 0.45:
+                        assisters = [p for p, r in lose_roster if p != killer]
+                        if assisters:
+                            assist = random.choice(assisters)
+                            if assist in lose_stats:
+                                lose_stats[assist]["A"] += 1
 
             for st_dict in [stats_a, stats_b]:
                 for p in st_dict:
