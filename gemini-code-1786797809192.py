@@ -39,7 +39,6 @@ if "theme" not in st.session_state:
 
 CAT_IMG_URL = "https://i.ibb.co/Ld35P0v/cat-hat.png"
 
-# Векторная реалистичная аниме-ветка сакуры (SVG)
 SAKURA_BRANCH_SVG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' width='100%' height='100%'><defs><linearGradient id='wood' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%233b233a'/><stop offset='50%' stop-color='%23221323'/><stop offset='100%' stop-color='%23130a14'/></linearGradient><linearGradient id='petal' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23ffffff'/><stop offset='50%' stop-color='%23ffb7d5'/><stop offset='100%' stop-color='%23f472b6'/></linearGradient><filter id='glow'><feGaussianBlur stdDeviation='3' result='coloredBlur'/><feMerge><feMergeNode in='coloredBlur'/><feMergeNode in='SourceGraphic'/></feMerge></filter></defs><g filter='url(%23glow)' fill='none' stroke-linecap='round'><path d='M800,-10 C620,80 500,40 360,180 C240,290 170,250 0,360' stroke='url(%23wood)' stroke-width='22'/><path d='M540,110 C420,170 340,150 220,290' stroke='url(%23wood)' stroke-width='12'/><path d='M380,170 C300,120 220,150 120,90' stroke='url(%23wood)' stroke-width='8'/><path d='M230,260 C160,310 100,320 -20,410' stroke='url(%23wood)' stroke-width='6'/></g><g fill='url(%23petal)' opacity='0.92'><g transform='translate(360,180) scale(1.3)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='3' fill='%23fbbf24'/></g><g transform='translate(220,290) scale(1.5)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='3' fill='%23fbbf24'/></g><g transform='translate(120,90) scale(1.2)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='2.5' fill='%23fbbf24'/></g><g transform='translate(480,130) scale(1.4)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='3' fill='%23fbbf24'/></g><g transform='translate(50,330) scale(1.1)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='2' fill='%23fbbf24'/></g><circle cx='340' cy='190' r='7'/><circle cx='240' cy='280' r='8'/><circle cx='140' cy='80' r='6'/><circle cx='460' cy='140' r='7'/><circle cx='200' cy='300' r='6'/></g></svg>"
 
 # СТИЛИ (3 ТЕМЫ)
@@ -408,7 +407,6 @@ class MatchEngine:
             win_prob = base_prob_a + random.uniform(-0.04, 0.04)
             winner = team_a if random.random() < win_prob else team_b
 
-            # ИСПРАВЛЕНО: корректное сопоставление ростера и статистики для обоих случаев
             if winner == team_a:
                 score_a += 1
                 win_roster, lose_roster, win_stats, lose_stats = roster_a, roster_b, stats_a, stats_b
@@ -678,20 +676,54 @@ with tab_players:
 with tab_teams:
     st.subheader("🛡️ Профили и Составы Команд")
 
-    with st.expander("🗑️ Зона администратора (Удаление команды)"):
+    with st.expander("⚙️ Зона администратора (Управление и удаление)"):
         if not db.get("teams"):
-            st.info("В базе нет зарегистрированных команд для удаления.")
+            st.info("В базе нет зарегистрированных команд.")
         else:
-            team_to_delete = st.selectbox("Выберите команду для удаления:", list(db["teams"].keys()), key="del_team_select")
-            del_pwd = st.text_input("Введите пароль администратора:", type="password", key="del_team_pwd_input")
-            if st.button("🗑️ Подтвердить и удалить команду", key="del_team_btn"):
-                if del_pwd == "solution":
-                    del db["teams"][team_to_delete]
-                    save_db(db)
-                    st.success(f"Команда '{team_to_delete}' успешно удалена!")
-                    st.rerun()
-                else:
-                    st.error("❌ Неверный пароль администратора!")
+            admin_tab1, admin_tab2 = st.tabs(["⚡ Массовая уст. ролей", "🗑️ Удаление команды"])
+
+            with admin_tab1:
+                st.markdown("##### Массовое изменение уровней ролей игроков команды")
+                target_team = st.selectbox("Выберите команду:", list(db["teams"].keys()), key="bulk_role_team")
+                target_prof = st.selectbox("Уровень владения ролью:", PROFICIENCIES, index=0, key="bulk_role_prof")
+                apply_scope = st.radio("Применить уровень:", ["Только к текущим активным ролям в составе", "Ко всем ролям игроков команды"], key="bulk_role_scope")
+                bulk_pwd = st.text_input("Введите пароль администратора:", type="password", key="bulk_role_pwd")
+
+                if st.button("⚡ Применить уровень для всей команды", key="bulk_role_btn"):
+                    if bulk_pwd == "solution":
+                        roster = db["teams"][target_team].get("roster", {})
+                        updated_count = 0
+                        for slot_key, slot_info in roster.items():
+                            if isinstance(slot_info, dict):
+                                p_name = slot_info.get("player")
+                                p_role = slot_info.get("role", "Рифлер")
+                                if p_name and p_name != "Нет" and p_name in db["players"]:
+                                    if "roles" not in db["players"][p_name]:
+                                        db["players"][p_name]["roles"] = {}
+                                    if apply_scope == "Только к текущим активным ролям в составе":
+                                        db["players"][p_name]["roles"][p_role] = target_prof
+                                    else:
+                                        for r in ROLES:
+                                            db["players"][p_name]["roles"][r] = target_prof
+                                    updated_count += 1
+                        save_db(db)
+                        st.success(f"Уровень '{target_prof}' успешно установлен для игроков команды '{target_team}' (всего: {updated_count})!")
+                        st.rerun()
+                    else:
+                        st.error("❌ Неверный пароль администратора!")
+
+            with admin_tab2:
+                st.markdown("##### Удаление команды")
+                team_to_delete = st.selectbox("Выберите команду для удаления:", list(db["teams"].keys()), key="del_team_select")
+                del_pwd = st.text_input("Введите пароль администратора:", type="password", key="del_team_pwd_input")
+                if st.button("🗑️ Подтвердить и удалить команду", key="del_team_btn"):
+                    if del_pwd == "solution":
+                        del db["teams"][team_to_delete]
+                        save_db(db)
+                        st.success(f"Команда '{team_to_delete}' успешно удалена!")
+                        st.rerun()
+                    else:
+                        st.error("❌ Неверный пароль администратора!")
 
     st.markdown("---")
 
