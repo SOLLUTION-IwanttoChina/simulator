@@ -520,7 +520,7 @@ class MatchEngine:
                 win_roster, lose_roster, win_stats, lose_stats = roster_a, roster_b, stats_a, stats_b
             else:
                 score_b += 1
-                win_roster, lose_roster, win_stats, lose_stats = roster_b, roster_a, stats_b, stats_a
+                win_roster, lose_roster, win_stats, lose_stats = roster_b, roster_a, stats_a, stats_b
 
             if win_roster and lose_roster:
                 kills_in_round = random.choices([3, 4, 5], weights=[0.25, 0.50, 0.25])[0]
@@ -618,6 +618,13 @@ with tab_match:
                 map_results = []
                 total_rounds = 0
 
+                # Расчет предматчевых вероятностей победы
+                pow_a = sum(MatchEngine.calculate_team_map_power(team_a, m) for m in maps_pool) / max(1, len(maps_pool))
+                pow_b = sum(MatchEngine.calculate_team_map_power(team_b, m) for m in maps_pool) / max(1, len(maps_pool))
+                tot_pow = pow_a + pow_b
+                prob_a = round((pow_a / tot_pow) * 100, 1) if tot_pow > 0 else 50.0
+                prob_b = round(100.0 - prob_a, 1)
+
                 for idx, m_name in enumerate(maps_pool):
                     if match_fmt == "BO3" and (maps_won_a == 2 or maps_won_b == 2): break
                     s_a, s_b, st_a, st_b, r_played = MatchEngine.simulate_map(team_a, team_b, m_name)
@@ -683,11 +690,26 @@ with tab_match:
 
                 mvp_banner_html = f'<div class="jp-mvp-box">⭐ <b>MVP матча</b> — <b>{mvp_player["player"]}</b> ({mvp_player["team"]}) &nbsp;|&nbsp; Рейтинг: <b>{mvp_player["Rating"]:.2f}</b></div>' if mvp_player else ''
 
+                # Визуальный блок предматчевой вероятности
+                prob_bar_html = f'''
+                <div style="margin: 12px 0 8px 0; padding: 10px 14px; background: rgba(0,0,0,0.15); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 800; margin-bottom: 6px;">
+                        <span>{team_a}: <span style="color:#f472b6;">{prob_a}%</span></span>
+                        <span style="opacity: 0.75; font-weight: 700; font-size: 0.7rem; text-transform: uppercase;">📊 Вероятность победы</span>
+                        <span>{team_b}: <span style="color:#a855f7;">{prob_b}%</span></span>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; height: 8px; display: flex;">
+                        <div style="width: {prob_a}%; background: linear-gradient(90deg, #f472b6, #8b5cf6);"></div>
+                        <div style="width: {prob_b}%; background: rgba(255,255,255,0.2);"></div>
+                    </div>
+                </div>
+                '''
+
                 table_header_html = '<thead><tr><th class="jp-col-player" style="text-align:left;">ИГРОК / РОЛЬ</th><th class="jp-col-k">K</th><th class="jp-col-a">A</th><th class="jp-col-d">D</th><th class="jp-col-kd">K/D</th><th class="jp-col-adr">ADR</th><th class="jp-col-kast">KAST</th><th class="jp-col-imp">IMP</th><th class="jp-col-rating">РЕЙТИНГ</th></tr></thead>'
 
                 icon_title = "🌸" if st.session_state.theme == "sakura" else ("🪻" if st.session_state.theme == "light" else "⛩️")
 
-                full_card_html = f'<div class="jp-match-card"><div class="jp-status-bar">{icon_title} МАТЧ СИМУЛИРОВАН • ФОРМАТ: {match_fmt}</div><div class="jp-score-header"><div class="jp-team-title">{team_a}</div><div class="jp-score-main">{maps_won_a} : {maps_won_b}</div><div class="jp-team-title">{team_b}</div></div><div class="jp-winner-tag">🏆 {winner_team} ПОБЕДА!</div>{mvp_banner_html}<div class="jp-section-title"><span>|</span> КАРТЫ МАТЧА</div><div class="jp-maps-grid">{maps_html}</div><div class="jp-section-title"><span>|</span> {team_a}</div><div class="jp-table-wrapper"><table class="jp-table">{table_header_html}<tbody>{table_rows_a}</tbody></table></div><div class="jp-section-title"><span>|</span> {team_b}</div><div class="jp-table-wrapper"><table class="jp-table">{table_header_html}<tbody>{table_rows_b}</tbody></table></div></div>'
+                full_card_html = f'<div class="jp-match-card"><div class="jp-status-bar">{icon_title} МАТЧ СИМУЛИРОВАН • ФОРМАТ: {match_fmt}</div><div class="jp-score-header"><div class="jp-team-title">{team_a}</div><div class="jp-score-main">{maps_won_a} : {maps_won_b}</div><div class="jp-team-title">{team_b}</div></div><div class="jp-winner-tag">🏆 {winner_team} ПОБЕДА!</div>{prob_bar_html}{mvp_banner_html}<div class="jp-section-title"><span>|</span> КАРТЫ МАТЧА</div><div class="jp-maps-grid">{maps_html}</div><div class="jp-section-title"><span>|</span> {team_a}</div><div class="jp-table-wrapper"><table class="jp-table">{table_header_html}<tbody>{table_rows_a}</tbody></table></div><div class="jp-section-title"><span>|</span> {team_b}</div><div class="jp-table-wrapper"><table class="jp-table">{table_header_html}<tbody>{table_rows_b}</tbody></table></div></div>'
 
                 match_record = {
                     "team_a": team_a,
@@ -696,6 +718,8 @@ with tab_match:
                     "score_b": maps_won_b,
                     "winner": winner_team,
                     "format": match_fmt,
+                    "prob_a": prob_a,
+                    "prob_b": prob_b,
                     "mvp": mvp_player["player"] if mvp_player else "—",
                     "mvp_rating": mvp_player["Rating"] if mvp_player else 0.0,
                     "card_html": full_card_html
