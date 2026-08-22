@@ -42,59 +42,28 @@ CAT_IMG_URL = "https://i.ibb.co/Ld35P0v/cat-hat.png"
 # Векторная реалистичная аниме-ветка сакуры (SVG)
 SAKURA_BRANCH_SVG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' width='100%' height='100%'><defs><linearGradient id='wood' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%233b233a'/><stop offset='50%' stop-color='%23221323'/><stop offset='100%' stop-color='%23130a14'/></linearGradient><linearGradient id='petal' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23ffffff'/><stop offset='50%' stop-color='%23ffb7d5'/><stop offset='100%' stop-color='%23f472b6'/></linearGradient><filter id='glow'><feGaussianBlur stdDeviation='3' result='coloredBlur'/><feMerge><feMergeNode in='coloredBlur'/><feMergeNode in='SourceGraphic'/></feMerge></filter></defs><g filter='url(%23glow)' fill='none' stroke-linecap='round'><path d='M800,-10 C620,80 500,40 360,180 C240,290 170,250 0,360' stroke='url(%23wood)' stroke-width='22'/><path d='M540,110 C420,170 340,150 220,290' stroke='url(%23wood)' stroke-width='12'/><path d='M380,170 C300,120 220,150 120,90' stroke='url(%23wood)' stroke-width='8'/><path d='M230,260 C160,310 100,320 -20,410' stroke='url(%23wood)' stroke-width='6'/></g><g fill='url(%23petal)' opacity='0.92'><g transform='translate(360,180) scale(1.3)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='3' fill='%23fbbf24'/></g><g transform='translate(220,290) scale(1.5)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='3' fill='%23fbbf24'/></g><g transform='translate(120,90) scale(1.2)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='2.5' fill='%23fbbf24'/></g><g transform='translate(480,130) scale(1.4)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='3' fill='%23fbbf24'/></g><g transform='translate(50,330) scale(1.1)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='2' fill='%23fbbf24'/></g><circle cx='340' cy='190' r='7'/><circle cx='240' cy='280' r='8'/><circle cx='140' cy='80' r='6'/><circle cx='460' cy='140' r='7'/><circle cx='200' cy='300' r='6'/></g></svg>"
 
-# ==========================================
-# ДИНАМИЧЕСКИЕ СТИЛИ (3 ТЕМЫ)
-# ==========================================
+# СТИЛИ (3 ТЕМЫ)
 if st.session_state.theme == "light":
     st.markdown(f"""
     <style>
-        .stApp {{
-            background-color: #f5f3ff;
-            color: #2e1065;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        }}
+        .stApp {{ background-color: #f5f3ff; color: #2e1065; font-family: 'Inter', system-ui, -apple-system, sans-serif; }}
         [data-testid="stSidebar"] {{ display: none; }}
-        div[data-baseweb="select"] > div,
-        div[data-baseweb="input"] > div,
-        input, select, textarea {{
-            background-color: #ffffff !important;
-            color: #1e1b4b !important;
-            border: 1px solid #ddd6fe !important;
-            border-radius: 8px !important;
+        div[data-baseweb="select"] > div, div[data-baseweb="input"] > div, input, select, textarea {{
+            background-color: #ffffff !important; color: #1e1b4b !important; border: 1px solid #ddd6fe !important; border-radius: 8px !important;
         }}
         .stButton > button {{
-            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%) !important;
-            color: #ffffff !important;
-            border-radius: 8px !important;
-            font-weight: 700 !important;
-            border: 1px solid #c084fc !important;
-            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25) !important;
-            transition: all 0.3s ease-in-out !important;
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%) !important; color: #ffffff !important; border-radius: 8px !important;
+            font-weight: 700 !important; border: 1px solid #c084fc !important; box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25) !important; transition: all 0.3s ease-in-out !important;
         }}
-        .stButton > button:hover {{
-            transform: translateY(-2px) !important;
-            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4) !important;
-        }}
+        .stButton > button:hover {{ transform: translateY(-2px) !important; box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4) !important; }}
         .cat-corner-wrapper {{ position: fixed; top: 15px; right: 25px; z-index: 999999; }}
         .cat-corner-wrapper button {{
-            width: 65px !important; height: 65px !important; border-radius: 50% !important;
-            background-image: url('{CAT_IMG_URL}') !important; background-size: cover !important;
-            border: 3px solid #8b5cf6 !important; box-shadow: 0 0 20px rgba(139, 92, 246, 0.5) !important;
-            color: transparent !important; cursor: pointer !important;
+            width: 65px !important; height: 65px !important; border-radius: 50% !important; background-image: url('{CAT_IMG_URL}') !important;
+            background-size: cover !important; border: 3px solid #8b5cf6 !important; box-shadow: 0 0 20px rgba(139, 92, 246, 0.5) !important; color: transparent !important; cursor: pointer !important;
         }}
-        .jp-match-card {{
-            background-color: #ffffff; border: 1px solid #e9d5ff; border-top: 4px solid #8b5cf6;
-            border-radius: 12px; padding: 16px; margin-bottom: 18px; box-shadow: 0 8px 30px rgba(124, 58, 237, 0.08);
-        }}
-        .jp-status-bar {{
-            background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; font-weight: 800; color: #6d28d9; text-transform: uppercase; margin-bottom: 10px;
-        }}
-        .jp-score-header {{
-            display: flex; justify-content: space-between; align-items: center; text-align: center;
-            padding: 12px 16px; background: linear-gradient(90deg, #f3e8ff 0%, #faf5ff 50%, #f3e8ff 100%);
-            border-radius: 10px; border-left: 4px solid #8b5cf6; border-right: 4px solid #8b5cf6;
-        }}
+        .jp-match-card {{ background-color: #ffffff; border: 1px solid #e9d5ff; border-top: 4px solid #8b5cf6; border-radius: 12px; padding: 16px; margin-bottom: 18px; box-shadow: 0 8px 30px rgba(124, 58, 237, 0.08); }}
+        .jp-status-bar {{ background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; font-weight: 800; color: #6d28d9; text-transform: uppercase; margin-bottom: 10px; }}
+        .jp-score-header {{ display: flex; justify-content: space-between; align-items: center; text-align: center; padding: 12px 16px; background: linear-gradient(90deg, #f3e8ff 0%, #faf5ff 50%, #f3e8ff 100%); border-radius: 10px; border-left: 4px solid #8b5cf6; border-right: 4px solid #8b5cf6; }}
         .jp-team-title {{ font-size: 1.25rem; font-weight: 800; color: #3b0764; width: 38%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
         .jp-score-main {{ font-size: 1.85rem; font-weight: 900; color: #6d28d9; width: 24%; }}
         .jp-winner-tag {{ text-align: center; margin-top: 8px; font-size: 0.88rem; font-weight: 800; color: #7e22ce; text-transform: uppercase; }}
@@ -128,7 +97,6 @@ if st.session_state.theme == "light":
     """, unsafe_allow_html=True)
 
 elif st.session_state.theme == "sakura":
-    # 🌸 REALISTIC ANIME SAKURA THEME (Слой ветки убран на ФОН: z-index: 0)
     st.markdown(f"""
     <style>
         @keyframes swayBranch {{
@@ -136,102 +104,45 @@ elif st.session_state.theme == "sakura":
             50% {{ transform: rotate(2deg) translateY(8px); }}
             100% {{ transform: rotate(0deg) translateY(0px); }}
         }}
-
         @keyframes petalFall {{
             0% {{ transform: translateY(-50px) translateX(0) rotate(0deg); opacity: 0; }}
             20% {{ opacity: 0.8; }}
             100% {{ transform: translateY(800px) translateX(-250px) rotate(360deg); opacity: 0; }}
         }}
-
-        /* РЕАЛИСТИЧНАЯ ВЕТКА НА ЗАДНЕМ ФОНЕ */
         .sakura-bg-branch {{
-            position: fixed;
-            top: -10px;
-            right: -10px;
-            width: 650px;
-            height: 550px;
-            background: url("{SAKURA_BRANCH_SVG}") no-repeat right top / contain;
-            pointer-events: none;
-            z-index: 0 !important; /* УБРАНО ЗА КАРТОЧКИ НА ЗАДНИЙ ПЛАН */
-            transform-origin: top right;
-            animation: swayBranch 8s ease-in-out infinite;
-            opacity: 0.85;
-            filter: drop-shadow(0 0 15px rgba(244, 114, 182, 0.2));
+            position: fixed; top: -10px; right: -10px; width: 650px; height: 550px;
+            background: url("{SAKURA_BRANCH_SVG}") no-repeat right top / contain; pointer-events: none;
+            z-index: 0 !important; transform-origin: top right; animation: swayBranch 8s ease-in-out infinite;
+            opacity: 0.85; filter: drop-shadow(0 0 15px rgba(244, 114, 182, 0.2));
         }}
-
-        /* Падающие лепестки сакуры */
         .sakura-petal {{
-            position: fixed;
-            background: linear-gradient(135deg, #ffffff 0%, #ffb7d5 50%, #f472b6 100%);
-            border-radius: 12px 1px 12px 1px;
-            pointer-events: none;
-            z-index: 0 !important;
-            animation: petalFall linear infinite;
+            position: fixed; background: linear-gradient(135deg, #ffffff 0%, #ffb7d5 50%, #f472b6 100%);
+            border-radius: 12px 1px 12px 1px; pointer-events: none; z-index: 0 !important; animation: petalFall linear infinite;
         }}
-
-        .stApp {{
-            background-color: #120e18;
-            color: #f1f5f9;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        }}
+        .stApp {{ background-color: #120e18; color: #f1f5f9; font-family: 'Inter', system-ui, -apple-system, sans-serif; }}
         [data-testid="stSidebar"] {{ display: none; }}
-
-        div[data-baseweb="select"] > div,
-        div[data-baseweb="input"] > div,
-        input, select, textarea {{
-            background-color: #1c1526 !important;
-            color: #ffffff !important;
-            border: 1px solid #3b2a4f !important;
-            border-radius: 8px !important;
+        div[data-baseweb="select"] > div, div[data-baseweb="input"] > div, input, select, textarea {{
+            background-color: #1c1526 !important; color: #ffffff !important; border: 1px solid #3b2a4f !important; border-radius: 8px !important;
         }}
-
         .stButton > button {{
-            background: linear-gradient(135deg, #4c1d95 0%, #831843 100%) !important;
-            color: #ffffff !important;
-            border-radius: 8px !important;
-            font-weight: 800 !important;
-            letter-spacing: 0.5px !important;
-            border: 1px solid #f472b6 !important;
-            box-shadow: 0 4px 16px rgba(244, 114, 182, 0.25) !important;
-            transition: all 0.25s ease-in-out !important;
+            background: linear-gradient(135deg, #4c1d95 0%, #831843 100%) !important; color: #ffffff !important; border-radius: 8px !important;
+            font-weight: 800 !important; letter-spacing: 0.5px !important; border: 1px solid #f472b6 !important;
+            box-shadow: 0 4px 16px rgba(244, 114, 182, 0.25) !important; transition: all 0.25s ease-in-out !important;
         }}
-
         .stButton > button:hover {{
-            transform: translateY(-2px) !important;
-            box-shadow: 0 6px 22px rgba(244, 114, 182, 0.45) !important;
-            background: linear-gradient(135deg, #6d28d9 0%, #9d174d 100%) !important;
+            transform: translateY(-2px) !important; box-shadow: 0 6px 22px rgba(244, 114, 182, 0.45) !important; background: linear-gradient(135deg, #6d28d9 0%, #9d174d 100%) !important;
         }}
-
         .cat-corner-wrapper {{ position: fixed; top: 15px; right: 25px; z-index: 999999; }}
         .cat-corner-wrapper button {{
-            width: 65px !important; height: 65px !important; border-radius: 50% !important;
-            background-image: url('{CAT_IMG_URL}') !important; background-size: cover !important;
-            border: 3px solid #f472b6 !important; box-shadow: 0 0 20px rgba(244, 114, 182, 0.4) !important;
-            color: transparent !important; cursor: pointer !important;
+            width: 65px !important; height: 65px !important; border-radius: 50% !important; background-image: url('{CAT_IMG_URL}') !important;
+            background-size: cover !important; border: 3px solid #f472b6 !important; box-shadow: 0 0 20px rgba(244, 114, 182, 0.4) !important; color: transparent !important; cursor: pointer !important;
         }}
-
         .jp-match-card {{
-            background-color: rgba(24, 18, 33, 0.92);
-            backdrop-filter: blur(8px);
-            border: 1px solid #3b2a4f;
-            border-top: 4px solid #f472b6;
-            border-radius: 12px; padding: 16px; margin-bottom: 18px;
-            box-shadow: 0 10px 32px rgba(0, 0, 0, 0.6);
-            position: relative;
-            z-index: 1; /* Поверх сакуры */
+            background-color: rgba(24, 18, 33, 0.92); backdrop-filter: blur(8px); border: 1px solid #3b2a4f;
+            border-top: 4px solid #f472b6; border-radius: 12px; padding: 16px; margin-bottom: 18px; box-shadow: 0 10px 32px rgba(0, 0, 0, 0.6); position: relative; z-index: 1;
         }}
-
-        .jp-status-bar {{
-            background: rgba(244, 114, 182, 0.12); border: 1px solid rgba(244, 114, 182, 0.35);
-            border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; font-weight: 800; color: #f472b6; text-transform: uppercase; margin-bottom: 10px;
-        }}
-
-        .jp-score-header {{
-            display: flex; justify-content: space-between; align-items: center; text-align: center;
-            padding: 12px 16px; background: #231930; border-radius: 10px;
-            border-left: 4px solid #f472b6; border-right: 4px solid #f472b6;
-        }}
-
+        .jp-status-bar {{ background: rgba(244, 114, 182, 0.12); border: 1px solid rgba(244, 114, 182, 0.35); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; font-weight: 800; color: #f472b6; text-transform: uppercase; margin-bottom: 10px; }}
+        .jp-score-header {{ display: flex; justify-content: space-between; align-items: center; text-align: center; padding: 12px 16px; background: #231930; border-radius: 10px; border-left: 4px solid #f472b6; border-right: 4px solid #f472b6; }}
         .jp-team-title {{ font-size: 1.25rem; font-weight: 800; color: #ffffff; width: 38%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
         .jp-score-main {{ font-size: 1.85rem; font-weight: 900; color: #f472b6; width: 24%; }}
         .jp-winner-tag {{ text-align: center; margin-top: 8px; font-size: 0.88rem; font-weight: 800; color: #f472b6; text-transform: uppercase; }}
@@ -265,37 +176,21 @@ elif st.session_state.theme == "sakura":
     """, unsafe_allow_html=True)
 
 else:
-    # 🖤 1-Я ТЕМА: DARK
     st.markdown(f"""
     <style>
-        .stApp {{
-            background-color: #0b0c10;
-            color: #e2e8f0;
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-        }}
+        .stApp {{ background-color: #0b0c10; color: #e2e8f0; font-family: 'Inter', system-ui, -apple-system, sans-serif; }}
         [data-testid="stSidebar"] {{ display: none; }}
-        div[data-baseweb="select"] > div,
-        div[data-baseweb="input"] > div,
-        input, select, textarea {{
-            background-color: #12141c !important;
-            color: #ffffff !important;
-            border: 1px solid #2a2e3d !important;
-            border-radius: 6px !important;
+        div[data-baseweb="select"] > div, div[data-baseweb="input"] > div, input, select, textarea {{
+            background-color: #12141c !important; color: #ffffff !important; border: 1px solid #2a2e3d !important; border-radius: 6px !important;
         }}
         .stButton > button {{
-            background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%) !important;
-            color: #ffffff !important;
-            border-radius: 6px !important;
-            font-weight: 700 !important;
-            border: 1px solid #f87171 !important;
-            transition: all 0.2s ease-in-out !important;
+            background: linear-gradient(135deg, #991b1b 0%, #dc2626 100%) !important; color: #ffffff !important;
+            border-radius: 6px !important; font-weight: 700 !important; border: 1px solid #f87171 !important; transition: all 0.2s ease-in-out !important;
         }}
         .cat-corner-wrapper {{ position: fixed; top: 15px; right: 25px; z-index: 999999; }}
         .cat-corner-wrapper button {{
-            width: 65px !important; height: 65px !important; border-radius: 50% !important;
-            background-image: url('{CAT_IMG_URL}') !important; background-size: cover !important;
-            border: 3px solid #dc2626 !important; box-shadow: 0 4px 18px rgba(220, 38, 38, 0.5) !important;
-            color: transparent !important; cursor: pointer !important;
+            width: 65px !important; height: 65px !important; border-radius: 50% !important; background-image: url('{CAT_IMG_URL}') !important;
+            background-size: cover !important; border: 3px solid #dc2626 !important; box-shadow: 0 4px 18px rgba(220, 38, 38, 0.5) !important; color: transparent !important; cursor: pointer !important;
         }}
         .jp-match-card {{ background-color: #0f1118; border: 1px solid #222634; border-radius: 10px; padding: 14px; margin-bottom: 15px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6); }}
         .jp-status-bar {{ background: rgba(234, 179, 8, 0.08); border: 1px solid rgba(234, 179, 8, 0.25); border-radius: 5px; padding: 4px 8px; font-size: 0.72rem; font-weight: 700; color: #eab308; text-transform: uppercase; margin-bottom: 8px; }}
@@ -346,7 +241,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# 🐱 КНОПКА-КОТИК
+# КНОПКА-КОТИК
 st.markdown('<div class="cat-corner-wrapper">', unsafe_allow_html=True)
 if st.button("🐱", key="cat_toggle_btn", help="Переключить тему"):
     if st.session_state.theme == "dark":
@@ -431,9 +326,7 @@ if "db" not in st.session_state:
 
 db = st.session_state.db
 
-# =========================================================
 # ДВИЖОК БАЛАНСА (MATCH ENGINE)
-# =========================================================
 class MatchEngine:
     @staticmethod
     def get_player_power(player_name, role):
@@ -515,22 +408,28 @@ class MatchEngine:
             win_prob = base_prob_a + random.uniform(-0.04, 0.04)
             winner = team_a if random.random() < win_prob else team_b
 
+            # ИСПРАВЛЕНО: корректное сопоставление ростера и статистики для обоих случаев
             if winner == team_a:
                 score_a += 1
                 win_roster, lose_roster, win_stats, lose_stats = roster_a, roster_b, stats_a, stats_b
             else:
                 score_b += 1
-                win_roster, lose_roster, win_stats, lose_stats = roster_b, roster_a, stats_a, stats_b
+                win_roster, lose_roster, win_stats, lose_stats = roster_b, roster_a, stats_b, stats_a
 
             if win_roster and lose_roster:
                 kills_in_round = random.choices([3, 4, 5], weights=[0.25, 0.50, 0.25])[0]
                 for _ in range(kills_in_round):
                     killer = pick_weighted_player(win_roster)
                     victim = random.choice([p for p, r in lose_roster])
-                    win_stats[killer]["K"] += 1
-                    win_stats[killer]["damage"] += random.randint(85, 135)
-                    win_stats[killer]["imp"] += random.choice([1, 2])
-                    lose_stats[victim]["D"] += 1
+                    
+                    if killer in win_stats:
+                        win_stats[killer]["K"] += 1
+                        win_stats[killer]["damage"] += random.randint(85, 135)
+                        win_stats[killer]["imp"] += random.choice([1, 2])
+                    
+                    if victim in lose_stats:
+                        lose_stats[victim]["D"] += 1
+                        
                     if len(win_roster) > 1 and random.random() < 0.50:
                         assisters = [p for p, r in win_roster if p != killer]
                         if assisters:
@@ -542,10 +441,15 @@ class MatchEngine:
                 for _ in range(lose_kills):
                     killer = pick_weighted_player(lose_roster)
                     victim = random.choice([p for p, r in win_roster])
-                    lose_stats[killer]["K"] += 1
-                    lose_stats[killer]["damage"] += random.randint(75, 115)
-                    lose_stats[killer]["imp"] += 1
-                    win_stats[victim]["D"] += 1
+                    
+                    if killer in lose_stats:
+                        lose_stats[killer]["K"] += 1
+                        lose_stats[killer]["damage"] += random.randint(75, 115)
+                        lose_stats[killer]["imp"] += 1
+                    
+                    if victim in win_stats:
+                        win_stats[victim]["D"] += 1
+                        
                     if len(lose_roster) > 1 and random.random() < 0.45:
                         assisters = [p for p, r in lose_roster if p != killer]
                         if assisters:
@@ -564,12 +468,11 @@ class MatchEngine:
         return score_a, score_b, stats_a, stats_b, rounds_played
 
 
-# ==================== ШАПКА ====================
+# ШАПКА
 if st.session_state.theme == "light":
     st.title("🪻 STANDOFF 2 — ESPORTS HUB")
     st.caption("Фиолетовая сакура • Glow Violet Edition")
 elif st.session_state.theme == "sakura":
-    # ГЕНЕРАЦИЯ ПАДАЮЩИХ ЛЕПЕСТКОВ
     petals_html = "".join([
         f'<div class="sakura-petal" style="top:{random.randint(-10, 40)}%; left:{random.randint(10, 90)}%; width:{random.randint(8,14)}px; height:{random.randint(10,18)}px; animation-duration:{random.randint(6,12)}s; animation-delay:{random.uniform(0,5):.1f}s;"></div>'
         for _ in range(12)
@@ -592,7 +495,7 @@ tab_match, tab_players, tab_teams, tab_coaches, tab_history, tab_events = st.tab
     "📅 События"
 ])
 
-# ==================== МАТЧ-ЦЕНТР ====================
+# МАТЧ-ЦЕНТР
 with tab_match:
     st.subheader("⚔️ Симуляция Поединка")
     teams_list = list(db["teams"].keys())
@@ -618,7 +521,6 @@ with tab_match:
                 map_results = []
                 total_rounds = 0
 
-                # Расчет предматчевых вероятностей победы
                 pow_a = sum(MatchEngine.calculate_team_map_power(team_a, m) for m in maps_pool) / max(1, len(maps_pool))
                 pow_b = sum(MatchEngine.calculate_team_map_power(team_b, m) for m in maps_pool) / max(1, len(maps_pool))
                 tot_pow = pow_a + pow_b
@@ -690,7 +592,6 @@ with tab_match:
 
                 mvp_banner_html = f'<div class="jp-mvp-box">⭐ <b>MVP матча</b> — <b>{mvp_player["player"]}</b> ({mvp_player["team"]}) &nbsp;|&nbsp; Рейтинг: <b>{mvp_player["Rating"]:.2f}</b></div>' if mvp_player else ''
 
-                # Визуальный блок предматчевой вероятности
                 prob_bar_html = f'''
                 <div style="margin: 12px 0 8px 0; padding: 10px 14px; background: rgba(0,0,0,0.15); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
                     <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 800; margin-bottom: 6px;">
@@ -732,7 +633,7 @@ with tab_match:
 
                 st.markdown(full_card_html, unsafe_allow_html=True)
 
-# ==================== ИГРОКИ ====================
+# ИГРОКИ
 with tab_players:
     st.subheader("Управление Игроками")
     p_col1, p_col2 = st.columns([1, 1])
@@ -773,7 +674,7 @@ with tab_players:
         p_list = [{"Игрок": k, "Рейтинг": v.get("base_rating", 75)} for k, v in db["players"].items()]
         st.dataframe(p_list, use_container_width=True, height=500)
 
-# ==================== КОМАНДЫ ====================
+# КОМАНДЫ
 with tab_teams:
     st.subheader("🛡️ Профили и Составы Команд")
 
@@ -911,7 +812,7 @@ with tab_teams:
             with st.expander(f"🛡️ Паспорт команды: {tm}", expanded=False):
                 st.markdown(team_card_html, unsafe_allow_html=True)
 
-# ==================== ТРЕНЕРЫ ====================
+# ТРЕНЕРЫ
 with tab_coaches:
     st.subheader("Штаб Тренеров")
     c_col1, c_col2 = st.columns([1, 1])
@@ -941,7 +842,7 @@ with tab_coaches:
         c_list = [{"Тренер": k, "Рейтинг": v.get("rating", 0)} for k, v in db["coaches"].items()]
         st.dataframe(c_list, use_container_width=True, height=400)
 
-# ==================== ИСТОРИЯ МАТЧЕЙ ====================
+# ИСТОРИЯ МАТЧЕЙ
 with tab_history:
     st.subheader("📜 История Проведенных Матчей")
 
@@ -970,7 +871,7 @@ with tab_history:
             with st.expander(label, expanded=(idx == 0)):
                 st.markdown(match_data.get("card_html", ""), unsafe_allow_html=True)
 
-# ==================== СОБЫТИЯ И ТУРНИРЫ ====================
+# СОБЫТИЯ И ТУРНИРЫ
 with tab_events:
     st.subheader("📅 Календарь Событий и Турниров")
 
