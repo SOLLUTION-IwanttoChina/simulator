@@ -350,9 +350,10 @@ class MatchEngine:
                         roster_items.append((p_role, p_name))
                         roles_present.add(p_role)
 
-        players_power = sum(MatchEngine.get_player_power(p_name, role) for role, p_name in roster_items)
-        if not roster_items or len(roster_items) < 5:
-            players_power = max(players_power, 320)
+        # ИСПРАВЛЕНИЕ: Безопасный расчет силы игроков без хардкода 320
+        players_powers = [MatchEngine.get_player_power(p_name, role) for role, p_name in roster_items]
+        missing_slots = max(0, 5 - len(players_powers))
+        players_power = sum(players_powers) + (missing_slots * 70.0)
 
         role_synergy = 1.0
         if {"Капитан", "Капитан-Снайпер"}.intersection(roles_present):
@@ -369,9 +370,19 @@ class MatchEngine:
         coach_rating = db["coaches"].get(coach_name, {}).get("rating", 0) if coach_name != "Нет" else 0
         coach_factor = 1.0 + (coach_rating / 100.0) * 0.05
 
-        map_factor = 1.12 if map_name == t_data.get("best_map") else (0.88 if map_name == t_data.get("worst_map") else 1.0)
+        # ИСПРАВЛЕНИЕ: Реалистичный множитель карты (5% вместо 12%)
+        map_factor = 1.05 if map_name == t_data.get("best_map") else (0.95 if map_name == t_data.get("worst_map") else 1.0)
 
         return players_power * role_synergy * chem_factor * coach_factor * map_factor
+
+    @staticmethod
+    def calculate_round_win_prob(power_a, power_b):
+        """Единая функция вероятности победы в раунде для UI и движка"""
+        tot = power_a + power_b
+        if tot <= 0:
+            return 0.50
+        diff_ratio = (power_a - power_b) / tot
+        return max(0.15, min(0.85, 0.50 + (diff_ratio * 0.40)))
 
     @staticmethod
     def simulate_map(team_a, team_b, map_name):
@@ -395,8 +406,8 @@ class MatchEngine:
         stats_a = {p[0]: {"role": p[1], "K": 0, "A": 0, "D": 0, "damage": 0, "kast": 0, "imp": 0} for p in roster_a}
         stats_b = {p[0]: {"role": p[1], "K": 0, "A": 0, "D": 0, "damage": 0, "kast": 0, "imp": 0} for p in roster_b}
 
-        diff_ratio = (power_a - power_b) / max(1, (power_a + power_b))
-        base_prob_a = max(0.15, min(0.85, 0.50 + (diff_ratio * 0.40)))
+        # ИСПРАВЛЕНИЕ: Базовая вероятность использует единую формулу баланса
+        base_prob_a = MatchEngine.calculate_round_win_prob(power_a, power_b)
 
         def pick_weighted_player(roster_pairs):
             if not roster_pairs: return None
@@ -405,16 +416,18 @@ class MatchEngine:
 
         while True:
             rounds_played += 1
-            win_prob = base_prob_a + random.uniform(-0.04, 0.04)
+            win_prob = max(0.10, min(0.90, base_prob_a + random.uniform(-0.04, 0.04)))
             winner = team_a if random.random() < win_prob else team_b
 
-            # ИСПРАВЛЕНО: корректное сопоставление ростера и статистики для обоих случаев
             if winner == team_a:
                 score_a += 1
                 win_roster, lose_roster, win_stats, lose_stats = roster_a, roster_b, stats_a, stats_b
             else:
                 score_b += 1
                 win_roster, lose_roster, win_stats, lose_stats = roster_b, roster_a, stats_b, stats_a
+
+            # ИСПРАВЛЕНИЕ: Точный трекинг действий в раунде для честного расчета KAST
+            round_activity = {p[0]: {"K": 0, "A": 0, "D": 0} for p in roster_a + roster_b}
 
             if win_roster and lose_roster:
                 kills_in_round = random.choices([3, 4, 5], weights=[0.25, 0.50, 0.25])[0]
@@ -426,9 +439,11 @@ class MatchEngine:
                         win_stats[killer]["K"] += 1
                         win_stats[killer]["damage"] += random.randint(85, 135)
                         win_stats[killer]["imp"] += random.choice([1, 2])
+                        round_activity[killer]["K"] += 1
                     
                     if victim in lose_stats:
                         lose_stats[victim]["D"] += 1
+                        round_activity[victim]["D"] += 1
                         
                     if len(win_roster) > 1 and random.random() < 0.50:
                         assisters = [p for p, r in win_roster if p != killer]
@@ -436,6 +451,7 @@ class MatchEngine:
                             assist = random.choice(assisters)
                             if assist in win_stats:
                                 win_stats[assist]["A"] += 1
+                                round_activity[assist]["A"] += 1
 
                 lose_kills = random.randint(1, 3)
                 for _ in range(lose_kills):
@@ -446,9 +462,11 @@ class MatchEngine:
                         lose_stats[killer]["K"] += 1
                         lose_stats[killer]["damage"] += random.randint(75, 115)
                         lose_stats[killer]["imp"] += 1
+                        round_activity[killer]["K"] += 1
                     
                     if victim in win_stats:
                         win_stats[victim]["D"] += 1
+                        round_activity[victim]["D"] += 1
                         
                     if len(lose_roster) > 1 and random.random() < 0.45:
                         assisters = [p for p, r in lose_roster if p != killer]
@@ -456,11 +474,15 @@ class MatchEngine:
                             assist = random.choice(assisters)
                             if assist in lose_stats:
                                 lose_stats[assist]["A"] += 1
+                                round_activity[assist]["A"] += 1
 
-            for st_dict in [stats_a, stats_b]:
-                for p in st_dict:
-                    if random.random() < 0.72:
-                        st_dict[p]["kast"] += 1
+            # ИСПРАВЛЕНИЕ: KAST начисляется только если игрок убил, помог или выжил в раунде
+            for p, act in round_activity.items():
+                if act["K"] > 0 or act["A"] > 0 or act["D"] == 0:
+                    if p in stats_a:
+                        stats_a[p]["kast"] += 1
+                    elif p in stats_b:
+                        stats_b[p]["kast"] += 1
 
             if (score_a >= 13 or score_b >= 13) and abs(score_a - score_b) >= 2:
                 break
@@ -521,10 +543,11 @@ with tab_match:
                 map_results = []
                 total_rounds = 0
 
+                # ИСПРАВЛЕНИЕ: Вероятность в UI синхронизирована с математическим движком
                 pow_a = sum(MatchEngine.calculate_team_map_power(team_a, m) for m in maps_pool) / max(1, len(maps_pool))
                 pow_b = sum(MatchEngine.calculate_team_map_power(team_b, m) for m in maps_pool) / max(1, len(maps_pool))
-                tot_pow = pow_a + pow_b
-                prob_a = round((pow_a / tot_pow) * 100, 1) if tot_pow > 0 else 50.0
+                round_prob_a = MatchEngine.calculate_round_win_prob(pow_a, pow_b)
+                prob_a = round(round_prob_a * 100, 1)
                 prob_b = round(100.0 - prob_a, 1)
 
                 for idx, m_name in enumerate(maps_pool):
@@ -557,7 +580,9 @@ with tab_match:
                         adr = round(st_data["damage"] / max(1, total_rounds), 1)
                         kast_pct = min(98.0, round((st_data["kast"] / max(1, total_rounds)) * 100, 1))
                         imp_pct = min(99.0, round((st_data["imp"] / max(1, total_rounds)) * 50, 1))
-                        rating = round(0.20 + (kd * 0.38) + (adr / 100.0) * 0.32 + (kast_pct / 100.0) * 0.10, 2)
+                        
+                        # ИСПРАВЛЕНИЕ: Формула рейтинга теперь учитывает импакт (IMP)
+                        rating = round(0.20 + (kd * 0.36) + (adr / 100.0) * 0.30 + (kast_pct / 100.0) * 0.10 + (imp_pct / 100.0) * 0.04, 2)
 
                         item = {
                             "team": t_name, "player": p_name, "role": st_data["role"],
@@ -764,7 +789,7 @@ with tab_teams:
         
         for tm, data in db["teams"].items():
             roster = data.get("roster", {})
-            player_ratings = []
+            player_effective_ratings = []
             roster_html = ""
 
             for i in range(1, 6):
@@ -772,11 +797,14 @@ with tab_teams:
                 p_name = slot_info.get("player", "Нет") if isinstance(slot_info, dict) else "Нет"
                 p_role = slot_info.get("role", "Рифлер") if isinstance(slot_info, dict) else "Рифлер"
                 
-                p_rating = db["players"].get(p_name, {}).get("base_rating", 0) if p_name != "Нет" else 0
-                if p_rating > 0:
-                    player_ratings.append(p_rating)
+                # ИСПРАВЛЕНИЕ: OVR в паспорте теперь учитывает мастерство роли (ROLE_MULTIPLIERS)
+                if p_name != "Нет" and p_name in db["players"]:
+                    eff_rating = MatchEngine.get_player_power(p_name, p_role)
+                    player_effective_ratings.append(eff_rating)
+                    p_rating_display = f"{round(eff_rating)} OVR"
+                else:
+                    p_rating_display = "—"
 
-                p_rating_display = f"{p_rating} OVR" if p_rating > 0 else "—"
                 roster_html += (
                     f'<div class="roster-slot-card">'
                     f'<div><b>{p_name}</b></div>'
@@ -784,7 +812,7 @@ with tab_teams:
                     f'</div>'
                 )
 
-            avg_p_rating = sum(player_ratings) / max(1, len(player_ratings)) if player_ratings else 0
+            avg_p_rating = sum(player_effective_ratings) / max(1, len(player_effective_ratings)) if player_effective_ratings else 0
             coach_r = db["coaches"].get(data.get("coach"), {}).get("rating", 0)
             team_ovr = round((avg_p_rating * 0.84) + (data.get("chemistry", 0) * 0.10) + (coach_r * 0.06))
 
