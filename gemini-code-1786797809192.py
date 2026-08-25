@@ -295,7 +295,9 @@ def load_preset_teams(db_data):
         db_data["teams"][t_name] = {
             "chemistry": 90, "coach": "Kuba", "tier": data["tier"],
             "best_map": data["best"], "worst_map": data["worst"],
-            "roster": roster_dict
+            "roster": roster_dict,
+            "media_attack_active": False,
+            "media_attack_penalty": 10
         }
 
     save_db(db_data)
@@ -336,7 +338,7 @@ class MatchEngine:
         return base * ROLE_MULTIPLIERS.get(prof, 1.0)
 
     @staticmethod
-    def calculate_team_map_power(team_name, map_name):
+    def calculate_team_map_power(team_name, opponent_name, map_name):
         t_data = db["teams"].get(team_name, {})
         roster = t_data.get("roster", {})
         roster_items = []
@@ -371,12 +373,20 @@ class MatchEngine:
 
         map_factor = 1.12 if map_name == t_data.get("best_map") else (0.88 if map_name == t_data.get("worst_map") else 1.0)
 
-        return players_power * role_synergy * chem_factor * coach_factor * map_factor
+        raw_power = players_power * role_synergy * chem_factor * coach_factor * map_factor
+
+        # УЧЕТ МЕДИА-АТАКИ СОПЕРНИКА
+        opp_data = db["teams"].get(opponent_name, {})
+        if opp_data.get("media_attack_active", False):
+            penalty_pct = opp_data.get("media_attack_penalty", 10)
+            raw_power *= (1.0 - (penalty_pct / 100.0))
+
+        return raw_power
 
     @staticmethod
     def simulate_map(team_a, team_b, map_name):
-        power_a = MatchEngine.calculate_team_map_power(team_a, map_name)
-        power_b = MatchEngine.calculate_team_map_power(team_b, map_name)
+        power_a = MatchEngine.calculate_team_map_power(team_a, team_b, map_name)
+        power_b = MatchEngine.calculate_team_map_power(team_b, team_a, map_name)
         score_a, score_b, rounds_played = 0, 0, 0
 
         def get_roster_players(t_name):
@@ -408,7 +418,6 @@ class MatchEngine:
             win_prob = base_prob_a + random.uniform(-0.04, 0.04)
             winner = team_a if random.random() < win_prob else team_b
 
-            # ИСПРАВЛЕНО: корректное сопоставление ростера и статистики для обоих случаев
             if winner == team_a:
                 score_a += 1
                 win_roster, lose_roster, win_stats, lose_stats = roster_a, roster_b, stats_a, stats_b
@@ -521,8 +530,8 @@ with tab_match:
                 map_results = []
                 total_rounds = 0
 
-                pow_a = sum(MatchEngine.calculate_team_map_power(team_a, m) for m in maps_pool) / max(1, len(maps_pool))
-                pow_b = sum(MatchEngine.calculate_team_map_power(team_b, m) for m in maps_pool) / max(1, len(maps_pool))
+                pow_a = sum(MatchEngine.calculate_team_map_power(team_a, team_b, m) for m in maps_pool) / max(1, len(maps_pool))
+                pow_b = sum(MatchEngine.calculate_team_map_power(team_b, team_a, m) for m in maps_pool) / max(1, len(maps_pool))
                 tot_pow = pow_a + pow_b
                 prob_a = round((pow_a / tot_pow) * 100, 1) if tot_pow > 0 else 50.0
                 prob_b = round(100.0 - prob_a, 1)
@@ -606,7 +615,7 @@ with tab_match:
                 </div>
                 '''
 
-                table_header_html = '<thead><tr><th class="jp-col-player" style="text-align:left;">ИГРОК / РОЛЬ</th><th class="jp-col-k">K</th><th class="jp-col-a">A</th><th class="jp-col-d">D</th><th class="jp-col-kd">K/D</th><th class="jp-col-adr">ADR</th><th class="jp-col-kast">KAST</th><th class="jp-col-imp">IMP</th><th class="jp-col-rating">РЕЙТИНГ</th></tr></thead>'
+                table_header_html = '<thead><tr><th class="jp-col-player" style="text-align:left;">ИГРОК / РОЛЬ</th><th class="jp-col-k">K</th><th class="jp-col-a">A</th><th class="jp-col-d">D</th><th class="jp-col-kast">KAST</th><th class="jp-col-adr">ADR</th><th class="jp-col-imp">IMP</th><th class="jp-col-rating">РЕЙТИНГ</th></tr></thead>'
 
                 icon_title = "🌸" if st.session_state.theme == "sakura" else ("🪻" if st.session_state.theme == "light" else "⛩️")
 
@@ -711,8 +720,11 @@ with tab_teams:
             default_worst = t_data.get("worst_map", MAPS[1])
             default_tier = t_data.get("tier", "Авторасчет")
             default_roster = t_data.get("roster", {})
+            default_media_active = t_data.get("media_attack_active", False)
+            default_media_penalty = t_data.get("media_attack_penalty", 10)
         else:
             default_t_name, default_chem, default_coach, default_best, default_worst, default_tier, default_roster = "", 50, "Нет", MAPS[0], MAPS[1], "Авторасчет", {}
+            default_media_active, default_media_penalty = False, 10
 
         t_name = st.text_input("Название команды", value=default_t_name, key=f"t_name_{selected_team}")
         
@@ -722,7 +734,18 @@ with tab_teams:
         with c_t2:
             tier_index = TIERS_OPTIONS.index(default_tier) if default_tier in TIERS_OPTIONS else 0
             t_tier = st.selectbox("Тир команды", TIERS_OPTIONS, index=tier_index, key=f"t_tier_{selected_team}")
-            
+
+        # ФУНКЦИЯ 1: БУТКЕМП
+        if selected_team != "➕ Создать новую":
+            if st.button("⛺ Провести буткемп (+10 сыгранности)", key=f"bootcamp_btn_{selected_team}", use_container_width=True):
+                new_chem = min(100, db["teams"][selected_team].get("chemistry", 0) + 10)
+                db["teams"][selected_team]["chemistry"] = new_chem
+                save_db(db)
+                st.success(f"⛺ Буткемп проведен! Сыгранность команды '{selected_team}' теперь {new_chem}%")
+                st.rerun()
+
+        st.markdown("---")
+        
         coaches_list = ["Нет"] + list(db["coaches"].keys())
         coach_idx = coaches_list.index(default_coach) if default_coach in coaches_list else 0
         t_coach = st.selectbox("Главный тренер", coaches_list, index=coach_idx, key=f"t_coach_{selected_team}")
@@ -731,6 +754,7 @@ with tab_teams:
         with map_c1: t_best = st.selectbox("Лучшая карта", MAPS, index=MAPS.index(default_best) if default_best in MAPS else 0, key=f"t_best_{selected_team}")
         with map_c2: t_worst = st.selectbox("Худшая карта", MAPS, index=MAPS.index(default_worst) if default_worst in MAPS else 1, key=f"t_worst_{selected_team}")
 
+        st.markdown("###### 👥 Ростер команды")
         all_p = ["Нет"] + list(db["players"].keys())
         roster_data = {}
         
@@ -745,18 +769,40 @@ with tab_teams:
             with c2: r_sel = st.selectbox(f"Роль {i}", ROLES, index=ROLES.index(cur_role) if cur_role in ROLES else 0, key=f"t_edit_role_{selected_team}_{i}")
             roster_data[f"Slot_{i}"] = {"player": p_sel, "role": r_sel}
 
+        # ФУНКЦИЯ 3: МЕДИА-АТАКА
+        st.markdown("---")
+        st.markdown("###### 📡 Медиа-атака на соперника")
+        m_col1, m_col2 = st.columns(2)
+        with m_col1:
+            media_active = st.toggle("Включить медиа-атаку", value=default_media_active, key=f"t_media_act_{selected_team}")
+        with m_col2:
+            media_penalty = st.slider("Снижение силы соперника (%)", 10, 20, default_media_penalty, key=f"t_media_pen_{selected_team}")
+
         if st.button("💾 Сохранить команду", use_container_width=True):
             if t_name:
+                # ФУНКЦИЯ 2: ШТРАФ ЗА РЕШАФЛ (-5 к сыгранности)
+                final_chem = t_chem
+                if selected_team != "➕ Создать новую":
+                    old_players = [default_roster.get(f"Slot_{i}", {}).get("player") for i in range(1, 6)]
+                    new_players = [roster_data.get(f"Slot_{i}", {}).get("player") for i in range(1, 6)]
+                    
+                    # Проверяем, изменились ли игроки в ростере
+                    if old_players and old_players != new_players:
+                        final_chem = max(0, final_chem - 5)
+                        st.warning(f"🔄 Зафиксирован решафл в составе! Применен штраф: сыгранность -5% (Текущая: {final_chem}%)")
+
                 db["teams"][t_name] = {
-                    "chemistry": t_chem,
+                    "chemistry": final_chem,
                     "coach": t_coach,
                     "best_map": t_best,
                     "worst_map": t_worst,
                     "tier": t_tier,
-                    "roster": roster_data
+                    "roster": roster_data,
+                    "media_attack_active": media_active,
+                    "media_attack_penalty": media_penalty
                 }
                 save_db(db)
-                st.success(f"Команда '{t_name}' сохранена!")
+                st.success(f"Команда '{t_name}' успешно сохранена!")
                 st.rerun()
 
     with t_col2:
@@ -794,6 +840,10 @@ with tab_teams:
             else:
                 tier_tag = saved_tier.upper()
 
+            media_status_html = ""
+            if data.get("media_attack_active", False):
+                media_status_html = f'<div style="font-size:0.75rem; color:#ef4444; font-weight:800; margin-top:6px;">📡 Медиа-атака АКТИВНА: -{data.get("media_attack_penalty", 10)}% к силе соперника</div>'
+
             team_card_html = (
                 f'<div class="team-card-box">'
                 f'<div class="team-card-header">'
@@ -805,7 +855,8 @@ with tab_teams:
                 f'<div class="team-stat-item">🧩 Сыгранность: <b>{data.get("chemistry", 0)}%</b></div>'
                 f'<div class="team-stat-item">🟢 Пик: <b>{data.get("best_map", "Sandstone")}</b></div>'
                 f'</div>'
-                f'<div class="roster-grid">{roster_html}</div>'
+                f'{media_status_html}'
+                f'<div class="roster-grid" style="margin-top:8px;">{roster_html}</div>'
                 f'</div>'
             )
 
