@@ -93,6 +93,26 @@ if st.session_state.theme == "light":
         .roster-grid {{ display: flex; flex-direction: column; gap: 4px; }}
         .roster-slot-card {{ display: flex; justify-content: space-between; align-items: center; background: #ffffff; border: 1px solid #e9d5ff; border-left: 3px solid #8b5cf6; padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; color: #2e1065; }}
         .role-badge {{ background: rgba(139, 92, 246, 0.15); color: #6d28d9; border: 1px solid rgba(139, 92, 246, 0.3); padding: 1px 6px; border-radius: 3px; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; }}
+
+        /* Уменьшаем отступы между колонками */
+        div[data-testid="stHorizontalBlock"] {{
+            gap: 0.5rem !important;
+        }}
+        
+        /* Компактные карточки карт */
+        .map-card {{
+            padding: 6px 12px !important;
+            margin-bottom: 8px !important;
+            border-radius: 6px !important;
+            text-align: center;
+        }}
+
+        /* Уменьшаем текст внутри карточек карт */
+        .map-card h4, .map-card p {{
+            margin: 0 !important;
+            padding: 2px 0 !important;
+            font-size: 13px !important;
+        }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -172,6 +192,26 @@ elif st.session_state.theme == "sakura":
         .roster-grid {{ display: flex; flex-direction: column; gap: 4px; }}
         .roster-slot-card {{ display: flex; justify-content: space-between; align-items: center; background: #1c1526; border: 1px solid #3b2a4f; border-left: 3px solid #f472b6; padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; color: #ffffff; }}
         .role-badge {{ background: rgba(244, 114, 182, 0.15); color: #f472b6; border: 1px solid rgba(244, 114, 182, 0.3); padding: 1px 6px; border-radius: 3px; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; }}
+
+        /* Уменьшаем отступы между колонками */
+        div[data-testid="stHorizontalBlock"] {{
+            gap: 0.5rem !important;
+        }}
+        
+        /* Компактные карточки карт */
+        .map-card {{
+            padding: 6px 12px !important;
+            margin-bottom: 8px !important;
+            border-radius: 6px !important;
+            text-align: center;
+        }}
+
+        /* Уменьшаем текст внутри карточек карт */
+        .map-card h4, .map-card p {{
+            margin: 0 !important;
+            padding: 2px 0 !important;
+            font-size: 13px !important;
+        }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -224,6 +264,26 @@ else:
         .roster-grid {{ display: flex; flex-direction: column; gap: 4px; }}
         .roster-slot-card {{ display: flex; justify-content: space-between; align-items: center; background: #141722; border: 1px solid #202433; border-left: 3px solid #dc2626; padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; color: #ffffff; }}
         .role-badge {{ background: rgba(220, 38, 38, 0.15); color: #f87171; border: 1px solid rgba(220, 38, 38, 0.3); padding: 1px 6px; border-radius: 3px; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; }}
+
+        /* Уменьшаем отступы между колонками */
+        div[data-testid="stHorizontalBlock"] {{
+            gap: 0.5rem !important;
+        }}
+        
+        /* Компактные карточки карт */
+        .map-card {{
+            padding: 6px 12px !important;
+            margin-bottom: 8px !important;
+            border-radius: 6px !important;
+            text-align: center;
+        }}
+
+        /* Уменьшаем текст внутри карточек карт */
+        .map-card h4, .map-card p {{
+            margin: 0 !important;
+            padding: 2px 0 !important;
+            font-size: 13px !important;
+        }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -780,7 +840,6 @@ with tab_teams:
 
         if st.button("💾 Сохранить команду", use_container_width=True):
             if t_name:
-                # Штраф за решафл полностью убран по требованию пользователя
                 final_chem = t_chem
 
                 db["teams"][t_name] = {
