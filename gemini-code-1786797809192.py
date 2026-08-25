@@ -705,6 +705,24 @@ with tab_match:
 # ИГРОКИ
 with tab_players:
     st.subheader("Управление Игроками")
+
+    with st.expander("🗑️ Зона администратора (Удаление игрока)"):
+        if not db.get("players"):
+            st.info("В базе нет зарегистрированных игроков для удаления.")
+        else:
+            player_to_delete = st.selectbox("Выберите игрока для удаления:", list(db["players"].keys()), key="del_player_select")
+            del_pwd_p = st.text_input("Введите пароль администратора:", type="password", key="del_player_pwd_input")
+            if st.button("🗑️ Подтвердить и удалить игрока", key="del_player_btn"):
+                if del_pwd_p == "solution":
+                    del db["players"][player_to_delete]
+                    save_db(db)
+                    st.success(f"Игрок '{player_to_delete}' успешно удален!")
+                    st.rerun()
+                else:
+                    st.error("❌ Неверный пароль администратора!")
+
+    st.markdown("---")
+
     p_col1, p_col2 = st.columns([1, 1])
 
     with p_col1:
@@ -917,6 +935,24 @@ with tab_teams:
 # ТРЕНЕРЫ
 with tab_coaches:
     st.subheader("Штаб Тренеров")
+
+    with st.expander("🗑️ Зона администратора (Удаление тренера)"):
+        if not db.get("coaches"):
+            st.info("В базе нет зарегистрированных тренеров для удаления.")
+        else:
+            coach_to_delete = st.selectbox("Выберите тренера для удаления:", list(db["coaches"].keys()), key="del_coach_select")
+            del_pwd_c = st.text_input("Введите пароль администратора:", type="password", key="del_coach_pwd_input")
+            if st.button("🗑️ Подтвердить и удалить тренера", key="del_coach_btn"):
+                if del_pwd_c == "solution":
+                    del db["coaches"][coach_to_delete]
+                    save_db(db)
+                    st.success(f"Тренер '{coach_to_delete}' успешно удален!")
+                    st.rerun()
+                else:
+                    st.error("❌ Неверный пароль администратора!")
+
+    st.markdown("---")
+
     c_col1, c_col2 = st.columns([1, 1])
 
     with c_col1:
