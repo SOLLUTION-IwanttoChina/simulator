@@ -42,7 +42,7 @@ CAT_IMG_URL = "https://i.ibb.co/Ld35P0v/cat-hat.png"
 # Векторная реалистичная аниме-ветка сакуры (SVG)
 SAKURA_BRANCH_SVG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' width='100%' height='100%'><defs><linearGradient id='wood' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%233b233a'/><stop offset='50%' stop-color='%23221323'/><stop offset='100%' stop-color='%23130a14'/></linearGradient><linearGradient id='petal' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23ffffff'/><stop offset='50%' stop-color='%23ffb7d5'/><stop offset='100%' stop-color='%23f472b6'/></linearGradient><filter id='glow'><feGaussianBlur stdDeviation='3' result='coloredBlur'/><feMerge><feMergeNode in='coloredBlur'/><feMergeNode in='SourceGraphic'/></feMerge></filter></defs><g filter='url(%23glow)' fill='none' stroke-linecap='round'><path d='M800,-10 C620,80 500,40 360,180 C240,290 170,250 0,360' stroke='url(%23wood)' stroke-width='22'/><path d='M540,110 C420,170 340,150 220,290' stroke='url(%23wood)' stroke-width='12'/><path d='M380,170 C300,120 220,150 120,90' stroke='url(%23wood)' stroke-width='8'/><path d='M230,260 C160,310 100,320 -20,410' stroke='url(%23wood)' stroke-width='6'/></g><g fill='url(%23petal)' opacity='0.92'><g transform='translate(360,180) scale(1.3)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='3' fill='%23fbbf24'/></g><g transform='translate(220,290) scale(1.5)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='3' fill='%23fbbf24'/></g><g transform='translate(120,90) scale(1.2)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='2.5' fill='%23fbbf24'/></g><g transform='translate(480,130) scale(1.4)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='3' fill='%23fbbf24'/></g><g transform='translate(50,330) scale(1.1)'><path d='M0,-12 C3,-22 12,-20 12,-10 C18,-10 20,-2 12,4 C12,12 4,12 0,6 C-4,12 -12,12 -12,4 C-20,-2 -18,-10 -12,-10 C-12,-20 -3,-22 0,-12 Z'/><circle cx='0' cy='0' r='2' fill='%23fbbf24'/></g><circle cx='340' cy='190' r='7'/><circle cx='240' cy='280' r='8'/><circle cx='140' cy='80' r='6'/><circle cx='460' cy='140' r='7'/><circle cx='200' cy='300' r='6'/></g></svg>"
 
-# СТИЛИ (3 ТЕМЫ)
+# КОМПАКТНЫЕ СТИЛИ (ИТОГИ УМЕНЬШЕНЫ ДЛЯ СКРИНШОТОВ)
 if st.session_state.theme == "light":
     st.markdown(f"""
     <style>
@@ -61,38 +61,38 @@ if st.session_state.theme == "light":
             width: 65px !important; height: 65px !important; border-radius: 50% !important; background-image: url('{CAT_IMG_URL}') !important;
             background-size: cover !important; border: 3px solid #8b5cf6 !important; box-shadow: 0 0 20px rgba(139, 92, 246, 0.5) !important; color: transparent !important; cursor: pointer !important;
         }}
-        .jp-match-card {{ background-color: #ffffff; border: 1px solid #e9d5ff; border-top: 4px solid #8b5cf6; border-radius: 12px; padding: 16px; margin-bottom: 18px; box-shadow: 0 8px 30px rgba(124, 58, 237, 0.08); }}
-        .jp-status-bar {{ background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; font-weight: 800; color: #6d28d9; text-transform: uppercase; margin-bottom: 10px; }}
-        .jp-score-header {{ display: flex; justify-content: space-between; align-items: center; text-align: center; padding: 12px 16px; background: linear-gradient(90deg, #f3e8ff 0%, #faf5ff 50%, #f3e8ff 100%); border-radius: 10px; border-left: 4px solid #8b5cf6; border-right: 4px solid #8b5cf6; }}
-        .jp-team-title {{ font-size: 1.25rem; font-weight: 800; color: #3b0764; width: 38%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-        .jp-score-main {{ font-size: 1.85rem; font-weight: 900; color: #6d28d9; width: 24%; }}
-        .jp-winner-tag {{ text-align: center; margin-top: 8px; font-size: 0.88rem; font-weight: 800; color: #7e22ce; text-transform: uppercase; }}
-        .jp-mvp-box {{ background: linear-gradient(90deg, #f3e8ff 0%, #ffffff 100%); border: 1px solid #c084fc; border-radius: 8px; padding: 8px 12px; font-size: 0.82rem; color: #581c87; margin-top: 10px; }}
-        .jp-section-title {{ font-size: 0.75rem; font-weight: 800; color: #6b21a8; margin: 14px 0 6px 0; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }}
-        .jp-section-title span {{ color: #8b5cf6; font-size: 1rem; }}
-        .jp-maps-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }}
-        .jp-map-item {{ background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 8px; padding: 7px; text-align: center; }}
-        .jp-map-name {{ font-size: 0.7rem; font-weight: 700; color: #581c87; margin-bottom: 2px; text-transform: uppercase; }}
-        .jp-map-score {{ font-size: 0.75rem; font-weight: 600; color: #4c1d95; }}
+        .jp-match-card {{ background-color: #ffffff; border: 1px solid #e9d5ff; border-top: 4px solid #8b5cf6; border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; box-shadow: 0 4px 16px rgba(124, 58, 237, 0.08); }}
+        .jp-status-bar {{ background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 5px; padding: 2px 8px; font-size: 0.65rem; font-weight: 800; color: #6d28d9; text-transform: uppercase; margin-bottom: 6px; }}
+        .jp-score-header {{ display: flex; justify-content: space-between; align-items: center; text-align: center; padding: 8px 12px; background: linear-gradient(90deg, #f3e8ff 0%, #faf5ff 50%, #f3e8ff 100%); border-radius: 8px; border-left: 3px solid #8b5cf6; border-right: 3px solid #8b5cf6; }}
+        .jp-team-title {{ font-size: 1.1rem; font-weight: 800; color: #3b0764; width: 38%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
+        .jp-score-main {{ font-size: 1.5rem; font-weight: 900; color: #6d28d9; width: 24%; }}
+        .jp-winner-tag {{ text-align: center; margin-top: 4px; font-size: 0.8rem; font-weight: 800; color: #7e22ce; text-transform: uppercase; }}
+        .jp-mvp-box {{ background: linear-gradient(90deg, #f3e8ff 0%, #ffffff 100%); border: 1px solid #c084fc; border-radius: 6px; padding: 5px 10px; font-size: 0.75rem; color: #581c87; margin-top: 6px; }}
+        .jp-section-title {{ font-size: 0.7rem; font-weight: 800; color: #6b21a8; margin: 8px 0 4px 0; display: flex; align-items: center; gap: 4px; text-transform: uppercase; }}
+        .jp-section-title span {{ color: #8b5cf6; font-size: 0.9rem; }}
+        .jp-maps-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px; }}
+        .jp-map-item {{ background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 6px; padding: 5px; text-align: center; }}
+        .jp-map-name {{ font-size: 0.65rem; font-weight: 700; color: #581c87; margin-bottom: 2px; text-transform: uppercase; }}
+        .jp-map-score {{ font-size: 0.7rem; font-weight: 600; color: #4c1d95; }}
         .jp-map-score.winner {{ color: #7c3aed; font-weight: 800; }}
-        .jp-table-wrapper {{ overflow-x: auto; border-radius: 8px; border: 1px solid #ddd6fe; margin-bottom: 8px; }}
-        .jp-table {{ width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 0.73rem; background: #ffffff; }}
-        .jp-table th {{ background: #f3e8ff; color: #581c87; font-weight: 800; padding: 7px; text-align: center; border-bottom: 1px solid #ddd6fe; text-transform: uppercase; font-size: 0.65rem; }}
-        .jp-table td {{ padding: 6px; text-align: center; color: #334155; border-bottom: 1px solid #f5f3ff; line-height: 1.1; }}
+        .jp-table-wrapper {{ overflow-x: auto; border-radius: 6px; border: 1px solid #ddd6fe; margin-bottom: 6px; }}
+        .jp-table {{ width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 0.68rem; background: #ffffff; }}
+        .jp-table th {{ background: #f3e8ff; color: #581c87; font-weight: 800; padding: 4px 5px; text-align: center; border-bottom: 1px solid #ddd6fe; text-transform: uppercase; font-size: 0.6rem; }}
+        .jp-table td {{ padding: 4px 5px; text-align: center; color: #334155; border-bottom: 1px solid #f5f3ff; line-height: 1.05; }}
         .jp-table tr.mvp-row {{ background: #f3e8ff !important; }}
         .jp-table td.player-cell {{ text-align: left; font-weight: 800; color: #3b0764; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-        .jp-table td.player-cell small {{ color: #7e22ce; font-weight: 500; margin-left: 4px; font-size: 0.62rem; }}
+        .jp-table td.player-cell small {{ color: #7e22ce; font-weight: 500; margin-left: 3px; font-size: 0.58rem; }}
         .jp-table td.rating-cell {{ font-weight: 900; color: #6d28d9; }}
-        .team-card-box {{ background: linear-gradient(145deg, #ffffff 0%, #f3e8ff 100%); border: 2px solid #ddd6fe; border-radius: 14px; padding: 18px 20px; margin-bottom: 10px; box-shadow: 0 8px 24px rgba(124, 58, 237, 0.12); }}
-        .team-card-header {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e9d5ff; padding-bottom: 12px; margin-bottom: 12px; }}
-        .team-card-title {{ font-size: 1.4rem; font-weight: 900; color: #3b0764; display: flex; align-items: center; gap: 10px; }}
-        .team-ovr-badge {{ background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; padding: 6px 14px; border-radius: 8px; font-weight: 900; font-size: 1.1rem; text-align: center; }}
-        .team-stats-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; background: #f5f3ff; padding: 10px; border-radius: 8px; border: 1px solid #ddd6fe; }}
-        .team-stat-item {{ font-size: 0.78rem; color: #6b21a8; }}
+        .team-card-box {{ background: linear-gradient(145deg, #ffffff 0%, #f3e8ff 100%); border: 2px solid #ddd6fe; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; box-shadow: 0 6px 20px rgba(124, 58, 237, 0.1); }}
+        .team-card-header {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e9d5ff; padding-bottom: 8px; margin-bottom: 8px; }}
+        .team-card-title {{ font-size: 1.2rem; font-weight: 900; color: #3b0764; display: flex; align-items: center; gap: 8px; }}
+        .team-ovr-badge {{ background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%); color: #ffffff; padding: 4px 10px; border-radius: 6px; font-weight: 900; font-size: 1rem; text-align: center; }}
+        .team-stats-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; background: #f5f3ff; padding: 8px; border-radius: 6px; border: 1px solid #ddd6fe; }}
+        .team-stat-item {{ font-size: 0.74rem; color: #6b21a8; }}
         .team-stat-item b {{ color: #3b0764; }}
-        .roster-grid {{ display: flex; flex-direction: column; gap: 6px; }}
-        .roster-slot-card {{ display: flex; justify-content: space-between; align-items: center; background: #ffffff; border: 1px solid #e9d5ff; border-left: 3px solid #8b5cf6; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; color: #2e1065; }}
-        .role-badge {{ background: rgba(139, 92, 246, 0.15); color: #6d28d9; border: 1px solid rgba(139, 92, 246, 0.3); padding: 2px 8px; border-radius: 4px; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; }}
+        .roster-grid {{ display: flex; flex-direction: column; gap: 4px; }}
+        .roster-slot-card {{ display: flex; justify-content: space-between; align-items: center; background: #ffffff; border: 1px solid #e9d5ff; border-left: 3px solid #8b5cf6; padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; color: #2e1065; }}
+        .role-badge {{ background: rgba(139, 92, 246, 0.15); color: #6d28d9; border: 1px solid rgba(139, 92, 246, 0.3); padding: 1px 6px; border-radius: 3px; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -138,40 +138,40 @@ elif st.session_state.theme == "sakura":
             background-size: cover !important; border: 3px solid #f472b6 !important; box-shadow: 0 0 20px rgba(244, 114, 182, 0.4) !important; color: transparent !important; cursor: pointer !important;
         }}
         .jp-match-card {{
-            background-color: rgba(24, 18, 33, 0.92); backdrop-filter: blur(8px); border: 1px solid #3b2a4f;
-            border-top: 4px solid #f472b6; border-radius: 12px; padding: 16px; margin-bottom: 18px; box-shadow: 0 10px 32px rgba(0, 0, 0, 0.6); position: relative; z-index: 1;
+            background-color: rgba(24, 18, 33, 0.95); backdrop-filter: blur(8px); border: 1px solid #3b2a4f;
+            border-top: 4px solid #f472b6; border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6); position: relative; z-index: 1;
         }}
-        .jp-status-bar {{ background: rgba(244, 114, 182, 0.12); border: 1px solid rgba(244, 114, 182, 0.35); border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; font-weight: 800; color: #f472b6; text-transform: uppercase; margin-bottom: 10px; }}
-        .jp-score-header {{ display: flex; justify-content: space-between; align-items: center; text-align: center; padding: 12px 16px; background: #231930; border-radius: 10px; border-left: 4px solid #f472b6; border-right: 4px solid #f472b6; }}
-        .jp-team-title {{ font-size: 1.25rem; font-weight: 800; color: #ffffff; width: 38%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-        .jp-score-main {{ font-size: 1.85rem; font-weight: 900; color: #f472b6; width: 24%; }}
-        .jp-winner-tag {{ text-align: center; margin-top: 8px; font-size: 0.88rem; font-weight: 800; color: #f472b6; text-transform: uppercase; }}
-        .jp-mvp-box {{ background: linear-gradient(90deg, rgba(244, 114, 182, 0.18) 0%, #1c1526 100%); border: 1px solid #f472b6; border-radius: 8px; padding: 8px 12px; font-size: 0.82rem; color: #fbcfe8; margin-top: 10px; }}
-        .jp-section-title {{ font-size: 0.75rem; font-weight: 800; color: #cbd5e1; margin: 14px 0 6px 0; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }}
-        .jp-section-title span {{ color: #f472b6; font-size: 1rem; }}
-        .jp-maps-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }}
-        .jp-map-item {{ background: #231930; border: 1px solid #3b2a4f; border-radius: 8px; padding: 7px; text-align: center; }}
-        .jp-map-name {{ font-size: 0.7rem; font-weight: 700; color: #94a3b8; margin-bottom: 2px; text-transform: uppercase; }}
-        .jp-map-score {{ font-size: 0.75rem; font-weight: 600; color: #e2e8f0; }}
+        .jp-status-bar {{ background: rgba(244, 114, 182, 0.12); border: 1px solid rgba(244, 114, 182, 0.35); border-radius: 5px; padding: 2px 8px; font-size: 0.65rem; font-weight: 800; color: #f472b6; text-transform: uppercase; margin-bottom: 6px; }}
+        .jp-score-header {{ display: flex; justify-content: space-between; align-items: center; text-align: center; padding: 8px 12px; background: #231930; border-radius: 8px; border-left: 3px solid #f472b6; border-right: 3px solid #f472b6; }}
+        .jp-team-title {{ font-size: 1.1rem; font-weight: 800; color: #ffffff; width: 38%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
+        .jp-score-main {{ font-size: 1.5rem; font-weight: 900; color: #f472b6; width: 24%; }}
+        .jp-winner-tag {{ text-align: center; margin-top: 4px; font-size: 0.8rem; font-weight: 800; color: #f472b6; text-transform: uppercase; }}
+        .jp-mvp-box {{ background: linear-gradient(90deg, rgba(244, 114, 182, 0.18) 0%, #1c1526 100%); border: 1px solid #f472b6; border-radius: 6px; padding: 5px 10px; font-size: 0.75rem; color: #fbcfe8; margin-top: 6px; }}
+        .jp-section-title {{ font-size: 0.7rem; font-weight: 800; color: #cbd5e1; margin: 8px 0 4px 0; display: flex; align-items: center; gap: 4px; text-transform: uppercase; }}
+        .jp-section-title span {{ color: #f472b6; font-size: 0.9rem; }}
+        .jp-maps-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px; }}
+        .jp-map-item {{ background: #231930; border: 1px solid #3b2a4f; border-radius: 6px; padding: 5px; text-align: center; }}
+        .jp-map-name {{ font-size: 0.65rem; font-weight: 700; color: #94a3b8; margin-bottom: 2px; text-transform: uppercase; }}
+        .jp-map-score {{ font-size: 0.7rem; font-weight: 600; color: #e2e8f0; }}
         .jp-map-score.winner {{ color: #f472b6; font-weight: 800; }}
-        .jp-table-wrapper {{ overflow-x: auto; border-radius: 8px; border: 1px solid #3b2a4f; margin-bottom: 8px; }}
-        .jp-table {{ width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 0.73rem; background: #1c1526; }}
-        .jp-table th {{ background: #281d38; color: #94a3b8; font-weight: 800; padding: 7px; text-align: center; border-bottom: 1px solid #3b2a4f; text-transform: uppercase; font-size: 0.65rem; }}
-        .jp-table td {{ padding: 6px; text-align: center; color: #cbd5e1; border-bottom: 1px solid #281d38; line-height: 1.1; }}
+        .jp-table-wrapper {{ overflow-x: auto; border-radius: 6px; border: 1px solid #3b2a4f; margin-bottom: 6px; }}
+        .jp-table {{ width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 0.68rem; background: #1c1526; }}
+        .jp-table th {{ background: #281d38; color: #94a3b8; font-weight: 800; padding: 4px 5px; text-align: center; border-bottom: 1px solid #3b2a4f; text-transform: uppercase; font-size: 0.6rem; }}
+        .jp-table td {{ padding: 4px 5px; text-align: center; color: #cbd5e1; border-bottom: 1px solid #281d38; line-height: 1.05; }}
         .jp-table tr.mvp-row {{ background: rgba(244, 114, 182, 0.15) !important; }}
         .jp-table td.player-cell {{ text-align: left; font-weight: 800; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-        .jp-table td.player-cell small {{ color: #f472b6; font-weight: 500; margin-left: 4px; font-size: 0.62rem; }}
+        .jp-table td.player-cell small {{ color: #f472b6; font-weight: 500; margin-left: 3px; font-size: 0.58rem; }}
         .jp-table td.rating-cell {{ font-weight: 900; color: #f472b6; }}
-        .team-card-box {{ background: linear-gradient(145deg, #1f172a 0%, #120e18 100%); border: 2px solid #3b2a4f; border-radius: 14px; padding: 18px 20px; margin-bottom: 10px; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5); position: relative; z-index: 1; }}
-        .team-card-header {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3b2a4f; padding-bottom: 12px; margin-bottom: 12px; }}
-        .team-card-title {{ font-size: 1.4rem; font-weight: 900; color: #ffffff; display: flex; align-items: center; gap: 10px; }}
-        .team-ovr-badge {{ background: linear-gradient(135deg, #831843 0%, #4c1d95 100%); color: #ffffff; padding: 6px 14px; border-radius: 8px; font-weight: 900; font-size: 1.1rem; text-align: center; border: 1px solid #f472b6; }}
-        .team-stats-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; background: #231930; padding: 10px; border-radius: 8px; border: 1px solid #3b2a4f; }}
-        .team-stat-item {{ font-size: 0.78rem; color: #94a3b8; }}
+        .team-card-box {{ background: linear-gradient(145deg, #1f172a 0%, #120e18 100%); border: 2px solid #3b2a4f; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5); position: relative; z-index: 1; }}
+        .team-card-header {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #3b2a4f; padding-bottom: 8px; margin-bottom: 8px; }}
+        .team-card-title {{ font-size: 1.2rem; font-weight: 900; color: #ffffff; display: flex; align-items: center; gap: 8px; }}
+        .team-ovr-badge {{ background: linear-gradient(135deg, #831843 0%, #4c1d95 100%); color: #ffffff; padding: 4px 10px; border-radius: 6px; font-weight: 900; font-size: 1rem; text-align: center; border: 1px solid #f472b6; }}
+        .team-stats-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; background: #231930; padding: 8px; border-radius: 6px; border: 1px solid #3b2a4f; }}
+        .team-stat-item {{ font-size: 0.74rem; color: #94a3b8; }}
         .team-stat-item b {{ color: #f1f5f9; }}
-        .roster-grid {{ display: flex; flex-direction: column; gap: 6px; }}
-        .roster-slot-card {{ display: flex; justify-content: space-between; align-items: center; background: #1c1526; border: 1px solid #3b2a4f; border-left: 3px solid #f472b6; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; color: #ffffff; }}
-        .role-badge {{ background: rgba(244, 114, 182, 0.15); color: #f472b6; border: 1px solid rgba(244, 114, 182, 0.3); padding: 2px 8px; border-radius: 4px; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; }}
+        .roster-grid {{ display: flex; flex-direction: column; gap: 4px; }}
+        .roster-slot-card {{ display: flex; justify-content: space-between; align-items: center; background: #1c1526; border: 1px solid #3b2a4f; border-left: 3px solid #f472b6; padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; color: #ffffff; }}
+        .role-badge {{ background: rgba(244, 114, 182, 0.15); color: #f472b6; border: 1px solid rgba(244, 114, 182, 0.3); padding: 1px 6px; border-radius: 3px; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -192,38 +192,38 @@ else:
             width: 65px !important; height: 65px !important; border-radius: 50% !important; background-image: url('{CAT_IMG_URL}') !important;
             background-size: cover !important; border: 3px solid #dc2626 !important; box-shadow: 0 4px 18px rgba(220, 38, 38, 0.5) !important; color: transparent !important; cursor: pointer !important;
         }}
-        .jp-match-card {{ background-color: #0f1118; border: 1px solid #222634; border-radius: 10px; padding: 14px; margin-bottom: 15px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6); }}
-        .jp-status-bar {{ background: rgba(234, 179, 8, 0.08); border: 1px solid rgba(234, 179, 8, 0.25); border-radius: 5px; padding: 4px 8px; font-size: 0.72rem; font-weight: 700; color: #eab308; text-transform: uppercase; margin-bottom: 8px; }}
-        .jp-score-header {{ display: flex; justify-content: space-between; align-items: center; text-align: center; padding: 10px 14px; background: #141722; border-radius: 8px; border-left: 3px solid #dc2626; border-right: 3px solid #dc2626; }}
-        .jp-team-title {{ font-size: 1.2rem; font-weight: 800; color: #f8fafc; width: 38%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-        .jp-score-main {{ font-size: 1.8rem; font-weight: 900; color: #ffffff; width: 24%; }}
-        .jp-winner-tag {{ text-align: center; margin-top: 6px; font-size: 0.85rem; font-weight: 800; color: #eab308; text-transform: uppercase; }}
-        .jp-mvp-box {{ background: linear-gradient(90deg, rgba(234, 179, 8, 0.12) 0%, rgba(15, 17, 24, 0.8) 100%); border: 1px solid rgba(234, 179, 8, 0.3); border-radius: 6px; padding: 6px 10px; font-size: 0.8rem; color: #fef08a; margin-top: 8px; }}
-        .jp-section-title {{ font-size: 0.75rem; font-weight: 800; color: #94a3b8; margin: 12px 0 6px 0; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }}
-        .jp-section-title span {{ color: #dc2626; font-size: 1rem; }}
-        .jp-maps-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }}
-        .jp-map-item {{ background: #141722; border: 1px solid #232736; border-radius: 6px; padding: 6px; text-align: center; }}
-        .jp-map-name {{ font-size: 0.7rem; font-weight: 700; color: #94a3b8; margin-bottom: 2px; text-transform: uppercase; }}
-        .jp-map-score {{ font-size: 0.75rem; font-weight: 600; color: #cbd5e1; }}
+        .jp-match-card {{ background-color: #0f1118; border: 1px solid #222634; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6); }}
+        .jp-status-bar {{ background: rgba(234, 179, 8, 0.08); border: 1px solid rgba(234, 179, 8, 0.25); border-radius: 4px; padding: 2px 6px; font-size: 0.65rem; font-weight: 700; color: #eab308; text-transform: uppercase; margin-bottom: 6px; }}
+        .jp-score-header {{ display: flex; justify-content: space-between; align-items: center; text-align: center; padding: 8px 10px; background: #141722; border-radius: 6px; border-left: 3px solid #dc2626; border-right: 3px solid #dc2626; }}
+        .jp-team-title {{ font-size: 1.1rem; font-weight: 800; color: #f8fafc; width: 38%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
+        .jp-score-main {{ font-size: 1.5rem; font-weight: 900; color: #ffffff; width: 24%; }}
+        .jp-winner-tag {{ text-align: center; margin-top: 4px; font-size: 0.8rem; font-weight: 800; color: #eab308; text-transform: uppercase; }}
+        .jp-mvp-box {{ background: linear-gradient(90deg, rgba(234, 179, 8, 0.12) 0%, rgba(15, 17, 24, 0.8) 100%); border: 1px solid rgba(234, 179, 8, 0.3); border-radius: 5px; padding: 4px 8px; font-size: 0.75rem; color: #fef08a; margin-top: 6px; }}
+        .jp-section-title {{ font-size: 0.7rem; font-weight: 800; color: #94a3b8; margin: 8px 0 4px 0; display: flex; align-items: center; gap: 4px; text-transform: uppercase; }}
+        .jp-section-title span {{ color: #dc2626; font-size: 0.9rem; }}
+        .jp-maps-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 6px; }}
+        .jp-map-item {{ background: #141722; border: 1px solid #232736; border-radius: 5px; padding: 5px; text-align: center; }}
+        .jp-map-name {{ font-size: 0.65rem; font-weight: 700; color: #94a3b8; margin-bottom: 2px; text-transform: uppercase; }}
+        .jp-map-score {{ font-size: 0.7rem; font-weight: 600; color: #cbd5e1; }}
         .jp-map-score.winner {{ color: #eab308; font-weight: 800; }}
-        .jp-table-wrapper {{ overflow-x: auto; border-radius: 6px; border: 1px solid #202433; margin-bottom: 8px; }}
-        .jp-table {{ width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 0.73rem; background: #12141e; }}
-        .jp-table th {{ background: #181b28; color: #64748b; font-weight: 700; padding: 6px; text-align: center; border-bottom: 1px solid #232736; text-transform: uppercase; font-size: 0.65rem; }}
-        .jp-table td {{ padding: 5px 6px; text-align: center; color: #cbd5e1; border-bottom: 1px solid #1a1d2b; line-height: 1.1; }}
+        .jp-table-wrapper {{ overflow-x: auto; border-radius: 5px; border: 1px solid #202433; margin-bottom: 6px; }}
+        .jp-table {{ width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 0.68rem; background: #12141e; }}
+        .jp-table th {{ background: #181b28; color: #64748b; font-weight: 700; padding: 4px 5px; text-align: center; border-bottom: 1px solid #232736; text-transform: uppercase; font-size: 0.6rem; }}
+        .jp-table td {{ padding: 4px 5px; text-align: center; color: #cbd5e1; border-bottom: 1px solid #1a1d2b; line-height: 1.05; }}
         .jp-table tr.mvp-row {{ background: rgba(234, 179, 8, 0.08) !important; }}
         .jp-table td.player-cell {{ text-align: left; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-        .jp-table td.player-cell small {{ color: #64748b; font-weight: 400; margin-left: 4px; font-size: 0.62rem; }}
+        .jp-table td.player-cell small {{ color: #64748b; font-weight: 400; margin-left: 3px; font-size: 0.58rem; }}
         .jp-table td.rating-cell {{ font-weight: 800; color: #eab308; }}
-        .team-card-box {{ background: linear-gradient(145deg, #121520 0%, #0a0b10 100%); border: 2px solid #2a2e3d; border-radius: 14px; padding: 18px 20px; margin-bottom: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }}
-        .team-card-header {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #232736; padding-bottom: 12px; margin-bottom: 12px; }}
-        .team-card-title {{ font-size: 1.4rem; font-weight: 900; color: #ffffff; display: flex; align-items: center; gap: 10px; }}
-        .team-ovr-badge {{ background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: #ffffff; padding: 6px 14px; border-radius: 8px; font-weight: 900; font-size: 1.1rem; text-align: center; }}
-        .team-stats-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; background: #161925; padding: 10px; border-radius: 8px; }}
-        .team-stat-item {{ font-size: 0.78rem; color: #94a3b8; }}
+        .team-card-box {{ background: linear-gradient(145deg, #121520 0%, #0a0b10 100%); border: 2px solid #2a2e3d; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); }}
+        .team-card-header {{ display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #232736; padding-bottom: 8px; margin-bottom: 8px; }}
+        .team-card-title {{ font-size: 1.2rem; font-weight: 900; color: #ffffff; display: flex; align-items: center; gap: 8px; }}
+        .team-ovr-badge {{ background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: #ffffff; padding: 4px 10px; border-radius: 6px; font-weight: 900; font-size: 1rem; text-align: center; }}
+        .team-stats-grid {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; background: #161925; padding: 8px; border-radius: 6px; }}
+        .team-stat-item {{ font-size: 0.74rem; color: #94a3b8; }}
         .team-stat-item b {{ color: #f8fafc; }}
-        .roster-grid {{ display: flex; flex-direction: column; gap: 6px; }}
-        .roster-slot-card {{ display: flex; justify-content: space-between; align-items: center; background: #141722; border: 1px solid #202433; border-left: 3px solid #dc2626; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; color: #ffffff; }}
-        .role-badge {{ background: rgba(220, 38, 38, 0.15); color: #f87171; border: 1px solid rgba(220, 38, 38, 0.3); padding: 2px 8px; border-radius: 4px; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; }}
+        .roster-grid {{ display: flex; flex-direction: column; gap: 4px; }}
+        .roster-slot-card {{ display: flex; justify-content: space-between; align-items: center; background: #141722; border: 1px solid #202433; border-left: 3px solid #dc2626; padding: 4px 10px; border-radius: 5px; font-size: 0.75rem; color: #ffffff; }}
+        .role-badge {{ background: rgba(220, 38, 38, 0.15); color: #f87171; border: 1px solid rgba(220, 38, 38, 0.3); padding: 1px 6px; border-radius: 3px; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -602,13 +602,13 @@ with tab_match:
                 mvp_banner_html = f'<div class="jp-mvp-box">⭐ <b>MVP матча</b> — <b>{mvp_player["player"]}</b> ({mvp_player["team"]}) &nbsp;|&nbsp; Рейтинг: <b>{mvp_player["Rating"]:.2f}</b></div>' if mvp_player else ''
 
                 prob_bar_html = f'''
-                <div style="margin: 12px 0 8px 0; padding: 10px 14px; background: rgba(0,0,0,0.15); border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
-                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 800; margin-bottom: 6px;">
+                <div style="margin: 8px 0 6px 0; padding: 6px 10px; background: rgba(0,0,0,0.15); border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 800; margin-bottom: 4px;">
                         <span>{team_a}: <span style="color:#f472b6;">{prob_a}%</span></span>
-                        <span style="opacity: 0.75; font-weight: 700; font-size: 0.7rem; text-transform: uppercase;">📊 Вероятность победы</span>
+                        <span style="opacity: 0.75; font-weight: 700; font-size: 0.65rem; text-transform: uppercase;">📊 Вероятность победы</span>
                         <span>{team_b}: <span style="color:#a855f7;">{prob_b}%</span></span>
                     </div>
-                    <div style="background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; height: 8px; display: flex;">
+                    <div style="background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; height: 6px; display: flex;">
                         <div style="width: {prob_a}%; background: linear-gradient(90deg, #f472b6, #8b5cf6);"></div>
                         <div style="width: {prob_b}%; background: rgba(255,255,255,0.2);"></div>
                     </div>
@@ -780,16 +780,8 @@ with tab_teams:
 
         if st.button("💾 Сохранить команду", use_container_width=True):
             if t_name:
-                # ФУНКЦИЯ 2: ШТРАФ ЗА РЕШАФЛ (-5 к сыгранности)
+                # Штраф за решафл полностью убран по требованию пользователя
                 final_chem = t_chem
-                if selected_team != "➕ Создать новую":
-                    old_players = [default_roster.get(f"Slot_{i}", {}).get("player") for i in range(1, 6)]
-                    new_players = [roster_data.get(f"Slot_{i}", {}).get("player") for i in range(1, 6)]
-                    
-                    # Проверяем, изменились ли игроки в ростере
-                    if old_players and old_players != new_players:
-                        final_chem = max(0, final_chem - 5)
-                        st.warning(f"🔄 Зафиксирован решафл в составе! Применен штраф: сыгранность -5% (Текущая: {final_chem}%)")
 
                 db["teams"][t_name] = {
                     "chemistry": final_chem,
