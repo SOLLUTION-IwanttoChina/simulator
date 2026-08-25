@@ -45,6 +45,12 @@ SAKURA_BRANCH_SVG = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/
 # CSS ДЛЯ МОБИЛЬНОЙ АДАПТАЦИИ И СКРИНШОТОВ
 MOBILE_CSS = """
 <style>
+    /* Центрирующий прямоугольный/квадратный контейнер итогов */
+    .jp-match-card-container {
+        max-width: 820px !important;
+        margin: 0 auto 15px auto !important;
+    }
+    
     @media (max-width: 768px) {
         .block-container {
             padding-top: 0.8rem !important;
@@ -58,6 +64,9 @@ MOBILE_CSS = """
         .stButton > button {
             padding: 4px 8px !important;
             font-size: 0.8rem !important;
+        }
+        .jp-match-card-container {
+            max-width: 100% !important;
         }
         .jp-match-card {
             padding: 6px 8px !important;
@@ -727,7 +736,7 @@ with tab_match:
                         mvp_cls = "mvp-row" if is_mvp else ""
                         mvp_star = "⭐ " if is_mvp else ""
                         
-                        rows_html += f'<tr class="{mvp_cls}"><td class="player-cell">{mvp_star}{p["player"]}<small>{p["role"]}</small></td><td>{p["K"]}</td><td>{p["A"]}</td><td>{p["D"]}</td><td>{p["KD"]}</td><td>{p["ADR"]}</td><td>{p["KAST"]}</td><td>{p["IMP"]}</td><td class="rating-cell">{p["Rating"]:.2f}</td></tr>'
+                        rows_html += f'<tr class="{mvp_cls}"><td class="player-cell">{mvp_star}{p["player"]}<small>{p["role"]}</small></td><td>{p["K"]}</td><td>{p["A"]}</td><td>{p["D"]}</td><td>{p["KAST"]}</td><td>{p["ADR"]}</td><td>{p["IMP"]}</td><td class="rating-cell">{p["Rating"]:.2f}</td></tr>'
                     return rows_html
 
                 table_rows_a = render_team_table(team_a)
@@ -753,7 +762,7 @@ with tab_match:
 
                 icon_title = "🌸" if st.session_state.theme == "sakura" else ("🪻" if st.session_state.theme == "light" else "⛩️")
 
-                full_card_html = f'<div class="jp-match-card"><div class="jp-status-bar">{icon_title} МАТЧ СИМУЛИРОВАН • ФОРМАТ: {match_fmt}</div><div class="jp-score-header"><div class="jp-team-title">{team_a}</div><div class="jp-score-main">{maps_won_a} : {maps_won_b}</div><div class="jp-team-title">{team_b}</div></div><div class="jp-winner-tag">🏆 {winner_team} ПОБЕДА!</div>{prob_bar_html}{mvp_banner_html}<div class="jp-section-title"><span>|</span> КАРТЫ МАТЧА</div><div class="jp-maps-grid">{maps_html}</div><div class="jp-section-title"><span>|</span> {team_a}</div><div class="jp-table-wrapper"><table class="jp-table">{table_header_html}<tbody>{table_rows_a}</tbody></table></div><div class="jp-section-title"><span>|</span> {team_b}</div><div class="jp-table-wrapper"><table class="jp-table">{table_header_html}<tbody>{table_rows_b}</tbody></table></div></div>'
+                full_card_html = f'<div class="jp-match-card-container"><div class="jp-match-card"><div class="jp-status-bar">{icon_title} МАТЧ СИМУЛИРОВАН • ФОРМАТ: {match_fmt}</div><div class="jp-score-header"><div class="jp-team-title">{team_a}</div><div class="jp-score-main">{maps_won_a} : {maps_won_b}</div><div class="jp-team-title">{team_b}</div></div><div class="jp-winner-tag">🏆 {winner_team} ПОБЕДА!</div>{prob_bar_html}{mvp_banner_html}<div class="jp-section-title"><span>|</span> КАРТЫ МАТЧА</div><div class="jp-maps-grid">{maps_html}</div><div class="jp-section-title"><span>|</span> {team_a}</div><div class="jp-table-wrapper"><table class="jp-table">{table_header_html}<tbody>{table_rows_a}</tbody></table></div><div class="jp-section-title"><span>|</span> {team_b}</div><div class="jp-table-wrapper"><table class="jp-table">{table_header_html}<tbody>{table_rows_b}</tbody></table></div></div></div>'
 
                 match_record = {
                     "team_a": team_a,
